@@ -21,7 +21,7 @@ func loadFirstIPOfRangeFromFile() []net.IPAddr {
 		if err != nil {
 			log.Fatal(err)
 		}
-		firstIP[15]=ipEndWith
+		firstIP[15] = ipEndWith
 		for IPRange.Contains(firstIP) {
 			firstIPCopy := make([]byte, len(firstIP))
 			copy(firstIPCopy, firstIP)
