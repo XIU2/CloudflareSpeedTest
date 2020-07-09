@@ -27,8 +27,11 @@ archives:
     darwin: MacOS
     linux: Linux
     windows: Windows
+    freebsd: Freebsd
     386: x86
     amd64: x64
+  files:
+    - ip.txt
 checksum:
   name_template: 'checksums.txt'
 snapshot:

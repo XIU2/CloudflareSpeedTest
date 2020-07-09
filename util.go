@@ -89,6 +89,7 @@ const failTime = 4
 type CloudflareIPDataSet []CloudflareIPData
 
 func initipEndWith() {
+    rand.Seed(time.Now().UnixNano())
 	ipEndWith = uint8(rand.Intn(254) + 1)
 }
 
