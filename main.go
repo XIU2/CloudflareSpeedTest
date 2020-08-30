@@ -1,41 +1,62 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
+	"os"
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
-func handleUserInput() {
-	fmt.Println("请输入扫描协程数(数字越大越快,默认400):")
-	fmt.Scanln(&pingRoutine)
-	if pingRoutine <= 0 {
-		pingRoutine = 400
-	}
-	fmt.Println("请输入tcping次数(默认10):")
-	fmt.Scanln(&pingTime)
-	if pingTime <= 0 {
-		pingTime = 10
-	}
-	fmt.Println("请输入要测试的下载节点个数(默认10):")
-	fmt.Scanln(&downloadTestCount)
-	if downloadTestCount <= 0 {
-		downloadTestCount = 10
-	}
-	fmt.Println("请输入下载测试时间(默认10,单位为秒):")
+var version string
+
+func init() {
 	var downloadSecond int64
-	fmt.Scanln(&downloadSecond)
-	if downloadSecond <= 0 {
-		downloadSecond = 10
-	}
+	var printVersion bool
+	const help = `CloudflareSpeedTest
+    测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最佳 IP！
+    https://github.com/XIU2/CloudflareSpeedTest
+
+参数：
+    -n 500
+        测速线程数量；请勿超过1000 (default 500)
+    -t 4
+        延迟测速次数；单个 IP (default 4)
+    -dn 10
+        下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多 (default 10)
+    -dt 10
+        下载测试时间；单个 IP 测速最长时间，单位：秒 (default 10)
+    -v
+        打印程序版本
+    -h
+        打印帮助说明
+
+示例：
+    Windows：CloudflareST.exe -n 800 -t 4 -dn 10 -dt 10
+    Linux：CloudflareST -n 800 -t 4 -dn 10 -dt 10
+`
+
+	pingRoutine = *flag.Int("n", 500, "测速线程数量；请勿超过1000")
+	pingTime = *flag.Int("t", 4, "延迟测速次数；单个 IP")
+	downloadTestCount = *flag.Int("dn", 10, "下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多")
+	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间；单个 IP 测速最长时间，单位：秒")
+	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
+
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
+
+	flag.Usage = func() { fmt.Print(help) }
+	flag.Parse()
+	if printVersion {
+		println(version)
+		os.Exit(0)
+	}
 }
 
 func main() {
 	initipEndWith()
-	handleUserInput()
 	ips := loadFirstIPOfRangeFromFile()
 	pingCount := len(ips) * pingTime
 	bar := pb.StartNew(pingCount)
@@ -43,7 +64,7 @@ func main() {
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
 
-	fmt.Println("开始tcping")
+	fmt.Println("开始延迟测速(TCP)：")
 
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
@@ -56,7 +77,7 @@ func main() {
 	bar.Finish()
 	bar = pb.StartNew(downloadTestCount)
 	sort.Sort(CloudflareIPDataSet(data))
-	fmt.Println("开始下载测速")
+	fmt.Println("开始下载测速：")
 	for i := 0; i < downloadTestCount; i++ {
 		_, speed := DownloadSpeedHandler(data[i].ip)
 		data[i].downloadSpeed = speed
