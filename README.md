@@ -1,15 +1,17 @@
 # CloudflareSpeedTest
 
 国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好。  
-而 Cloudflare 也公开了其所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件：**CloudflareSpeedTest（简称CloudflareST）**！  
+虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
+
 该软件可以**测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最佳 IP**！  
 你可以将 IP 添加到 `Hosts` 文件中，来帮你提高访问使用 Cloudflare CDN 服务的网站速度！  
 
 ****
 ### 快速使用
 
-下载编译好的可执行文件 [蓝奏云](https://www.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
-双击运行 `CloudflareST.exe`文件（Windows系统），等待测速...  
+1. 下载编译好的可执行文件 [蓝奏云](https://www.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
+2. 双击运行 `CloudflareST.exe`文件（Windows系统），等待测速...  
+
 测速完毕后，会把结果保存在当前目录下的 `result.csv` 文件中，用记事本打开，按照**延迟由低到高排序**。  
 
 ****
