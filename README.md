@@ -59,7 +59,9 @@ CloudflareST.exe -n 800 -t 4 -dn 10 -dt 10
 
 ****
 ### 感谢项目
-https://github.com/Spedoske/CloudflareScanner
+* https://github.com/Spedoske/CloudflareScanner
+
+意外发现了这个项目，看了之后发现正好解决了我的问题，但是我更喜欢用户命令行方式运行，这样会更方便、有更多使用姿势，于是我临时学了下 Golang 并 Fork 修改了一份命令行方式交互的版本，如果有什么问题可以告诉我，虽然我不一定会~
 
 ****
 ### 许可证
