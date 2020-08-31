@@ -24,11 +24,11 @@ https://github.com/XIU2/CloudflareSpeedTest
     -n 500
         测速线程数量；请勿超过1000 (默认 500)
     -t 4
-        延迟测速次数；单个 IP (默认 4)
+        延迟测速次数；单个 IP 测速次数，TCP协议 (默认 4)
     -dn 20
         下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多 (默认 20)
     -dt 10
-        下载测试时间；单个 IP 测速最长时间，单位：秒 (默认 10)
+        下载测速时间；单个 IP 测速最长时间，单位：秒 (默认 10)
     -v
         打印程序版本
     -h
@@ -39,10 +39,10 @@ https://github.com/XIU2/CloudflareSpeedTest
     Linux：CloudflareST -n 800 -t 4 -dn 20 -dt 10
 `
 
-	pingRoutine = *flag.Int("n", 500, "测速线程数量；请勿超过1000")
-	pingTime = *flag.Int("t", 4, "延迟测速次数；单个 IP")
-	downloadTestCount = *flag.Int("dn", 20, "下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多")
-	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间；单个 IP 测速最长时间，单位：秒")
+	pingRoutine = *flag.Int("n", 500, "测速线程数量")
+	pingTime = *flag.Int("t", 4, "延迟测速次数")
+	downloadTestCount = *flag.Int("dn", 20, "下载测速数量")
+	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
