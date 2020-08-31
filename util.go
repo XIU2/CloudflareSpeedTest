@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/csv"
-	"github.com/cheggaaa/pb/v3"
 	"log"
 	"math/rand"
 	"net"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 type CloudflareIPData struct {
@@ -35,7 +36,7 @@ func ExportCsv(filePath string, data []CloudflareIPData) {
 	}
 	defer fp.Close()
 	w := csv.NewWriter(fp) //创建一个新的写入文件流
-	w.Write([]string{"IP Address", "Ping count", "Ping received", "Ping received rate", "Ping time", "Download Speed (MB/s)"})
+	w.Write([]string{"IP 地址", "Ping 发送次数", "Ping 接收次数", "Ping 接收率", "平均延迟", "下载速度 (MB/s)"})
 	w.WriteAll(convertToString(data))
 	w.Flush()
 }
@@ -89,7 +90,7 @@ const failTime = 4
 type CloudflareIPDataSet []CloudflareIPData
 
 func initipEndWith() {
-    rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 	ipEndWith = uint8(rand.Intn(254) + 1)
 }
 
