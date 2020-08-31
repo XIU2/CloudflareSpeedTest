@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-func loadFirstIPOfRangeFromFile() []net.IPAddr {
-	file, err := os.Open("ip.txt")
+func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
+	file, err := os.Open(ipFile)
 	if err != nil {
 		log.Fatal(err)
 	}

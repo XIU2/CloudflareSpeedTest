@@ -12,6 +12,8 @@ import (
 )
 
 var version string
+var disableDownload bool
+var ipFile string
 
 func init() {
 	var downloadSecond int64
@@ -23,27 +25,32 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 500
-        测速线程数量；请勿超过1000 (默认 500)
+        测速线程数量；数值越大速度越快，请勿超过1000(结果误差大)；(默认 500)
     -t 4
-        延迟测速次数；单个 IP 测速次数，TCP协议 (默认 4)
+        延迟测速次数；单个 IP 测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -dn 20
-        下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多 (默认 20)
+        下载测速数量；延迟测速并排序后，从最低延迟起测试下载速度的数量，请勿太多(速度慢)；(默认 20)
     -dt 10
-        下载测速时间；单个 IP 测速最长时间，单位：秒 (默认 10)
+        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
+    -f ip.txt
+        IP 数据文件；支持相对路径和绝对路径，如果包含空格请前后加上引号；(默认 ip.txt)
+    -dd
+        禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
     -v
         打印程序版本
     -h
         打印帮助说明
 
 示例：
-    Windows：CloudflareST.exe -n 800 -t 4 -dn 20 -dt 10
-    Linux：CloudflareST -n 800 -t 4 -dn 20 -dt 10
-`
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\\abc\ip.txt" -dd`
 
-	pingRoutine = *flag.Int("n", 500, "测速线程数量")
-	pingTime = *flag.Int("t", 4, "延迟测速次数")
-	downloadTestCount = *flag.Int("dn", 20, "下载测速数量")
+	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
+	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
+	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间")
+	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
+	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
@@ -57,10 +64,11 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	initipEndWith()
-	ips := loadFirstIPOfRangeFromFile()
-	pingCount := len(ips) * pingTime
-	bar := pb.StartNew(pingCount)
+	initipEndWith()                           // 随机数
+	failTime = pingTime                       // 设置接收次数
+	ips := loadFirstIPOfRangeFromFile(ipFile) // 读入IP
+	pingCount := len(ips) * pingTime          // 计算进度条总数（IP*测试次数）
+	bar := pb.Full.Start(pingCount)           // 进度条总数
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
@@ -76,14 +84,17 @@ func main() {
 	}
 	wg.Wait()
 	bar.Finish()
-	bar = pb.StartNew(downloadTestCount)
-	sort.Sort(CloudflareIPDataSet(data))
-	fmt.Println("开始下载测速：")
-	for i := 0; i < downloadTestCount; i++ {
-		_, speed := DownloadSpeedHandler(data[i].ip)
-		data[i].downloadSpeed = speed
-		bar.Add(1)
+
+	sort.Sort(CloudflareIPDataSet(data)) // 排序
+	if !disableDownload {                // 如果禁用下载测速就跳过
+		bar = pb.Simple.Start(downloadTestCount)
+		fmt.Println("开始下载测速：")
+		for i := 0; i < downloadTestCount; i++ {
+			_, speed := DownloadSpeedHandler(data[i].ip)
+			data[i].downloadSpeed = speed
+			bar.Add(1)
+		}
+		bar.Finish()
 	}
-	bar.Finish()
-	ExportCsv("./result.csv", data)
+	ExportCsv("./result.csv", data) // 输出结果
 }

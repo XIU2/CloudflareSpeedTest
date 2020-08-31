@@ -48,9 +48,9 @@ func (cf *CloudflareIPData) toString() []string {
 	result[0] = cf.ip.String()
 	result[1] = strconv.Itoa(cf.pingCount)
 	result[2] = strconv.Itoa(cf.pingReceived)
-	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 4, 32)
-	result[4] = strconv.FormatFloat(float64(cf.pingTime), 'f', 4, 32)
-	result[5] = strconv.FormatFloat(float64(cf.downloadSpeed)/1024/1024, 'f', 4, 32)
+	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 2, 32)
+	result[4] = strconv.FormatFloat(float64(cf.pingTime), 'f', 2, 32)
+	result[5] = strconv.FormatFloat(float64(cf.downloadSpeed)/1024/1024, 'f', 2, 32)
 	return result
 }
 
@@ -85,7 +85,8 @@ var downloadTestCount int
 
 const defaultTcpPort = 443
 const tcpConnectTimeout = time.Second * 1
-const failTime = 4
+
+var failTime int
 
 type CloudflareIPDataSet []CloudflareIPData
 
