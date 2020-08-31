@@ -50,7 +50,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 示例：
     CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\\abc\ip.txt" -dd
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -dd
 ```
 
 #### 使用示例
