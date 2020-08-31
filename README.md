@@ -14,7 +14,7 @@
 
 测速完毕后，会把结果保存在当前目录下的 `result.csv` 文件中，用记事本打开，排序为**延迟由低到高**，每一列用逗号分隔，分别是：  
 ```
-IP，Ping发送次数，Ping收到次数，Ping发送收到比率，平均延迟，下载速度(MB/s)
+IP 地址, Ping 发送次数, Ping 接收次数, Ping 接收率, 平均延迟, 下载速度 (MB/s)
 104.27.70.18, 4, 4, 1.0000, 150.7948, 12.8951
 ```
 选择一个平均延迟与下载速度都不错的 IP 放到 `Hosts` 文件中（指向域名）。  
@@ -25,27 +25,28 @@ IP，Ping发送次数，Ping收到次数，Ping发送收到比率，平均延迟
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
 ``` cmd
 C:\>CloudflareST.exe -h
+
 CloudflareSpeedTest
-    测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最佳 IP！
-    https://github.com/XIU2/CloudflareSpeedTest
+测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最佳 IP！
+https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 500
-        测速线程数量；请勿超过1000 (default 500)
+        测速线程数量；请勿超过1000 (默认 500)
     -t 4
-        延迟测速次数；单个 IP (default 4)
-    -dn 10
-        下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多 (default 10)
+        延迟测速次数；单个 IP (默认 4)
+    -dn 20
+        下载测速数量；延迟测速后，从最低延迟起测试下载速度的数量，请勿太多 (默认 20)
     -dt 10
-        下载测试时间；单个 IP 测速最长时间，单位：秒 (default 10)
+        下载测试时间；单个 IP 测速最长时间，单位：秒 (默认 10)
     -v
         打印程序版本
     -h
         打印帮助说明
 
 示例：
-    Windows：CloudflareST.exe -n 800 -t 4 -dn 10 -dt 10
-    Linux：CloudflareST -n 800 -t 4 -dn 10 -dt 10
+    Windows：CloudflareST.exe -n 800 -t 4 -dn 20 -dt 10
+    Linux：CloudflareST -n 800 -t 4 -dn 20 -dt 10
 ```
 
 #### 使用示例
@@ -55,13 +56,13 @@ CloudflareSpeedTest
 
 ``` cmd
 # CMD 示例
-CloudflareST.exe -n 800 -t 4 -dn 10 -dt 10
+CloudflareST.exe -n 800 -t 4 -dn 20 -dt 10
 ```
 
 ``` cmd
 # 快捷方式示例（右键快捷方式 - 目标）
 ## 如果有引号就放在引号外面，记得引号和 - 之间有空格。
-"D:\Program Files\CloudflareST\CloudflareST.exe" -n 800 -t 4 -dn 10 -dt 10
+"D:\Program Files\CloudflareST\CloudflareST.exe" -n 800 -t 4 -dn 20 -dt 10
 ```
 
 ****
