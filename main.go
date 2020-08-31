@@ -16,8 +16,9 @@ var version string
 func init() {
 	var downloadSecond int64
 	var printVersion bool
-	const help = `CloudflareSpeedTest
-测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最佳 IP！
+	const help = `
+CloudflareSpeedTest
+测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最快 IP！
 https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
