@@ -46,7 +46,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -dt 10
         下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
     -f ip.txt
-        IP 数据文件；支持相对路径和绝对路径，如果包含空格请前后加上引号；(默认 ip.txt)
+        IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测试；(默认 ip.txt)
+    -o result.csv
+        输出结果文件；相对/绝对路径，如包含空格请加上引号；允许 .txt 等后缀；(默认 result.csv)
     -dd
         禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
     -v
@@ -55,8 +57,9 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 
 示例：
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -dd
+	CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 
 #### 使用示例
@@ -67,6 +70,10 @@ https://github.com/XIU2/CloudflareSpeedTest
 ``` cmd
 # CMD 示例
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+# 指定 IP数据文件 及 输出结果文件（相对路径，即当前目录下）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
+# 指定 IP数据文件 及 输出结果文件（绝对路径，即 C:\abc\ 目录下）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 
 ``` cmd
