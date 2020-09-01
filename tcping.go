@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"github.com/VividCortex/ewma"
 	"io"
 	"net"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/VividCortex/ewma"
 )
 
 //bool connectionSucceed float32 time
@@ -130,7 +131,7 @@ func DownloadSpeedHandler(ip net.IPAddr) (bool, float32) {
 			var nextTime = timeStart.Add(timeSlice * time.Duration(timeCounter))
 			e := ewma.NewMovingAverage()
 
-			for ; contentLength != contentRead; {
+			for contentLength != contentRead {
 				var currentTime = time.Now()
 				if currentTime.After(nextTime) {
 					timeCounter += 1

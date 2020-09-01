@@ -1,4 +1,4 @@
-module CloudflareIPScanner
+module CloudflareSpeedTest
 
 go 1.14
 

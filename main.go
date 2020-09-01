@@ -61,6 +61,21 @@ https://github.com/XIU2/CloudflareSpeedTest
 		println(version)
 		os.Exit(0)
 	}
+	if pingRoutine <= 0 {
+		pingRoutine = 500
+	}
+	if pingTime <= 0 {
+		pingTime = 4
+	}
+	if downloadTestCount <= 0 {
+		downloadTestCount = 20
+	}
+	if downloadSecond <= 0 {
+		downloadSecond = 10
+	}
+	if ipFile == "" {
+		ipFile = "ip.txt"
+	}
 }
 
 func main() {
@@ -74,12 +89,11 @@ func main() {
 	var data = make([]CloudflareIPData, 0)
 
 	fmt.Println("开始延迟测速(TCP)：")
-
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
 		control <- false
-		handleProgress := handleProgressGenerator(bar)
+		handleProgress := handleProgressGenerator(bar) // 多线程进度条
 		go tcpingGoroutine(&wg, &mu, ip, pingTime, &data, control, handleProgress)
 	}
 	wg.Wait()
@@ -87,14 +101,22 @@ func main() {
 
 	sort.Sort(CloudflareIPDataSet(data)) // 排序
 	if !disableDownload {                // 如果禁用下载测速就跳过
-		bar = pb.Simple.Start(downloadTestCount)
-		fmt.Println("开始下载测速：")
-		for i := 0; i < downloadTestCount; i++ {
-			_, speed := DownloadSpeedHandler(data[i].ip)
-			data[i].downloadSpeed = speed
-			bar.Add(1)
+		if len(data) > 0 { // IP数组长度(IP数量) 大于 0 时继续
+			if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于 下载测速次数，则次数改为IP数
+				downloadTestCount = len(data)
+				fmt.Println("\n[信息] IP数量小于下载测速次数，下载测速次数改为IP数。\n")
+			}
+			bar = pb.Simple.Start(downloadTestCount)
+			fmt.Println("开始下载测速：")
+			for i := 0; i < downloadTestCount; i++ {
+				_, speed := DownloadSpeedHandler(data[i].ip)
+				data[i].downloadSpeed = speed
+				bar.Add(1)
+			}
+			bar.Finish()
+		} else {
+			fmt.Println("\n[信息] IP数量为 0，跳过下载测速。")
 		}
-		bar.Finish()
 	}
 	ExportCsv("./result.csv", data) // 输出结果
 }
