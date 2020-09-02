@@ -38,15 +38,17 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 500
-        测速线程数量；数值越大速度越快，请勿超过1000(结果误差大)；(默认 500)
+        测速线程数量；数值越大速度越快，请勿超过 1000(结果误差大)；(默认 500)
     -t 4
         延迟测速次数；单个 IP 测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -dn 20
-        下载测速数量；延迟测速并排序后，从最低延迟起测试下载速度的数量，请勿太多(速度慢)；(默认 20)
+        下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
     -dt 10
         下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
+    -p 20
+        直接显示结果；测速后直接显示指定数量的结果，为 -1 时不显示结果直接退出；(默认 20)
     -f ip.txt
-        IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测试；(默认 ip.txt)
+        IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
     -o result.csv
         输出结果文件；相对/绝对路径，如包含空格请加上引号；允许 .txt 等后缀；(默认 result.csv)
     -dd
@@ -57,9 +59,9 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 
 示例：
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "ip.txt" -o "result.csv" -dd
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 
 #### 使用示例
@@ -69,19 +71,19 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ``` cmd
 # CMD 示例
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20
 
 # 指定 IP数据文件 及 输出结果文件（相对路径，即当前目录下）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "ip.txt" -o "result.csv" -dd
 
 # 指定 IP数据文件 及 输出结果文件（绝对路径，即 C:\abc\ 目录下）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 
 ``` cmd
 # 快捷方式示例（右键快捷方式 - 目标）
 ## 如果有引号就放在引号外面，记得引号和 - 之间有空格。
-"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 10
+"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 10 -p 20
 ```
 
 ****
