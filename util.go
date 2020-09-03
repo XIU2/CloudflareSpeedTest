@@ -81,7 +81,7 @@ const downloadBufferSize = 1024
 
 var downloadTestCount int
 
-const defaultTcpPort = 443
+//const defaultTcpPort = 443
 const tcpConnectTimeout = time.Second * 1
 
 var failTime int

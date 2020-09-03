@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 
 var version string
 var disableDownload bool
+var tcpPort int
 var ipFile string
 var outputFile string
 var printResult int
@@ -30,6 +32,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         测速线程数量；数值越大速度越快，请勿超过 1000(结果误差大)；(默认 500)
     -t 4
         延迟测速次数；单个 IP 测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
+    -tp 443
+        延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
     -dn 20
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
     -dt 10
@@ -48,12 +52,13 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 
 示例：
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "ip.txt" -o "result.csv" -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd`
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd`
 
 	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
+	flag.IntVar(&tcpPort, "tp", 443, "延迟测速端口")
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.IntVar(&printResult, "p", 20, "直接显示结果")
@@ -75,6 +80,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 	}
 	if pingTime <= 0 {
 		pingTime = 4
+	}
+	if tcpPort < 1 || tcpPort > 65535 {
+		tcpPort = 443
 	}
 	if downloadTestCount <= 0 {
 		downloadTestCount = 20
@@ -103,13 +111,13 @@ func main() {
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
 
-	fmt.Println("开始延迟测速(TCP)：")
+	fmt.Println("开始延迟测速（模式：TCP，端口：" + strconv.Itoa(tcpPort) + "）：")
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
 		control <- false
 		handleProgress := handleProgressGenerator(bar) // 多线程进度条
-		go tcpingGoroutine(&wg, &mu, ip, pingTime, &data, control, handleProgress)
+		go tcpingGoroutine(&wg, &mu, ip, tcpPort, pingTime, &data, control, handleProgress)
 	}
 	wg.Wait()
 	bar.Finish()

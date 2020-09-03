@@ -13,9 +13,9 @@ import (
 )
 
 //bool connectionSucceed float32 time
-func tcping(ip net.IPAddr) (bool, float32) {
+func tcping(ip net.IPAddr, tcpPort int) (bool, float32) {
 	startTime := time.Now()
-	conn, err := net.DialTimeout("tcp", ip.String()+":"+strconv.Itoa(defaultTcpPort), tcpConnectTimeout)
+	conn, err := net.DialTimeout("tcp", ip.String()+":"+strconv.Itoa(tcpPort), tcpConnectTimeout)
 	if err != nil {
 		return false, 0
 	} else {
@@ -27,11 +27,11 @@ func tcping(ip net.IPAddr) (bool, float32) {
 }
 
 //pingReceived pingTotalTime
-func checkConnection(ip net.IPAddr) (int, float32) {
+func checkConnection(ip net.IPAddr, tcpPort int) (int, float32) {
 	pingRecv := 0
 	var pingTime float32 = 0.0
 	for i := 1; i <= failTime; i++ {
-		pingSucceed, pingTimeCurrent := tcping(ip)
+		pingSucceed, pingTimeCurrent := tcping(ip, tcpPort)
 		if pingSucceed {
 			pingRecv++
 			pingTime += pingTimeCurrent
@@ -41,12 +41,12 @@ func checkConnection(ip net.IPAddr) (int, float32) {
 }
 
 //return Success packetRecv averagePingTime specificIPAddr
-func tcpingHandler(ip net.IPAddr, pingCount int, progressHandler func(e progressEvent)) (bool, int, float32, net.IPAddr) {
+func tcpingHandler(ip net.IPAddr, tcpPort int, pingCount int, progressHandler func(e progressEvent)) (bool, int, float32, net.IPAddr) {
 	ipCanConnect := false
 	pingRecv := 0
 	var pingTime float32 = 0.0
 	for !ipCanConnect {
-		pingRecvCurrent, pingTimeCurrent := checkConnection(ip)
+		pingRecvCurrent, pingTimeCurrent := checkConnection(ip, tcpPort)
 		if pingRecvCurrent != 0 {
 			ipCanConnect = true
 			pingRecv = pingRecvCurrent
@@ -62,7 +62,7 @@ func tcpingHandler(ip net.IPAddr, pingCount int, progressHandler func(e progress
 	if ipCanConnect {
 		progressHandler(AvailableIPFound)
 		for i := failTime; i < pingCount; i++ {
-			pingSuccess, pingTimeCurrent := tcping(ip)
+			pingSuccess, pingTimeCurrent := tcping(ip, tcpPort)
 			progressHandler(NormalPing)
 			if pingSuccess {
 				pingRecv++
@@ -76,9 +76,9 @@ func tcpingHandler(ip net.IPAddr, pingCount int, progressHandler func(e progress
 	}
 }
 
-func tcpingGoroutine(wg *sync.WaitGroup, mutex *sync.Mutex, ip net.IPAddr, pingCount int, csv *[]CloudflareIPData, control chan bool, progressHandler func(e progressEvent)) {
+func tcpingGoroutine(wg *sync.WaitGroup, mutex *sync.Mutex, ip net.IPAddr, tcpPort int, pingCount int, csv *[]CloudflareIPData, control chan bool, progressHandler func(e progressEvent)) {
 	defer wg.Done()
-	success, pingRecv, pingTimeAvg, currentIP := tcpingHandler(ip, pingCount, progressHandler)
+	success, pingRecv, pingTimeAvg, currentIP := tcpingHandler(ip, tcpPort, pingCount, progressHandler)
 	if success {
 		mutex.Lock()
 		var cfdata CloudflareIPData
