@@ -43,7 +43,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -f ip.txt
         IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
     -o result.csv
-        输出结果文件；相对/绝对路径，如包含空格请加上引号；允许 .txt 等后缀；(默认 result.csv)
+        输出结果文件；相对/绝对路径，如包含空格请加上引号；为空时不输出结果文件( -o "" )；允许其他后缀；(默认 result.csv)
     -dd
         禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
     -v
@@ -53,6 +53,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 示例：
     CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o "" -dd
     CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
     CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd`
 
@@ -95,9 +96,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 	}
 	if ipFile == "" {
 		ipFile = "ip.txt"
-	}
-	if outputFile == "" {
-		outputFile = "result.csv"
 	}
 }
 
@@ -144,6 +142,10 @@ func main() {
 		}
 	}
 
+	if outputFile != "" {
+		ExportCsv(outputFile, data) // 输出结果到文件
+	}
+
 	// 直接输出结果
 	if printResult > 0 { // 如果禁用下载测速就跳过
 		dateString := convertToString(data) // 转为多维数组 [][]String
@@ -156,14 +158,15 @@ func main() {
 			for i := 0; i < printResult; i++ {
 				fmt.Println(dateString[i][0], "\t", dateString[i][1], "\t\t", dateString[i][2], "\t\t", dateString[i][3], "\t\t", dateString[i][4], "\t", dateString[i][5])
 			}
-			fmt.Printf("\n完整内容请查看 %v 文件。请按 回车键 或 Ctrl+C 退出。", outputFile)
+			if outputFile != "" {
+				fmt.Printf("\n完整内容请查看 %v 文件。请按 回车键 或 Ctrl+C 退出。", outputFile)
+			} else {
+				fmt.Printf("\n请按 回车键 或 Ctrl+C 退出。")
+			}
 			var pause int
 			fmt.Scanln(&pause)
 		} else {
 			fmt.Println("\n[信息] IP数量为 0，跳过输出结果。")
 		}
 	}
-
-	// 输出结果到文件
-	ExportCsv(outputFile, data)
 }
