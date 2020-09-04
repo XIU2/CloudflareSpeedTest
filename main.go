@@ -154,9 +154,9 @@ func main() {
 				printResult = len(dateString)
 				fmt.Println("\n[信息] IP数量小于显示结果数量，显示结果数量改为IP数量。\n")
 			}
-			fmt.Println("\nIP 地址    \t", "测试次数\t", "成功次数\t", "成功比率\t", "平均延迟\t", "下载速度 (MB/s)")
+			fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
 			for i := 0; i < printResult; i++ {
-				fmt.Println(dateString[i][0], "\t", dateString[i][1], "\t\t", dateString[i][2], "\t\t", dateString[i][3], "\t\t", dateString[i][4], "\t", dateString[i][5])
+				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 			}
 			if outputFile != "" {
 				fmt.Printf("\n完整内容请查看 %v 文件。请按 回车键 或 Ctrl+C 退出。", outputFile)

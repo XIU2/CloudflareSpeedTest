@@ -23,7 +23,8 @@ type CloudflareIPData struct {
 
 func (cf *CloudflareIPData) getRecvRate() float32 {
 	if cf.recvRate == 0 {
-		cf.recvRate = float32(cf.pingReceived) / float32(cf.pingCount)
+		pingLost := cf.pingCount - cf.pingReceived
+		cf.recvRate = float32(pingLost) / float32(cf.pingCount)
 	}
 	return cf.recvRate
 }
@@ -36,7 +37,7 @@ func ExportCsv(filePath string, data []CloudflareIPData) {
 	}
 	defer fp.Close()
 	w := csv.NewWriter(fp) //创建一个新的写入文件流
-	w.Write([]string{"IP 地址", "测试次数", "成功次数", "成功比率", "平均延迟", "下载速度 (MB/s)"})
+	w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
 	w.WriteAll(convertToString(data))
 	w.Flush()
 }
@@ -112,7 +113,7 @@ func (cfs CloudflareIPDataSet) Len() int {
 
 func (cfs CloudflareIPDataSet) Less(i, j int) bool {
 	if (cfs)[i].getRecvRate() != cfs[j].getRecvRate() {
-		return cfs[i].getRecvRate() > cfs[j].getRecvRate()
+		return cfs[i].getRecvRate() < cfs[j].getRecvRate()
 	}
 	return cfs[i].pingTime < cfs[j].pingTime
 }
