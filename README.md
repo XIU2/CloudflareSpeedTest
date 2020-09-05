@@ -52,7 +52,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -f ip.txt
         IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
     -o result.csv
-        输出结果文件；相对/绝对路径，如包含空格请加上引号；为空时不输出结果文件( -o "" )；允许其他后缀；(默认 result.csv)
+        输出结果文件；相对/绝对路径，如包含空格请加上引号；为空格时不输出结果文件( -o " " )；允许其他后缀；(默认 result.csv)
     -dd
         禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
     -v
@@ -77,7 +77,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
 
 # 指定 IP数据文件，不输出结果文件，直接显示结果（-p 20 条）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o "" -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o " " -dd
 
 # 指定 IP数据文件 及 输出结果文件（相对路径，即当前目录下）
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
