@@ -74,7 +74,7 @@ const (
 	NormalPing
 )
 
-const url string = "https://apple.freecdn.workers.dev/105/media/us/iphone-11-pro/2019/3bd902e4-0752-4ac1-95f8-6225c32aec6d/films/product/iphone-11-pro-product-tpl-cc-us-2019_1280x720h.mp4"
+const url string = "https://speed.cloudflare.com/__down?bytes=1000000000"
 
 var downloadTestTime time.Duration
 
