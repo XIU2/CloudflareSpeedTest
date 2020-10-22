@@ -15,7 +15,7 @@
 ****
 ### 快速使用
 
-1. 下载编译好的可执行文件 [蓝奏云](https://www.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
+1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
 2. 双击运行 `CloudflareST.exe`文件（Windows系统），等待测速...  
 
 测速完毕后，会显示最快的 20 个 IP，完整结果则保存在当前目录下的 `result.csv` 文件中，用记事本打开，排序为**延迟由低到高**，每一列用逗号分隔，分别是：  
