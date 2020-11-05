@@ -6,14 +6,6 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/stargazers)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/network/members)
 
-****
-
-因为 Cloudflare CDN 测速网站挂了，导致**下载测速失效**，如果你有合适的测速网站，请[告诉我](https://github.com/XIU2/CloudflareSpeedTest/issues/2)！  
-
-> _**合适的测速网站：** 需要该网站下有上百MB大小的文件，且使用的是 Cloudflare CDN 。_
-
-****
-
 国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
@@ -21,6 +13,15 @@
 你可以将 IP 添加到 `Hosts` 文件中，以提高访问使用 Cloudflare CDN 的网站速度！  
 
 ****
+
+### 前排提示
+
+因为 Cloudflare CDN 测速网站挂了，导致**下载测速失效**，如果你有合适的测速网站，请[告诉我](https://github.com/XIU2/CloudflareSpeedTest/issues/2)下！😂  
+
+> _**合适的测速网站：** 需要该网站下有上百MB大小的文件，且使用的是 Cloudflare CDN 。_
+
+****
+
 ### 快速使用
 
 1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
