@@ -10,29 +10,29 @@
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
 该软件可以**测试 Cloudflare CDN 所有 IP 的延迟和速度，获得最快 IP**！  
-你可以将 IP 添加到 `Hosts` 文件中，以提高访问使用 Cloudflare CDN 服务的国外网站速度！  
+你可以将 IP 添加到 `Hosts` 文件中，以提高访问使用 Cloudflare CDN 的网站速度！  
 
 ****
 ### 快速使用
 
 1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
-2. 双击运行 `CloudflareST.exe`文件，等待测速...  
+2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速...  
 
->  **注意：Linux 系统**请先赋予执行权限 `chmod +x CloudflareST` ，然后在执行 `./CloudflareST` 。  
+>  **注意：Linux 系统**请先赋予执行权限 `chmod +x CloudflareST` ，然后再执行 `./CloudflareST` 。  
 
-测速完毕后，会显示最快的 20 个 IP，完整结果则保存在当前目录下的 `result.csv` 文件中，用**记事本或表格软件**打开，排序为**延迟由低到高**，每一列用逗号分隔，分别是：  
+测速完毕后，会显示**最快**的 20 个 IP，完整结果则保存在当前目录下的 `result.csv` 文件中，用**记事本或表格软件**打开，排序为**延迟由低到高**，每一列用逗号分隔，分别是：  
 ```
 IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 104.27.70.18, 4, 4, 0.00, 150.79, 12.89
 ```
-选择一个平均延迟与下载速度都不错的 IP 放到 `Hosts` 文件中（指向使用 Cloudflare CDN 的域名）。  
+选择一个平均延迟与下载速度都不错的 IP 放到 `Hosts` 文件中（指向使用 Cloudflare CDN 的网站域名）。  
 
 ****
 ### 进阶使用
 
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
 
-> **注意：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
+> **提示：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
 ``` cmd
 C:\>CloudflareST.exe -h
@@ -76,7 +76,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 在 CMD 中运行，或者把启动参数添加到快捷方式中。  
 > **注意：** 不需要加上所有参数，按需选择，参数前后顺序随意。  
-> **注意：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
+> **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
 ``` cmd
 # CMD 示例
