@@ -79,16 +79,19 @@ https://github.com/XIU2/CloudflareSpeedTest
 > **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
 ``` cmd
-# CMD 示例
+# 命令行示例
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
 
-# 指定 IP数据文件，不输出结果文件，直接显示结果（-p 20 条）
+# 指定 IP数据文件，不显示结果直接退出（-p 值为 -1）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "ip.txt" -dd
+
+# 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 20 条）
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o " " -dd
 
-# 指定 IP数据文件 及 输出结果文件（相对路径，即当前目录下）
+# 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下）
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
 
-# 指定 IP数据文件 及 输出结果文件（绝对路径，即 C:\abc\ 目录下）
+# 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下）
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 

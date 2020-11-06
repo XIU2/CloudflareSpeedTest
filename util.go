@@ -74,7 +74,7 @@ const (
 	NormalPing
 )
 
-const url string = "https://speed.cloudflare.com/__down?bytes=1000000000"
+const url string = "https://speed.cloudflare.com/__down?bytes=314572800"
 
 var downloadTestTime time.Duration
 
