@@ -36,14 +36,17 @@ https://github.com/XIU2/CloudflareSpeedTest
         延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
     -dn 20
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
-    -dt 10
-        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
+    -dt 5
+        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
+    -url https://speed.cloudflare.com/__down?bytes=209715200
+        下载测速地址；用来测速的网站地址，要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN；
+        默认下载测速地址用的人太多，容易出现超出上限被限制的情况，建议自行寻找合适的下载测速地址！(如含有空格请加上引号)
     -p 20
-        直接显示结果；测速后直接显示指定数量的结果，为 -1 时不显示结果直接退出；(默认 20)
+        显示结果数量；测速后直接显示指定数量的结果，值为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
-        IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
+        IP 数据文件；如含有空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
     -o result.csv
-        输出结果文件；相对/绝对路径，如包含空格请加上引号；为空格时不输出结果文件( -o " " )；允许其他后缀；(默认 result.csv)
+        输出结果文件；如含有空格请加上引号；为空格时不输出结果文件(-o " ")；允许其他后缀；(默认 result.csv)
     -dd
         禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
     -v
@@ -52,17 +55,21 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 
 示例：
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o " " -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd`
+    注意：不需要加上所有参数（以下仅为示例），按需选择，参数前后顺序随意
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -p 0 -f "ip.txt" -dd
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -p 20 -f "ip.txt" -o " " -dd
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -f "ip.txt" -o "result.csv" -dd
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
+    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -url https://speed.cloudflare.com/__down?bytes=209715200`
 
 	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
 	flag.IntVar(&tcpPort, "tp", 443, "延迟测速端口")
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
-	flag.Int64Var(&downloadSecond, "dt", 10, "下载测速时间")
-	flag.IntVar(&printResult, "p", 20, "直接显示结果")
+	flag.Int64Var(&downloadSecond, "dt", 5, "下载测速时间")
+	flag.StringVar(&url, "url", "https://speed.cloudflare.com/__down?bytes=209715200", "下载测速地址")
+	flag.IntVar(&printResult, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
 	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.StringVar(&outputFile, "o", "result.csv", "输出结果文件")
@@ -90,6 +97,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 	}
 	if downloadSecond <= 0 {
 		downloadSecond = 10
+	}
+	if url == "" {
+		url = "https://speed.cloudflare.com/__down?bytes=209715200"
 	}
 	if printResult == 0 {
 		printResult = 20

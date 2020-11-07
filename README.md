@@ -20,11 +20,29 @@
 
 >  **注意：Linux 系统**请先赋予执行权限 `chmod +x CloudflareST` ，然后再执行 `./CloudflareST` 。  
 
-测速完毕后，会显示**最快**的 20 个 IP，完整结果则保存在当前目录下的 `result.csv` 文件中，用**记事本或表格软件**打开，排序为**延迟由低到高**，每一列用逗号分隔，分别是：  
+测速完毕后，会直接显示**最快**的 20 个 IP，示例：  
+
+```
+IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 (MB/s)
+104.27.201.240    4       4       0.00    130.76    21.44
+104.27.205.240    4       4       0.00    132.00    21.00
+104.27.200.240    4       4       0.00    134.76    9.74
+104.27.196.240    4       4       0.00    136.45    20.62
+104.27.199.240    4       4       0.00    136.51    20.53
+104.27.207.240    4       4       0.00    142.25    21.11
+104.27.203.240    4       4       0.00    143.25    20.95
+104.27.195.240    4       4       0.00    143.95    21.45
+104.27.197.240    4       4       0.00    147.01    20.84
+104.27.202.240    4       4       0.00    148.76    20.98
+```
+
+完整结果保存在当前目录下的 `result.csv` 文件中，用**记事本/表格软件**打开，排序为**延迟由低到高**，分别是：  
+
 ```
 IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
-104.27.70.18, 4, 4, 0.00, 150.79, 12.89
+104.27.201.240, 4, 4, 0.00, 130.76, 21.44
 ```
+
 选择一个平均延迟与下载速度都不错的 IP 放到 `Hosts` 文件中（指向使用 Cloudflare CDN 的网站域名）。  
 
 ****
@@ -33,6 +51,7 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
 
 > **提示：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
+> **提示：下载测速地址**可以去这个 **[Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6)** 中获得、提交、交流！  
 
 ``` cmd
 C:\>CloudflareST.exe -h
@@ -50,10 +69,13 @@ https://github.com/XIU2/CloudflareSpeedTest
         延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
     -dn 20
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
-    -dt 10
-        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
+    -dt 5
+        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
+    -url https://speed.cloudflare.com/__down?bytes=209715200
+        下载测速地址；用来测速的网站地址，要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN；
+        默认下载测速地址用的人太多，容易出现超出上限被限制的情况，建议自行寻找合适的下载测速地址！(如含有空格请加上引号)
     -p 20
-        直接显示结果；测速后直接显示指定数量的结果，为 -1 时不显示结果直接退出；(默认 20)
+        显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
         IP 数据文件；相对/绝对路径，如包含空格请加上引号；支持其他 CDN IP段，记得禁用下载测速；(默认 ip.txt)
     -o result.csv
@@ -64,12 +86,6 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印程序版本
     -h
         打印帮助说明
-
-示例：
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o "" -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
-    CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
 ```
 
 #### 使用示例
@@ -77,22 +93,26 @@ https://github.com/XIU2/CloudflareSpeedTest
 在 CMD 中运行，或者把启动参数添加到快捷方式中。  
 > **注意：** 不需要加上所有参数，按需选择，参数前后顺序随意。  
 > **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
+> **提示： 下载测速地址**可以去这个 **[Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6)** 中获得、提交、交流！  
 
 ``` cmd
 # 命令行示例
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
 
-# 指定 IP数据文件，不显示结果直接退出（-p 值为 -1）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p -1 -f "ip.txt" -dd
+# 指定 IP数据文件，不显示结果直接退出（-p 值为 0）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 0 -f "ip.txt" -dd
 
 # 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 20 条）
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o " " -dd
 
-# 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "ip.txt" -o "result.csv" -dd
+# 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下，如果包含空格请加上引号）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f ip.txt -o result.csv -dd
 
-# 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
+# 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如果包含空格请加上引号）
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f C:\abc\ip.txt -o C:\abc\result.csv -dd
+
+# 指定下载测速地址（要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN），如果包含空格请加上引号
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://speed.cloudflare.com/__down?bytes=209715200
 ```
 
 ``` cmd
