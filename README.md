@@ -20,7 +20,7 @@
 
 >  **注意：Linux 系统**请先赋予执行权限 `chmod +x CloudflareST` ，然后再执行 `./CloudflareST` 。  
 
-测速完毕后，会直接显示**最快**的 20 个 IP，示例：  
+测速完毕后，会直接显示**最快的 20 个 IP**，示例：  
 
 ```
 IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 (MB/s)
@@ -97,19 +97,19 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ``` cmd
 # 命令行示例
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5
 
 # 指定 IP数据文件，不显示结果直接退出（-p 值为 0）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 0 -f "ip.txt" -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -p 0 -f "ip.txt" -dd
 
 # 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 20 条）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -p 20 -f "ip.txt" -o " " -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -p 20 -f "ip.txt" -o " " -dd
 
 # 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下，如果包含空格请加上引号）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f ip.txt -o result.csv -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f ip.txt -o result.csv -dd
 
 # 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如果包含空格请加上引号）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 10 -f C:\abc\ip.txt -o C:\abc\result.csv -dd
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f C:\abc\ip.txt -o C:\abc\result.csv -dd
 
 # 指定下载测速地址（要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN），如果包含空格请加上引号
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://speed.cloudflare.com/__down?bytes=209715200
@@ -118,7 +118,7 @@ CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://speed.cloudflare.com/__do
 ``` cmd
 # 快捷方式示例（右键快捷方式 - 目标）
 ## 如果有引号就放在引号外面，记得引号和 - 之间有空格。
-"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 10
+"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5
 ```
 
 ****
