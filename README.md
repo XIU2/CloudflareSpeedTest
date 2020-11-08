@@ -39,7 +39,6 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 104.27.203.105    4       4       0.00    151.54    15.73
 104.27.204.105    4       4       0.00    151.94    8.32
 ```
-> 如果**下载速度都是 0.00**，那说明默认的**下载测速地址**用的人太多又到上限了，**请去这个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6) 获得解决方法！**  
 
 完整结果保存在当前目录下的 `result.csv` 文件中，用**记事本/表格软件**打开，排序为**延迟由低到高**，分别是：  
 
@@ -56,7 +55,6 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
 
 > **提示：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
-> **提示：下载测速地址**可以去这个 **[Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6)** 中获得、提交、交流！  
 
 ``` cmd
 C:\>CloudflareST.exe -h
@@ -76,9 +74,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
     -dt 5
         下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
-    -url https://speed.cloudflare.com/__down?bytes=209715200
-        下载测速地址；用来测速的网站地址，要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN；
-        默认下载测速地址用的人太多，容易出现超出上限被限制的情况，建议自行寻找合适的下载测速地址！(如含有空格请加上引号)
+    -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
+        下载测速地址；用来 Cloudflare CDN 测速的文件地址，如含有空格请加上引号；
     -p 20
         显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
@@ -93,12 +90,13 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 ```
 
+> 如果**下载速度都是 0.00**，那说明默认的**下载测速地址**用的人太多又到上限了，**请去这个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6) 获得解决方法！**  
+
 ### 使用示例
 
 在 CMD 中运行，或者把启动参数添加到快捷方式中。  
 > **注意：** 不需要加上所有参数，按需选择，参数前后顺序随意。  
 > **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
-> **提示： 下载测速地址**可以去这个 **[Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6)** 中获得、提交、交流！  
 
 ``` cmd
 # 命令行示例
@@ -117,7 +115,7 @@ CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f ip.txt -o result.csv -dd
 CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f C:\abc\ip.txt -o C:\abc\result.csv -dd
 
 # 指定下载测速地址（要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN），如果包含空格请加上引号
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://speed.cloudflare.com/__down?bytes=209715200
+CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 ```
 
 ``` cmd
