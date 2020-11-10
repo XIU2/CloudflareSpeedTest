@@ -22,8 +22,8 @@ var printResult int
 func init() {
 	var downloadSecond int64
 	var printVersion bool
-	const help = `
-CloudflareSpeedTest
+	var help = `
+CloudflareSpeedTest ` + version + `
 测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最快 IP！
 https://github.com/XIU2/CloudflareSpeedTest
 
@@ -51,16 +51,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -v
         打印程序版本
     -h
-        打印帮助说明
-
-示例：
-    注意：不需要加上所有参数（以下仅为示例），按需选择，参数前后顺序随意
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -p 0 -f "ip.txt" -dd
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -p 20 -f "ip.txt" -o " " -dd
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -f "ip.txt" -o "result.csv" -dd
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -f "C:\abc\ip.txt" -o "C:\abc\result.csv" -dd
-    CloudflareST -n 500 -t 4 -dn 20 -dt 5 -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png`
+        打印帮助说明`
 
 	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
@@ -116,11 +107,12 @@ func main() {
 	failTime = pingTime                       // 设置接收次数
 	ips := loadFirstIPOfRangeFromFile(ipFile) // 读入IP
 	pingCount := len(ips) * pingTime          // 计算进度条总数（IP*测试次数）
-	bar := pb.Full.Start(pingCount)           // 进度条总数
+	bar := pb.Simple.Start(pingCount)         // 进度条总数
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
 
+	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
 	fmt.Println("开始延迟测速（模式：TCP，端口：" + strconv.Itoa(tcpPort) + "）：")
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
