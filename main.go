@@ -103,7 +103,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	initipEndWith()                           // 随机数
+	initRandSeed()                            // 置随机数种子
 	failTime = pingTime                       // 设置接收次数
 	ips := loadFirstIPOfRangeFromFile(ipFile) // 读入IP
 	pingCount := len(ips) * pingTime          // 计算进度条总数（IP*测试次数）
@@ -160,7 +160,7 @@ func main() {
 			}
 			fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
 			for i := 0; i < printResult; i++ {
-				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 			}
 			if outputFile != "" {
 				fmt.Printf("\n完整内容请查看 %v 文件。请按 回车键 或 Ctrl+C 退出。", outputFile)

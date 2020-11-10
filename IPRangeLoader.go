@@ -21,8 +21,9 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 		if err != nil {
 			log.Fatal(err)
 		}
-		firstIP[15] = ipEndWith
 		for IPRange.Contains(firstIP) {
+			randipEndWith() // 随机 IP 的最后一段
+			firstIP[15] = ipEndWith
 			firstIPCopy := make([]byte, len(firstIP))
 			copy(firstIPCopy, firstIP)
 			firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})
