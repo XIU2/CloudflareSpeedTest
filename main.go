@@ -17,7 +17,7 @@ var disableDownload bool
 var tcpPort int
 var ipFile string
 var outputFile string
-var printResult int
+var printResultNum int
 
 func init() {
 	var downloadSecond int64
@@ -59,7 +59,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.Int64Var(&downloadSecond, "dt", 5, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
-	flag.IntVar(&printResult, "p", 20, "显示结果数量")
+	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
 	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.StringVar(&outputFile, "o", "result.csv", "输出结果文件")
@@ -91,8 +91,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 	if url == "" {
 		url = "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png"
 	}
-	if printResult == 0 {
-		printResult = 20
+	if printResultNum < 0 {
+		printResultNum = 20
 	}
 	if ipFile == "" {
 		ipFile = "ip.txt"
@@ -150,20 +150,24 @@ func main() {
 		ExportCsv(outputFile, data) // 输出结果到文件
 	}
 
-	// 直接输出结果
-	if printResult > 0 { // 如果禁用下载测速就跳过
+	printResult(data) // 显示最快结果
+}
+
+// 显示最快结果
+func printResult(data []CloudflareIPData) {
+	if printResultNum > 0 { // 如果禁用下载测速就跳过
 		dateString := convertToString(data) // 转为多维数组 [][]String
 		if len(dateString) > 0 {            // IP数组长度(IP数量) 大于 0 时继续
-			if len(dateString) < printResult { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
-				printResult = len(dateString)
+			if len(dateString) < printResultNum { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
+				printResultNum = len(dateString)
 				fmt.Println("\n[信息] IP数量小于显示结果数量，显示结果数量改为IP数量。\n")
 			}
 			fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
-			for i := 0; i < printResult; i++ {
+			for i := 0; i < printResultNum; i++ {
 				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 			}
 			if outputFile != "" {
-				fmt.Printf("\n完整内容请查看 %v 文件。请按 回车键 或 Ctrl+C 退出。", outputFile)
+				fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。按下 回车键 或 Ctrl+C 退出。", outputFile)
 			} else {
 				fmt.Printf("\n请按 回车键 或 Ctrl+C 退出。")
 			}
@@ -172,5 +176,7 @@ func main() {
 		} else {
 			fmt.Println("\n[信息] IP数量为 0，跳过输出结果。")
 		}
+	} else {
+		fmt.Printf("\n测速结果已写入 %v 文件，请使用记事本/表格软件查看。", outputFile)
 	}
 }
