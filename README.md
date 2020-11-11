@@ -57,10 +57,10 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
 
-``` cmd
+``` bash
 C:\>CloudflareST.exe -h
 
-CloudflareSpeedTest
+CloudflareSpeedTest vX.X.X
 测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最快 IP！
 https://github.com/XIU2/CloudflareSpeedTest
 
@@ -100,9 +100,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 ### 使用示例
 
 在 CMD 中运行，或者把启动参数添加到快捷方式中。  
-> **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
 ``` bash
+# 命令行示例
 # 注意：各参数均有默认值，只有不使用默认值时，才需要手动指定参数的值（按需选择），参数不分前后顺序。  
 # 提示： Linux 系统只需要把下面命令中的 .exe 删除即可通用。  
 
