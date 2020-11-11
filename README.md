@@ -38,6 +38,7 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 104.22.78.104     4       4       0.00    146.75    13.00
 104.22.69.208     4       4       0.00    147.00    19.07
 104.27.194.10     4       4       0.00    148.02    21.05
+...
 ```
 
 完整结果保存在当前目录下的 `result.csv` 文件中，用**记事本/表格软件**打开，排序为**延迟由低到高**，分别是：  
@@ -55,8 +56,6 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 ## 进阶使用
 
 直接双击运行使用的是默认参数，如果想要测试速度更快、测试结果更全面，可以自定义参数。  
-
-> **提示：Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
 ``` cmd
 C:\>CloudflareST.exe -h
@@ -78,6 +77,10 @@ https://github.com/XIU2/CloudflareSpeedTest
         下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来 Cloudflare CDN 测速的文件地址，如含有空格请加上引号；
+    -tl 200
+        延迟时间上限；只输出指定延迟时间以下的结果，数量为 -dn 参数的值，单位：ms；
+    -sl 5
+        下载速度下限；只输出指定下载速度以上的结果，数量为 -dn 参数的值，单位：MB/s；
     -p 20
         显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
@@ -97,27 +100,35 @@ https://github.com/XIU2/CloudflareSpeedTest
 ### 使用示例
 
 在 CMD 中运行，或者把启动参数添加到快捷方式中。  
-> **注意：** 不需要加上所有参数，按需选择，参数前后顺序随意。  
 > **提示： Linux 系统**只需要把下面命令中的 **.exe 删除**即可通用。  
 
-``` cmd
-# 命令行示例
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5
+``` bash
+# 注意：各参数均有默认值，只有不使用默认值时，才需要手动指定参数的值（按需选择），参数不分前后顺序。  
+# 提示： Linux 系统只需要把下面命令中的 .exe 删除即可通用。  
 
 # 指定 IP数据文件，不显示结果直接退出（-p 值为 0）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -p 0 -f "ip.txt" -dd
+CloudflareST.exe -p 0 -f ip.txt -dd
 
-# 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 20 条）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -p 20 -f "ip.txt" -o " " -dd
+# 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条）
+CloudflareST.exe -p 10 -f ip.txt -o " " -dd
 
 # 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下，如果包含空格请加上引号）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f ip.txt -o result.csv -dd
+CloudflareST.exe -f ip.txt -o result.csv -dd
 
 # 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如果包含空格请加上引号）
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -f C:\abc\ip.txt -o C:\abc\result.csv -dd
+CloudflareST.exe -f C:\abc\ip.txt -o C:\abc\result.csv -dd
 
 # 指定下载测速地址（要求：可以直接下载的文件、文件大小超过 200MB、网站用的是 Cloudflare CDN），如果包含空格请加上引号
-CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
+CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
+
+# 指定测速条件，延迟时间上限：200 ms，下载速度下限：0 MB/s，数量：10 个（只有同时满足三个条件时才会停止测速）
+CloudflareST.exe -tl 200 -dn 10
+
+# 指定测速条件，延迟时间上限：0 ms，下载速度下限：5 MB/s，数量：10 个（只有同时满足三个条件时才会停止测速）
+CloudflareST.exe -sl 5 -dn 10
+
+# 指定测速条件，延迟时间上限：200 ms，下载速度下限：5 MB/s，数量：10 个（只有同时满足三个条件时才会停止测速）
+CloudflareST.exe -tl 200 -sl 5 -dn 10
 ```
 
 ``` cmd
