@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime"
 	"sort"
 	"strconv"
 	"sync"
@@ -192,7 +193,8 @@ func main() {
 
 // 显示最快结果
 func printResult(data []CloudflareIPData) {
-	if printResultNum > 0 { // 如果禁用下载测速就跳过
+	sysType := runtime.GOOS
+	if printResultNum > 0 { // 如果禁止直接输出结果就跳过
 		dateString := convertToString(data) // 转为多维数组 [][]String
 		if len(dateString) > 0 {            // IP数组长度(IP数量) 大于 0 时继续
 			if len(dateString) < printResultNum { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
@@ -203,17 +205,24 @@ func printResult(data []CloudflareIPData) {
 			for i := 0; i < printResultNum; i++ {
 				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 			}
-			if outputFile != "" {
-				fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n按下 回车键 或 Ctrl+C 退出。", outputFile)
-			} else {
-				fmt.Printf("\n请按 回车键 或 Ctrl+C 退出。")
+
+			if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出
+				if outputFile != "" {
+					fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n按下 回车键 或 Ctrl+C 退出。", outputFile)
+				} else {
+					fmt.Printf("\n按下 回车键 或 Ctrl+C 退出。")
+				}
+				var pause int
+				fmt.Scanln(&pause)
+			} else { // 其它系统直接退出
+				if outputFile != "" {
+					fmt.Println("\n完整测速结果已写入 " + outputFile + " 文件，请使用记事本/表格软件查看。")
+				}
 			}
-			var pause int
-			fmt.Scanln(&pause)
 		} else {
 			fmt.Println("\n[信息] IP数量为 0，跳过输出结果。")
 		}
 	} else {
-		fmt.Printf("\n测速结果已写入 %v 文件，请使用记事本/表格软件查看。", outputFile)
+		fmt.Println("\n完整测速结果已写入 " + outputFile + " 文件，请使用记事本/表格软件查看。")
 	}
 }
