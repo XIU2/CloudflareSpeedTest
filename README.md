@@ -10,7 +10,9 @@
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
 该软件可以**测试 Cloudflare CDN 所有 IP 的延迟和速度，获得最快 IP**！觉得好用请**点个⭐~**  
-你可以将 IP 添加到 `Hosts` 文件中，以提高访问使用 Cloudflare CDN 的网站速度！  
+将 IP 添加到 `Hosts` 文件或 DNS 程序中，以提高访问使用 Cloudflare CDN 的网站速度！  
+
+> 本项目也**适用于其他 CDN**，但是需要自行寻找 **CDN IP 段及下载测速地址**（否则只能延迟测速）！
 
 ****
 ## 快速使用
