@@ -61,7 +61,8 @@ https://github.com/XIU2/CloudflareSpeedTest
     -v
         打印程序版本
     -h
-        打印帮助说明`
+        打印帮助说明
+`
 
 	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
