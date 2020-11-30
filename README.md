@@ -90,6 +90,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         输出结果文件；如含有空格请加上引号；为空格时不输出结果文件(-o " ")；允许其他后缀；(默认 result.csv)
     -dd
         禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
+    -ipv6
+        IPv6 测速模式；请确保 IP 数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
     -v
         打印程序版本
     -h
@@ -107,16 +109,19 @@ https://github.com/XIU2/CloudflareSpeedTest
 # 注意：各参数均有默认值，只有不使用默认值时，才需要手动指定参数的值（按需选择），参数不分前后顺序。  
 # 提示： Linux 系统只需要把下面命令中的 CloudflareST.exe 改为 ./CloudflareST 即可。  
 
-# 指定 IP数据文件，不显示结果直接退出（-p 值为 0）
+# 指定 IPv4 数据文件，不显示结果直接退出（-p 值为 0）
 CloudflareST.exe -p 0 -f ip.txt -dd
 
-# 指定 IP数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条）
+# 指定 IPv6 数据文件( ipv6.txt )，不显示结果直接退出（-p 值为 0）
+CloudflareST.exe -p 0 -f ipv6.txt -dd -ipv6
+
+# 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条）
 CloudflareST.exe -p 10 -f ip.txt -o " " -dd
 
-# 指定 IP数据文件 及 输出结果到文件（相对路径，即当前目录下，如果包含空格请加上引号）
+# 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如果包含空格请加上引号）
 CloudflareST.exe -f ip.txt -o result.csv -dd
 
-# 指定 IP数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如果包含空格请加上引号）
+# 指定 IPv4 数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如果包含空格请加上引号）
 CloudflareST.exe -f C:\abc\ip.txt -o C:\abc\result.csv -dd
 
 # 指定下载测速地址（要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN），如果包含空格请加上引号

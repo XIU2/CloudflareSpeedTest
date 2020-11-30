@@ -15,6 +15,7 @@ import (
 
 var version string
 var disableDownload bool
+var ipv6Mode bool
 var tcpPort int
 var ipFile string
 var outputFile string
@@ -54,7 +55,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -o result.csv
         输出结果文件；如含有空格请加上引号；为空格时不输出结果文件(-o " ")；允许其他后缀；(默认 result.csv)
     -dd
-        禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用)
+        禁用下载测速；如果带上该参数就是禁用下载测速；(默认 启用下载测速)
+    -ipv6
+        IPv6 测速模式；请确保 IP 数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
     -v
         打印程序版本
     -h
@@ -70,6 +73,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
+	flag.BoolVar(&ipv6Mode, "ipv6", false, "禁用下载测速")
 	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.StringVar(&outputFile, "o", "result.csv", "输出结果文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
@@ -129,7 +133,11 @@ func main() {
 	var data_2 = make([]CloudflareIPData, 0)
 
 	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
-	fmt.Println("开始延迟测速（模式：TCP，端口：" + strconv.Itoa(tcpPort) + "）：")
+	if ipv6Mode {
+		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "）：")
+	} else {
+		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "）：")
+	}
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
@@ -148,7 +156,6 @@ func main() {
 			if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于 下载测速次数，则次数改为IP数
 				//fmt.Println("\n[信息] IP 数量小于下载测速次数（" + strconv.Itoa(downloadTestCount) + " < " + strconv.Itoa(len(data)) + "），下载测速次数改为IP数。\n")
 				downloadTestCount = len(data)
-
 			}
 			var downloadTestCount_2 int // 临时的下载测速次数
 			if timeLimit == 9999 && speedLimit == 0 {
@@ -201,9 +208,16 @@ func printResult(data []CloudflareIPData) {
 				//fmt.Println("\n[信息] IP 数量小于显示结果数量（" + strconv.Itoa(printResultNum) + " < " + strconv.Itoa(len(dateString)) + "），显示结果数量改为IP数量。\n")
 				printResultNum = len(dateString)
 			}
-			fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
-			for i := 0; i < printResultNum; i++ {
-				fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+			if ipv6Mode { // IPv6 太长了，所以需要调整一下间隔
+				fmt.Printf("%-40s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
+				for i := 0; i < printResultNum; i++ {
+					fmt.Printf("%-42s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+				}
+			} else {
+				fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
+				for i := 0; i < printResultNum; i++ {
+					fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+				}
 			}
 
 			if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出

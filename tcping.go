@@ -15,7 +15,13 @@ import (
 //bool connectionSucceed float32 time
 func tcping(ip net.IPAddr, tcpPort int) (bool, float32) {
 	startTime := time.Now()
-	conn, err := net.DialTimeout("tcp", ip.String()+":"+strconv.Itoa(tcpPort), tcpConnectTimeout)
+	var fullAddress string
+	if ipv6Mode { // IPv6 需要加上 []
+		fullAddress = "[" + ip.String() + "]:" + strconv.Itoa(tcpPort)
+	} else {
+		fullAddress = ip.String() + ":" + strconv.Itoa(tcpPort)
+	}
+	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)
 	if err != nil {
 		return false, 0
 	} else {
@@ -107,8 +113,14 @@ func DownloadSpeedHandler(ip net.IPAddr) (bool, float32) {
 		Jar:           nil,
 		Timeout:       0,
 	}
+	var fullAddress string
+	if ipv6Mode { // IPv6 需要加上 []
+		fullAddress = "[" + ip.String() + "]:443"
+	} else {
+		fullAddress = ip.String() + ":443"
+	}
 	client.Transport = &http.Transport{
-		DialContext: GetDialContextByAddr(ip.String() + ":443"),
+		DialContext: GetDialContextByAddr(fullAddress),
 	}
 	response, err := client.Get(url)
 
