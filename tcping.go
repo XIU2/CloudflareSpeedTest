@@ -16,6 +16,7 @@ import (
 func tcping(ip net.IPAddr, tcpPort int) (bool, float32) {
 	startTime := time.Now()
 	var fullAddress string
+	//fmt.Println(ip.String())
 	if ipv6Mode { // IPv6 需要加上 []
 		fullAddress = "[" + ip.String() + "]:" + strconv.Itoa(tcpPort)
 	} else {

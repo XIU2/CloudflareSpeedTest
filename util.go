@@ -91,8 +91,8 @@ func initRandSeed() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func randipEndWith() uint8 {
-	return uint8(rand.Intn(254) + 1)
+func randipEndWith(num int) uint8 {
+	return uint8(rand.Intn(num) + 1)
 }
 
 func GetRandomString() string {
