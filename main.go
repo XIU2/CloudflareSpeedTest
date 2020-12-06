@@ -55,7 +55,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -ipv6
         IPv6 测速模式；请确保 IP 数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
     -allip
-        测速全部 IP；如果带上该参数将会对每个 IP 进行测速；(默认 每个IP段随机测速一个 IP)
+        测速全部 IP；如果带上该参数将会对每个 IP (仅 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
     -v
         打印程序版本+检查版本更新
     -h
