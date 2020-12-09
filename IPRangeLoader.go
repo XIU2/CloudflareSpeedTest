@@ -42,6 +42,7 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 		}
 		if ipv6Mode { // IPv6
 			var tempIP uint8
+			MaxIPNum = 254
 			for IPRange.Contains(firstIP) {
 				//fmt.Println(firstIP)
 				//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
