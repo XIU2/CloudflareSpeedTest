@@ -11,9 +11,14 @@ import (
 
 func getCidrHostNum(maskLen int) int {
 	cidrIpNum := int(0)
-	var i int = int(32 - maskLen - 1)
-	for ; i >= 1; i-- {
-		cidrIpNum += 1 << i
+	if maskLen < 32 {
+		var i int = int(32 - maskLen - 1)
+		for ; i >= 1; i-- {
+			cidrIpNum += 1 << i
+		}
+		cidrIpNum += 2
+	} else {
+		cidrIpNum = 1
 	}
 	return cidrIpNum
 }
@@ -32,9 +37,9 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 		//fmt.Println(firstIP)
 		//fmt.Println(IPRange)
 		Mask, _ := strconv.Atoi(strings.Split(scanner.Text(), "/")[1])
-		MaxIPNum := getCidrHostNum(Mask) - 1
-		if MaxIPNum > 253 {
-			MaxIPNum = 253
+		MaxIPNum := getCidrHostNum(Mask)
+		if MaxIPNum > 255 {
+			MaxIPNum = 255
 		}
 		//fmt.Println(MaxIPNum)
 		if err != nil {
@@ -42,7 +47,7 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 		}
 		if ipv6Mode { // IPv6
 			var tempIP uint8
-			MaxIPNum = 254
+			MaxIPNum = 255
 			for IPRange.Contains(firstIP) {
 				//fmt.Println(firstIP)
 				//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
@@ -111,9 +116,15 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 				//fmt.Println(firstIP)
 				//fmt.Println(firstIP[15])
 				if allip {
-					for i := 1; i < MaxIPNum+2; i++ {
-						firstIP[15] = uint8(i) // 随机 IP 的最后一段 0.0.0.X
-						//fmt.Println(firstIP)
+					if firstIP[15] == 0 { // 当 IP 最后一段为 0 时会按顺序生成 IP
+						for i := 0; i < MaxIPNum; i++ {
+							firstIP[15] = uint8(i) // 按顺序生成 IP 的最后一段 0.0.0.X
+							//fmt.Println(firstIP)
+							firstIPCopy := make([]byte, len(firstIP))
+							copy(firstIPCopy, firstIP)
+							firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})
+						}
+					} else { // 当 IP 最后一段不为 0 时，则保留 IP 最后一段
 						firstIPCopy := make([]byte, len(firstIP))
 						copy(firstIPCopy, firstIP)
 						firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})

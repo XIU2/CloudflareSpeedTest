@@ -92,7 +92,7 @@ func initRandSeed() {
 }
 
 func randipEndWith(num int) uint8 {
-	return uint8(rand.Intn(num) + 1)
+	return uint8(rand.Intn(num))
 }
 
 func GetRandomString() string {
