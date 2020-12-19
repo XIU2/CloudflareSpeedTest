@@ -17,10 +17,9 @@ import (
 
 var version, ipFile, outputFile, versionNew string
 var disableDownload, ipv6Mode, allip bool
-var tcpPort, printResultNum, timeLimit, speedLimit int
+var tcpPort, printResultNum, timeLimit, speedLimit, downloadSecond int
 
 func init() {
-	var downloadSecond int64
 	var printVersion bool
 	var help = `
 CloudflareSpeedTest ` + version + `
@@ -36,8 +35,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
     -dn 20
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
-    -dt 5
-        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
+    -dt 10
+        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来 Cloudflare CDN 测速的文件地址，如含有空格请加上引号；
     -tl 200
@@ -51,7 +50,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -o result.csv
         输出结果文件；如含有空格请加上引号；为空格时不输出结果文件(-o " ")；允许其他后缀；(默认 result.csv)
     -dd
-        禁用下载测速；如果带上该参数将会禁用下载测速；(默认 启用下载测速)
+        禁用下载测速；禁用后测速结果会按延迟排序（默认按下载速度排序）；(默认 启用下载测速)
     -ipv6
         IPv6 测速模式；请确保 IP 数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
     -allip
@@ -66,7 +65,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
 	flag.IntVar(&tcpPort, "tp", 443, "延迟测速端口")
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
-	flag.Int64Var(&downloadSecond, "dt", 5, "下载测速时间")
+	flag.IntVar(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
 	flag.IntVar(&timeLimit, "tl", 0, "延迟时间上限")
 	flag.IntVar(&speedLimit, "sl", 0, "下载速度下限")
@@ -77,8 +76,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.StringVar(&outputFile, "o", "result.csv", "输出结果文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
-
-	downloadTestTime = time.Duration(downloadSecond) * time.Second
 
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
@@ -139,6 +136,11 @@ func main() {
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
 	var data_2 = make([]CloudflareIPData, 0)
+	downloadTestTime = time.Duration(downloadSecond) * time.Second
+
+	//println(downloadTestCount)
+	//println(downloadTestTime)
+	//println(downloadSecond)
 
 	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
 	if ipv6Mode {
@@ -194,6 +196,7 @@ func main() {
 	}
 
 	if len(data_2) > 0 { // 如果该数字有内容，说明进行过指定条件的下载测速
+		sort.Sort(CloudflareIPDataSetD(data_2)) // 排序
 		if outputFile != "" {
 			ExportCsv(outputFile, data_2) // 输出结果到文件（指定延迟时间或下载速度的）
 		}

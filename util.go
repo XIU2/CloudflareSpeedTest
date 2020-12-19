@@ -85,7 +85,11 @@ const tcpConnectTimeout = time.Second * 1
 
 var failTime int
 
+// 平均延迟排序（丢包另算）
 type CloudflareIPDataSet []CloudflareIPData
+
+// 下载速度排序
+type CloudflareIPDataSetD []CloudflareIPData
 
 func initRandSeed() {
 	rand.Seed(time.Now().UnixNano())
@@ -144,5 +148,17 @@ func (cfs CloudflareIPDataSet) Less(i, j int) bool {
 }
 
 func (cfs CloudflareIPDataSet) Swap(i, j int) {
+	cfs[i], cfs[j] = cfs[j], cfs[i]
+}
+
+func (cfs CloudflareIPDataSetD) Len() int {
+	return len(cfs)
+}
+
+func (cfs CloudflareIPDataSetD) Less(i, j int) bool {
+	return cfs[i].downloadSpeed > cfs[j].downloadSpeed
+}
+
+func (cfs CloudflareIPDataSetD) Swap(i, j int) {
 	cfs[i], cfs[j] = cfs[j], cfs[i]
 }
