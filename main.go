@@ -40,9 +40,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来 Cloudflare CDN 测速的文件地址，如含有空格请加上引号；
     -tl 200
-        延迟时间上限；只输出指定延迟时间以下的结果，数量为 -dn 参数的值，单位：ms；
+        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999 ms)
     -sl 5
-        下载速度下限；只输出指定下载速度以上的结果，数量为 -dn 参数的值，单位：MB/s；
+        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [ -dn ] 才会停止测速；(默认 0 MB/s)
     -p 20
         显示结果数量；测速后直接显示指定数量的结果，值为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
@@ -67,7 +67,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.IntVar(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
-	flag.IntVar(&timeLimit, "tl", 0, "延迟时间上限")
+	flag.IntVar(&timeLimit, "tl", 9999, "延迟时间上限")
 	flag.IntVar(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
