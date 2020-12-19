@@ -76,8 +76,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
     -dn 20
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速数量，请勿太多(速度慢)；(默认 20)
-    -dt 5
-        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 5)
+    -dt 10
+        下载测速时间；单个 IP 测速最长时间，单位：秒；(默认 10)
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来 Cloudflare CDN 测速的文件地址，如含有空格请加上引号；
     -tl 200
