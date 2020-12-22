@@ -48,7 +48,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -f ip.txt
         IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
     -o result.csv
-        输出结果文件；如路径含有空格请加上引号；为空格时不输出 [-o " "]；(默认 result.csv)
+        输出结果文件；如路径含有空格请加上引号；值为空格时不输出 [-o " "]；(默认 result.csv)
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序（默认按下载速度排序）；(默认 启用)
     -ipv6

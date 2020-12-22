@@ -9,7 +9,7 @@
 国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
-该软件可以**批量测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
+该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
 
 > 本项目也**适用于其他 CDN**，但是需要自行寻找 **CDN IP 段及下载测速地址**（否则只能延迟测速）。
 
@@ -19,7 +19,7 @@
 ### 下载运行
 
 1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
-2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速...  
+2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
 
 >  **提示：Linux 系统**请先赋予执行权限 `chmod +x CloudflareST` ，然后再执行 `./CloudflareST`   
 
@@ -89,7 +89,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -f ip.txt
         IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
     -o result.csv
-        输出结果文件；如路径含有空格请加上引号；为空格时不输出 [-o " "]；(默认 result.csv)
+        输出结果文件；如路径含有空格请加上引号；值为空格时不输出 [-o " "]；(默认 result.csv)
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序（默认按下载速度排序）；(默认 启用)
     -ipv6
