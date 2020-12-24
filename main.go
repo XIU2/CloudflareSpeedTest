@@ -138,10 +138,6 @@ func main() {
 	var data_2 = make([]CloudflareIPData, 0)
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
 
-	//println(downloadTestCount)
-	//println(downloadTestTime)
-	//println(downloadSecond)
-
 	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
 	if ipv6Mode {
 		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "）：")

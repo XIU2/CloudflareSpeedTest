@@ -112,7 +112,7 @@ func DownloadSpeedHandler(ip net.IPAddr) (bool, float32) {
 		Transport:     nil,
 		CheckRedirect: nil,
 		Jar:           nil,
-		Timeout:       0,
+		Timeout:       downloadTestTime,
 	}
 	var fullAddress string
 	if ipv6Mode { // IPv6 需要加上 []
@@ -124,7 +124,6 @@ func DownloadSpeedHandler(ip net.IPAddr) (bool, float32) {
 		DialContext: GetDialContextByAddr(fullAddress),
 	}
 	response, err := client.Get(url)
-
 	if err != nil {
 		return false, 0
 	} else {
