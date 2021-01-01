@@ -167,6 +167,9 @@ CloudflareST.exe -tl 200 -sl 5 -dn 10
 ## 感谢项目
 * https://github.com/Spedoske/CloudflareScanner
 
+> _考虑到该项目已经很长时间没更新了，而且其作者也不喜欢回应反馈，所以我临时学了下 Go 语言就上手了..._  
+> _本软件基于该项目制作，但**已增加大量功能及修复 BUG**，并积极根据大家的使用反馈去增加、优化功能（闲）..._
+
 ****
 ## 许可证
 The GPL-3.0 License.
