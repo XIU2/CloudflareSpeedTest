@@ -158,11 +158,14 @@ CloudflareST.exe -tl 200 -sl 5 -dn 10
 # 所以建议先不指定条件测速一遍，看看平均延迟和下载速度大概在什么范围，避免指定条件过低/过高！
 ```
 
-``` cmd
+``` bash
 # Windows 快捷方式示例（右键快捷方式 - 目标）
-## 如果有引号就放在引号外面，记得引号和 - 之间有空格。
-### 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格。
-"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5
+# 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
+
+D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
+
+# 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
+"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
 ```
 
 ****
