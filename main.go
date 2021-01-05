@@ -165,19 +165,19 @@ func main() {
 			}
 			var downloadTestCount_2 int // 临时的下载测速次数
 			if timeLimit == 9999 && speedLimit == 0 {
-				downloadTestCount_2 = downloadTestCount // 如果没有指定条件，则临时的下载次数变量为下载测速次数
+				downloadTestCount_2 = downloadTestCount // 如果没有指定条件，则临时变量为下载测速次数
 				fmt.Println("开始下载测速：")
 			} else if timeLimit > 0 || speedLimit >= 0 {
-				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时的下载次数变量改为总数量
+				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时变量改为总数量
 				fmt.Println("开始下载测速（延迟时间上限：" + strconv.Itoa(timeLimit) + " ms，下载速度下限：" + strconv.Itoa(speedLimit) + " MB/s）：")
 			}
-			bar = pb.Simple.Start(downloadTestCount_2)
+			bar = pb.Simple.Start(downloadTestCount)
 			for i := 0; i < downloadTestCount_2; i++ {
 				_, speed := DownloadSpeedHandler(data[i].ip)
 				data[i].downloadSpeed = speed
-				bar.Add(1)
 				if int(data[i].pingTime) <= timeLimit && int(float64(speed)/1024/1024) >= speedLimit {
-					data_2 = append(data_2, data[i])      // 延迟和速度均满足条件时，添加到新数组中
+					data_2 = append(data_2, data[i]) // 延迟和速度均满足条件时，添加到新数组中
+					bar.Add(1)
 					if len(data_2) == downloadTestCount { // 满足条件的 IP =下载测速次数，则跳出循环
 						break
 					}
