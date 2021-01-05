@@ -164,7 +164,7 @@ func DownloadSpeedHandler(ip net.IPAddr) (bool, float32) {
 					}
 				}
 			}
-			return true, float32(e.Value()) / (float32(downloadTestTime.Seconds()) / 150)
+			return true, float32(e.Value()) / (float32(downloadTestTime.Seconds()) / 120)
 		} else {
 			return false, 0
 		}
