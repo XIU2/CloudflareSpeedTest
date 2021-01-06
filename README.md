@@ -167,7 +167,16 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 ```
 
 ****
+### 问题反馈
+
+如果你遇到什么问题，可以先去 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [Closed](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
+如果没找到类似问题，请新开个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！（不用担心，我平时很闲的）  
+
+> _遇到问题请**大胆的告诉我**，描述越详细越好，毕竟如果遇到问题不说，那我怎么能去修复这些 BUG 呢？！_
+
+****
 ## 感谢项目
+
 * https://github.com/Spedoske/CloudflareScanner
 
 > _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了（菜）..._  
