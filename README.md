@@ -23,7 +23,8 @@
 1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
 2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
 
->  _**提示：Linux 系统**请先赋予权限 `chmod +x CloudflareST` ，然后再 `./CloudflareST` 运行。_   
+> _**Linux 系统**解压后，请先赋予执行权限 `chmod +x CloudflareST` ，再去 `./CloudflareST` 运行。_   
+> _**Mac 系统**遇到错误 `open ip.txt: no such file or directory` 的[解决方法](https://github.com/XIU2/CloudflareSpeedTest/issues/3#issuecomment-743767747)。_
 
 > _**注意：建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**差距很大...**_  
 
@@ -73,40 +74,38 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 500
-        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请适当调低；(默认 500 最多 1000)
+        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请适当调低；(默认 500 最多 1000 )
     -t 4
-        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
+        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4 )
     -tp 443
-        延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
+        延迟测速端口；延迟测速 TCP 协议的端口；(默认 443 )
     -dn 20
-        下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 20)
+        下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 20 )
     -dt 10
-        下载测速时间；单个 IP 下载测速最长时间，单位：秒；(默认 10)
+        下载测速时间；单个 IP 下载测速最长时间，单位：秒；(默认 10 )
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，如地址含有空格请加上引号；
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999 ms )
     -sl 5
-        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0 MB/s)
+        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0 MB/s )
     -p 20
-        显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
+        显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20 )
     -f ip.txt
-        IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
+        IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt )
     -o result.csv
-        输出结果文件；如路径含有空格请加上引号；值为空格时不输出 [-o " "]；(默认 result.csv)
+        输出结果文件；如路径含有空格请加上引号；值为空格时不输出 [-o " "]；(默认 result.csv )
     -dd
-        禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
+        禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用 )
     -ipv6
-        IPv6测速模式；确保 IP 段数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4)
+        IPv6测速模式；确保 IP 段数据文件内只包含 IPv6 IP段，软件不支持同时测速 IPv4+IPv6；(默认 IPv4 )
     -allip
-        测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
+        测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP )
     -v
         打印程序版本+检查版本更新
     -h
         打印帮助说明
 ```
-
-> _如果**下载速度都是 0.00**，那可能默认的**下载测速地址**用的人太多到上限了，**请去这个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/6) 获得解决方法！**_  
 
 ### 使用示例
 
@@ -115,7 +114,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 ``` bash
 # 命令行示例
 # 注意：各参数均有默认值，只有不使用默认值时，才需要手动指定参数的值（按需选择），参数不分前后顺序。  
-# 提示： Linux 系统只需要把下面命令中的 CloudflareST.exe 改为 ./CloudflareST 即可。  
+# 提示：Linux 系统只需要把下面命令中的 CloudflareST.exe 改为 ./CloudflareST 即可。  
 
 # 指定 IPv4 数据文件，不显示结果直接退出（-p 值为 0）
 CloudflareST.exe -p 0 -f ip.txt -dd
@@ -161,7 +160,6 @@ CloudflareST.exe -tl 200 -sl 5 -dn 10
 ``` bash
 # Windows 快捷方式示例（右键快捷方式 - 目标）
 # 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
-
 D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
@@ -172,9 +170,9 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 ## 感谢项目
 * https://github.com/Spedoske/CloudflareScanner
 
-> _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我干脆临时学了下 Go 语言就上手了..._  
-> _本软件基于该项目制作，但**已添加大量功能及修复 BUG**，并根据大家的使用反馈去添加、优化功能（闲）..._
+> _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了（菜）..._  
+> _本软件基于该项目制作，但**已添加大量功能及修复 BUG**，并根据大家的使用反馈积极添加、优化功能（闲）..._
 
 ****
-## 许可证
+## License
 The GPL-3.0 License.
