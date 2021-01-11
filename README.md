@@ -111,24 +111,27 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 Windows 是在 CMD 中运行，或者把相关参数添加到快捷方式目标中。  
 
-> **注意**：各参数均有**默认值**，只有不使用默认值时，才需要手动指定参数的值（**按需选择**），参数**不分前后顺序**。  
+> **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。  
 
-#### IPv4/IPv6
+#### \# IPv4/IPv6
 
 ``` bash
-# 指定 IPv4 数据文件，不显示结果直接退出（-p 值为 0）
-CloudflareST.exe -p 0 -f ip.txt -dd
+# 指定 IPv4 数据文件（-f 默认值就是 ip.txt，所以该参数可以省略）
+CloudflareST.exe -f ip.txt
 
-# 指定 IPv6 数据文件( ipv6.txt )，不显示结果直接退出（-p 值为 0）
-CloudflareST.exe -p 0 -f ipv6.txt -dd -ipv6
+# 指定 IPv6 数据文件( ipv6.txt )，需要加上 -ipv6 参数
+CloudflareST.exe -f ipv6.txt -ipv6
 ```
 ****
-#### 文件相对/绝对路径
+#### \# 文件相对/绝对路径
 
 ``` bash
-# 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条）
-CloudflareST.exe -p 10 -f ip.txt -o " " -dd
+# 指定 IPv4 数据文件，不显示结果直接退出，输出结果到文件（-p 值为 0）
+CloudflareST.exe -f ip.txt -p 0 -dd
+
+# 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条，-o 值为空格）
+CloudflareST.exe -f ip.txt -o " " -p 10 -dd
 
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
 CloudflareST.exe -f ip.txt -o result.csv -dd
@@ -137,14 +140,14 @@ CloudflareST.exe -f ip.txt -o result.csv -dd
 CloudflareST.exe -f C:\abc\ip.txt -o C:\abc\result.csv -dd
 ```
 ****
-#### 自定义下载测速地址
+#### \# 自定义下载测速地址
 
 ``` bash
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
 CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 ```
 ****
-#### 自定义测速条件
+#### \# 自定义测速条件
 
 只有**同时满足三个条件**时才会停止测速。
 
@@ -170,7 +173,7 @@ CloudflareST.exe -tl 200 -sl 5 -dn 10
 > 建议平时运行都加上 `-sl 1`（下载速度下限，最小值 1），过滤掉**回源 IP**（下载测速小于 1MB/s 的结果）。
 
 ****
-#### Windows 快捷方式
+#### \# Windows 快捷方式
 
 ``` bash
 ## 右键快捷方式 - 目标
