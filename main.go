@@ -166,11 +166,10 @@ func main() {
 			var downloadTestCount_2 int // 临时的下载测速次数
 			if timeLimit == 9999 && speedLimit == 0 {
 				downloadTestCount_2 = downloadTestCount // 如果没有指定条件，则临时变量为下载测速次数
-				fmt.Println("开始下载测速：")
 			} else if timeLimit > 0 || speedLimit >= 0 {
 				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时变量改为总数量
-				fmt.Println("开始下载测速（延迟时间上限：" + strconv.Itoa(timeLimit) + " ms，下载速度下限：" + strconv.Itoa(speedLimit) + " MB/s）：")
 			}
+			fmt.Println("开始下载测速（延迟时间上限：" + strconv.Itoa(timeLimit) + " ms，下载速度下限：" + strconv.Itoa(speedLimit) + " MB/s）：")
 			bar = pb.Simple.Start(downloadTestCount)
 			for i := 0; i < downloadTestCount_2; i++ {
 				_, speed := DownloadSpeedHandler(data[i].ip)
@@ -191,7 +190,7 @@ func main() {
 		}
 	}
 
-	if len(data_2) > 0 { // 如果该数字有内容，说明进行过指定条件的下载测速
+	if len(data_2) > 0 { // 如果该数组有内容，说明进行过指定条件的下载测速
 		sort.Sort(CloudflareIPDataSetD(data_2)) // 排序
 		if outputFile != "" {
 			ExportCsv(outputFile, data_2) // 输出结果到文件（指定延迟时间或下载速度的）
