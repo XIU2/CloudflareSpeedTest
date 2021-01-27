@@ -23,7 +23,34 @@
 1. 下载编译好的可执行文件 [蓝奏云](https://xiu.lanzoux.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
 2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
 
-> _**Linux 系统**解压后，请先赋予执行权限 `chmod +x CloudflareST` ，再去 `./CloudflareST` 运行。_   
+<details>
+<summary>「 Linux 下载运行 」</summary>
+
+****
+
+以下命令仅为示例，版本号和文件名请前往 [**Releases**](https://github.com/XIU2/CloudflareSpeedTest/releases) 查看。
+
+``` bash
+# 下载 CloudflareST 压缩包（自行根据需求替换 URL 中版本号和文件名）
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v1.4.7/CloudflareST_linux_amd64.tar
+
+# 解压（自行根据需求替换 文件名）
+tar -xf CloudflareST_linux_amd64.tar
+
+# 进入解压后的目录（自行根据需求替换 文件名）
+cd CloudflareST_linux_amd64
+
+# 赋予只想权限
+chmod +x CloudflareST
+
+# 运行
+./CloudflareST
+```
+
+</details>
+
+****
+
 > _**Mac 系统**遇到错误 `open ip.txt: no such file or directory` 的[解决方法](https://github.com/XIU2/CloudflareSpeedTest/issues/3#issuecomment-743767747)。_
 
 > _**注意：建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**差距很大...**_  
