@@ -67,7 +67,7 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 
 直接运行使用的是默认参数，如果想要测速结果更全面、更符合自己的要求，可以自定义参数。  
 
-> 想要**自动更新 Cloudflare 域名解析记录**？请看这个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/40) 获取手动教程或 Windows/Linux 脚本！
+> 想要**自动更新 Cloudflare 域名解析记录**？请看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/40) 获取**手动教程**或 **Windows/Linux 脚本**！
 
 ``` cmd
 C:\>CloudflareST.exe -h
@@ -189,12 +189,19 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 ```
 
 ****
+#### \# 自动更新域名解析记录
+
+如果你的域名托管在 Cloudflare，则可以通过 Cloudflare 官方提供的 API 来自动更新域名解析记录。  
+
+可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/40) 获取**手动教程**或 **Windows/Linux 自动更新脚本**！
+
+****
 ## 问题反馈
 
-如果你遇到什么问题，可以先去 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [Closed](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
-如果没找到类似问题，请新开个 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！（不用担心，我平时很闲的）  
+如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
+如果没找到类似问题，请新开个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！
 
-> _遇到问题请**大胆的告诉我**，描述越详细越好，毕竟如果遇到问题不说，那我怎么能去修复这些 BUG 呢？！_
+> _有问题请**大胆告诉我**，描述越详细越好（必要时可远程协助），如果不说那我怎么去完善功能或~~修复 BUG~~ 呢？！_
 
 ****
 ## 感谢项目
