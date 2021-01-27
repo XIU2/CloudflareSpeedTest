@@ -40,7 +40,7 @@ tar -xf CloudflareST_linux_amd64.tar
 # 进入解压后的目录（自行根据需求替换 文件名）
 cd CloudflareST_linux_amd64
 
-# 赋予只想权限
+# 赋予执行权限
 chmod +x CloudflareST
 
 # 运行
