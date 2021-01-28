@@ -97,8 +97,6 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 
 直接运行使用的是默认参数，如果想要测速结果更全面、更符合自己的要求，可以自定义参数。  
 
-> 想要**自动更新 Cloudflare 域名解析记录**？请看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/40) 获取**手动教程**或 **Windows/Linux 脚本**！
-
 ``` cmd
 C:\>CloudflareST.exe -h
 
@@ -217,6 +215,13 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
 "D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
 ```
+
+****
+#### \# 自动更新 Hosts
+
+考虑到很多人获得最快 Cloudflare CDN IP 后，需要替换 Hosts 文件中的 IP。
+
+可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/42) 获取 **Windows/Linux 自动更新 Hosts 脚本**！
 
 ****
 #### \# 自动更新域名解析记录
