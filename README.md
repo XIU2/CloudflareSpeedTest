@@ -6,7 +6,7 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/stargazers)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/network/members)
 
-国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好。  
+国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好（高延迟/高丢包/速度慢等）。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
 该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
@@ -60,7 +60,7 @@ chmod +x CloudflareST
 
 ### 结果示例
 
-测速完毕后，默认会显示**最快的 20 个 IP**，示例（我的白天测速结果）：  
+测速完毕后，默认会显示**最快的 20 个 IP**，示例（我联通白天测速结果）：  
 
 ```
 IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 (MB/s)
