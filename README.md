@@ -54,8 +54,6 @@ chmod +x CloudflareST
 
 ****
 
-> _**Mac 系统**遇到错误 `open ip.txt: no such file or directory` 的[解决方法](https://github.com/XIU2/CloudflareSpeedTest/issues/3#issuecomment-743767747)。_
-
 > _**注意：建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**差距很大...**_  
 
 ### 结果示例
