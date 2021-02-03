@@ -50,6 +50,8 @@ chmod +x CloudflareST
 ./CloudflareST
 ```
 
+> **注意**：如果是在**路由器**上运行（如 OpenWrt），请先**关闭路由器内的代理**，否则测速结果会不准确。
+
 </details>
 
 ****
