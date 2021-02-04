@@ -51,7 +51,6 @@ chmod +x CloudflareST
 ```
 
 > **注意**：如果是在**路由器**上运行（如 OpenWrt），请先**关闭路由器内的代理**，否则测速结果会不准确。
-
 </details>
 
 ****
@@ -214,6 +213,26 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
 "D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
+```
+****
+#### \# 单独测速 IP
+
+如果要单独**对一个或多个 IP 进行测速**，只需要把这些 IP 按如下格式写入到任意文本文件中，例如：`1.txt`
+
+```
+1.1.1.1/32
+2.2.2.2/32
+```
+
+然后运行 CloudflareST 时加上启动参数 `-f 1.txt` 即可。
+
+``` bash
+# 先进入 CloudflareST 所在目录，然后运行：
+# Windows（在 CMD 中运行）
+CloudflareST.exe -f 1.txt
+
+# Linux
+./CloudflareST -f 1.txt
 ```
 
 ****

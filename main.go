@@ -41,9 +41,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，如地址含有空格请加上引号；
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999.00 ms)
     -sl 5
-        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0 MB/s)
+        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
     -p 20
         显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
     -f ip.txt
@@ -170,7 +170,7 @@ func main() {
 			} else if timeLimit > 0 || speedLimit >= 0 {
 				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时变量改为总数量
 			}
-			fmt.Println("开始下载测速（延迟时间上限：" + fmt.Sprintf("%f", timeLimit) + " ms，下载速度下限：" + fmt.Sprintf("%f", speedLimit) + " MB/s）：")
+			fmt.Println("开始下载测速（延迟时间上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms，下载速度下限：" + fmt.Sprintf("%.2f", speedLimit) + " MB/s）：")
 			bar = pb.Simple.Start(downloadTestCount)
 			for i := 0; i < downloadTestCount_2; i++ {
 				_, speed := DownloadSpeedHandler(data[i].ip)
