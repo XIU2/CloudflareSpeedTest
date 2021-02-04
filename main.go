@@ -17,7 +17,8 @@ import (
 
 var version, ipFile, outputFile, versionNew string
 var disableDownload, ipv6Mode, allip bool
-var tcpPort, printResultNum, timeLimit, speedLimit, downloadSecond int
+var tcpPort, printResultNum, downloadSecond int
+var timeLimit, speedLimit float64
 
 func init() {
 	var printVersion bool
@@ -67,8 +68,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.IntVar(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
-	flag.IntVar(&timeLimit, "tl", 9999, "延迟时间上限")
-	flag.IntVar(&speedLimit, "sl", 0, "下载速度下限")
+	flag.Float64Var(&timeLimit, "tl", 9999, "延迟时间上限")
+	flag.Float64Var(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
 	flag.BoolVar(&ipv6Mode, "ipv6", false, "禁用下载测速")
@@ -169,18 +170,18 @@ func main() {
 			} else if timeLimit > 0 || speedLimit >= 0 {
 				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时变量改为总数量
 			}
-			fmt.Println("开始下载测速（延迟时间上限：" + strconv.Itoa(timeLimit) + " ms，下载速度下限：" + strconv.Itoa(speedLimit) + " MB/s）：")
+			fmt.Println("开始下载测速（延迟时间上限：" + fmt.Sprintf("%f", timeLimit) + " ms，下载速度下限：" + fmt.Sprintf("%f", speedLimit) + " MB/s）：")
 			bar = pb.Simple.Start(downloadTestCount)
 			for i := 0; i < downloadTestCount_2; i++ {
 				_, speed := DownloadSpeedHandler(data[i].ip)
 				data[i].downloadSpeed = speed
-				if int(data[i].pingTime) <= timeLimit && int(float64(speed)/1024/1024) >= speedLimit {
+				if float64(data[i].pingTime) <= timeLimit && float64(speed)/1024/1024 >= speedLimit {
 					data_2 = append(data_2, data[i]) // 延迟和速度均满足条件时，添加到新数组中
 					bar.Add(1)
 					if len(data_2) == downloadTestCount { // 满足条件的 IP =下载测速次数，则跳出循环
 						break
 					}
-				} else if int(data[i].pingTime) > timeLimit {
+				} else if float64(data[i].pingTime) > timeLimit {
 					break
 				}
 			}
