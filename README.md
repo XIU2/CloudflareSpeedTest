@@ -24,7 +24,7 @@
 2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
 
 <details>
-<summary>「 Linux 下载运行 」</summary>
+<summary><code><strong>「 点击查看 Linux 下载运行命令示例 」</strong></code></summary>
 
 ****
 
