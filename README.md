@@ -6,7 +6,7 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/stargazers)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=f38020)](https://github.com/XIU2/CloudflareSpeedTest/network/members)
 
-国外很多网站都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好（高延迟/高丢包/速度慢等）。  
+[国外很多网站](https://github.com/XIU2/CloudflareSpeedTest/discussions/62)都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好（高延迟/高丢包/速度慢等）。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
 该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
@@ -57,7 +57,8 @@ chmod +x CloudflareST
 
 ****
 
-> _**注意：建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**差距很大...**_  
+> [_**在 Android 手机上运行 CloudflareST 测速的简单教程 ...**_](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)  
+> _**建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**相差很大...**_  
 
 ### 结果示例
 
