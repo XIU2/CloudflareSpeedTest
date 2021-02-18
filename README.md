@@ -254,19 +254,20 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 ``` json
 1.1.1.1/32
 1.0.0.1/24
-
-// 子网掩码 /32 指的是这个 IP 本身，即 1.1.1.1
-// 子网掩码 /24 指的是这个 IP 最后一段，即 1.0.0.1~1.0.0.255
 ```
+
+> 子网掩码 `/32` 指的是这个 IP 本身，即 `1.1.1.1`。  
+> 子网掩码 `/24` 指的是这个 IP 最后一段，即 `1.0.0.1~1.0.0.255`。
+
 
 然后运行 CloudflareST 时加上启动参数 `-f 1.txt` 即可。
 
 ``` bash
 # 先进入 CloudflareST 所在目录，然后运行：
-# Windows（在 CMD 中运行）
+# Windows 系统（在 CMD 中运行）
 CloudflareST.exe -f 1.txt
 
-# Linux
+# Linux 系统
 ./CloudflareST -f 1.txt
 
 # 对于 IP 段 1.0.0.1/24 软件只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，需要加上 -allip 参数。
