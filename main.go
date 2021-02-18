@@ -41,7 +41,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，如地址含有空格请加上引号；
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，与下载速度下限搭配使用；(默认 9999.00 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，可单独使用也可搭配下载速度下限；(默认 9999.00 ms)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
     -p 20
@@ -68,7 +68,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
 	flag.IntVar(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
-	flag.Float64Var(&timeLimit, "tl", 9999, "延迟时间上限")
+	flag.Float64Var(&timeLimit, "tl", 9999, "平均延迟上限")
 	flag.Float64Var(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
@@ -136,14 +136,15 @@ func main() {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var data = make([]CloudflareIPData, 0)
-	var data_2 = make([]CloudflareIPData, 0)
+	var data2 = make([]CloudflareIPData, 0)
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
 
+	// 开始延迟测速
 	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
-	if ipv6Mode {
-		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "）：")
+	if ipv6Mode { // IPv6 模式判断
+		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms）：")
 	} else {
-		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "）：")
+		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms）：")
 	}
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
@@ -155,54 +156,61 @@ func main() {
 	wg.Wait()
 	bar.Finish()
 
-	sort.Sort(CloudflareIPDataSet(data)) // 排序
+	sort.Sort(CloudflareIPDataSet(data)) // 排序（按延迟，从低到高，不同丢包率会分开单独按延迟和丢包率排序）
 
-	// 下载测速
+	// 延迟测速完毕后，以 [平均延迟上限] 条件过滤结果
+	if timeLimit < 9999 && timeLimit > 0 {
+		for i := 0; i < len(data); i++ {
+			if float64(data[i].pingTime) <= timeLimit {
+				data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
+			} else {
+				break
+			}
+		}
+		data = data2
+		data2 = []CloudflareIPData{}
+	}
+
+	// 开始下载测速
 	if !disableDownload { // 如果禁用下载测速就跳过
-		if len(data) > 0 { // IP数组长度(IP数量) 大于 0 时继续
-			if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于 下载测速次数，则次数改为IP数
-				//fmt.Println("\n[信息] IP 数量小于下载测速次数（" + strconv.Itoa(downloadTestCount) + " < " + strconv.Itoa(len(data)) + "），下载测速次数改为IP数。\n")
+		if len(data) > 0 { // IP数组长度(IP数量) 大于 0 时才会继续下载测速
+			if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于下载测速数量（-dn），则次数修正为IP数
 				downloadTestCount = len(data)
 			}
-			var downloadTestCount_2 int // 临时的下载测速次数
-			if timeLimit == 9999 && speedLimit == 0 {
-				downloadTestCount_2 = downloadTestCount // 如果没有指定条件，则临时变量为下载测速次数
-			} else if timeLimit > 0 || speedLimit >= 0 {
-				downloadTestCount_2 = len(data) // 如果指定了任意一个条件，则临时变量改为总数量
+			var downloadTestCount2 int // 临时的下载测速次数，即实际的下载测速数量
+			if speedLimit > 0 {
+				downloadTestCount2 = len(data) // 如果指定了 [下载速度下限] 条件，则临时变量改为总数量（即一直测速下去，直到凑够下载测速数量 -dn）
+			} else {
+				downloadTestCount2 = downloadTestCount // 如果没有指定 [下载速度下限] 条件，则临时变量为下载测速数量（-dn）
 			}
-			fmt.Println("开始下载测速（延迟时间上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms，下载速度下限：" + fmt.Sprintf("%.2f", speedLimit) + " MB/s）：")
+			fmt.Println("开始下载测速（下载速度下限：" + fmt.Sprintf("%.2f", speedLimit) + " MB/s，下载测速数量：" + strconv.Itoa(downloadTestCount) + "，下载测速队列：" + strconv.Itoa(downloadTestCount2) + "）：")
 			bar = pb.Simple.Start(downloadTestCount)
-			for i := 0; i < downloadTestCount_2; i++ {
+			for i := 0; i < downloadTestCount2; i++ {
 				_, speed := DownloadSpeedHandler(data[i].ip)
 				data[i].downloadSpeed = speed
-				if float64(data[i].pingTime) <= timeLimit && float64(speed)/1024/1024 >= speedLimit {
-					data_2 = append(data_2, data[i]) // 延迟和速度均满足条件时，添加到新数组中
+				// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
+				if float64(speed)/1024/1024 >= speedLimit {
+					data2 = append(data2, data[i]) // 高于下载速度下限时，添加到新数组中
 					bar.Add(1)
-					if len(data_2) == downloadTestCount { // 满足条件的 IP =下载测速次数，则跳出循环
+					if len(data2) == downloadTestCount { // 凑够满足条件的 IP 时（下载测速数量 -dn），就跳出循环
 						break
 					}
-				} else if float64(data[i].pingTime) > timeLimit {
-					break
 				}
 			}
 			bar.Finish()
 		} else {
-			fmt.Println("\n[信息] IP数量为 0，跳过下载测速。")
+			fmt.Println("\n[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。")
 		}
 	}
 
-	if len(data_2) > 0 { // 如果该数组有内容，说明进行过指定条件的下载测速
-		sort.Sort(CloudflareIPDataSetD(data_2)) // 排序
-		if outputFile != "" {
-			ExportCsv(outputFile, data_2) // 输出结果到文件（指定延迟时间或下载速度的）
-		}
-		printResult(data_2) // 显示最快结果（指定延迟时间或下载速度的）
-	} else {
-		if outputFile != "" {
-			ExportCsv(outputFile, data) // 输出结果到文件
-		}
-		printResult(data) // 显示最快结果
+	if len(data2) > 0 { // 如果该数组有内容，说明指定了 [下载测速下限] 条件，且最少有 1 个满足条件的 IP
+		data = data2
 	}
+	sort.Sort(CloudflareIPDataSetD(data)) // 排序（按下载速度，从高到低）
+	if outputFile != "" {
+		ExportCsv(outputFile, data) // 输出结果到文件
+	}
+	printResult(data) // 显示最快结果
 }
 
 // 显示最快结果
@@ -212,7 +220,6 @@ func printResult(data []CloudflareIPData) {
 		dateString := convertToString(data) // 转为多维数组 [][]String
 		if len(dateString) > 0 {            // IP数组长度(IP数量) 大于 0 时继续
 			if len(dateString) < printResultNum { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
-				//fmt.Println("\n[信息] IP 数量小于显示结果数量（" + strconv.Itoa(printResultNum) + " < " + strconv.Itoa(len(dateString)) + "），显示结果数量改为IP数量。\n")
 				printResultNum = len(dateString)
 			}
 			if ipv6Mode { // IPv6 太长了，所以需要调整一下间隔
@@ -231,7 +238,7 @@ func printResult(data []CloudflareIPData) {
 				fmt.Println("\n发现新版本 [" + versionNew + "]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！")
 			}
 
-			if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出
+			if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
 				if outputFile != "" {
 					fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n按下 回车键 或 Ctrl+C 退出。", outputFile)
 				} else {
@@ -245,7 +252,7 @@ func printResult(data []CloudflareIPData) {
 				}
 			}
 		} else {
-			fmt.Println("\n[信息] IP数量为 0，跳过输出结果。")
+			fmt.Println("\n[信息] 完整测速结果 IP 数量为 0，跳过输出结果。")
 		}
 	} else {
 		fmt.Println("\n完整测速结果已写入 " + outputFile + " 文件，请使用记事本/表格软件查看。")
