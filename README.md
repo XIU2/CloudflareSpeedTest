@@ -187,7 +187,7 @@ CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 - \# 仅指定 **[平均延迟上限]** 条件
 
 ``` bash
-# 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：10 个
+# 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：10 个（可选）
 # 即找到平均延迟低于 200 ms 的 IP，然后再按延迟从低到高进行 10 次下载测速
 CloudflareST.exe -tl 200 -dn 10
 ```
@@ -209,7 +209,7 @@ CloudflareST.exe -tl 200 -dd
 - \# 仅指定 **[下载速度下限]** 条件
 
 ``` bash
-# 平均延迟上限：9999 ms，下载速度下限：5 MB/s，数量：10 个（ 可选）
+# 平均延迟上限：9999 ms，下载速度下限：5 MB/s，数量：10 个（可选）
 # 即需要找到 10 个平均延迟低于 9999 ms 且下载速度高于 5 MB/s 的 IP 才会停止测速
 CloudflareST.exe -sl 5 -dn 10
 ```
@@ -223,7 +223,7 @@ CloudflareST.exe -sl 5 -dn 10
 
 ``` bash
 # 平均延迟上限、下载速度下限均支持小数（如 -sl 0.5）
-# 平均延迟上限：200 ms，下载速度下限：5.6 MB/s，数量：10 个（ 可选）
+# 平均延迟上限：200 ms，下载速度下限：5.6 MB/s，数量：10 个（可选）
 # 即需要找到 10 个平均延迟低于 200 ms 且下载速度高于 5 .6MB/s 的 IP 才会停止测速
 CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 ```
