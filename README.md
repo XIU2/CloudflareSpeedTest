@@ -11,8 +11,6 @@
 
 该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
 
-> _本项目也**适用于其他 CDN**，但是需要自行寻找 **CDN IP 段及下载测速地址**（否则只能延迟测速）。_
-
 > _我另一个开源项目： **[一个 \[油猴脚本\] 轻松解决「Github」文件下载速度慢的问题！](https://github.com/XIU2/UserScript)**_   
 
 ****
@@ -272,6 +270,15 @@ CloudflareST.exe -f 1.txt
 
 # 对于 IP 段 1.0.0.1/24 软件只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，需要加上 -allip 参数。
 ```
+
+****
+#### \# 一劳永逸加速所有使用 Cloudflare CDN 的网站（不需要再一个个添加域名到 Hosts 了）
+
+我以前一直在说，我开发该软件项目的主要目的就是为了通过**改 Hosts 的方式来加速访问使用 Cloudflare CDN 的网站**。
+
+但就如 #8 所说，一个个添加域名到 Hosts 实在**太麻烦**了，于是我就找到了个**一劳永逸**的办法！
+
+可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/XIU2/CloudflareSpeedTest/discussions/71) ！
 
 ****
 #### \# 自动更新 Hosts
