@@ -64,6 +64,9 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		IPString := scanner.Text()
+		if !strings.Contains(IPString, "/") { // 如果不含有 / 则代表不是 IP 段，而是一个单独的 IP，因此需要加上 /32 子网掩码
+			IPString += "/32"
+		}
 		firstIP, IPRange, err := net.ParseCIDR(IPString)
 		//fmt.Println(firstIP)
 		//fmt.Println(IPRange)
@@ -71,9 +74,9 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 			log.Fatal(err)
 		}
 		if !ipv6Mode { // IPv4
-			minIP, maxIP := getCidrIPRange(scanner.Text())                 // 获取 IP 最后一段最小值和最大值
-			Mask, _ := strconv.Atoi(strings.Split(scanner.Text(), "/")[1]) // 获取子网掩码
-			MaxIPNum := getCidrHostNum(Mask)                               // 根据子网掩码获取主机数量
+			minIP, maxIP := getCidrIPRange(IPString)                 // 获取 IP 最后一段最小值和最大值
+			Mask, _ := strconv.Atoi(strings.Split(IPString, "/")[1]) // 获取子网掩码
+			MaxIPNum := getCidrHostNum(Mask)                         // 根据子网掩码获取主机数量
 			for IPRange.Contains(firstIP) {
 				if allip { // 如果是测速全部 IP
 					for i := int(minIP); i <= int(maxIP); i++ { // 遍历 IP 最后一段最小值到最大值
