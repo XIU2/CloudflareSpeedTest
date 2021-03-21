@@ -142,7 +142,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ### 使用示例
 
-Windows 是在 CMD 中运行，或者把相关参数添加到快捷方式目标中。  
+Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中。  
 
 > **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。  
@@ -161,16 +161,16 @@ CloudflareST.exe -f ipv6.txt -ipv6
 
 ``` bash
 # 指定 IPv4 数据文件，不显示结果直接退出，输出结果到文件（-p 值为 0）
-CloudflareST.exe -f ip.txt -p 0 -dd
+CloudflareST.exe -f 1.txt -p 0 -dd
 
 # 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条，-o 值为空格）
-CloudflareST.exe -f ip.txt -o " " -p 10 -dd
+CloudflareST.exe -f 2.txt -o " " -p 10 -dd
 
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
-CloudflareST.exe -f ip.txt -o result.csv -dd
+CloudflareST.exe -f 3.txt -o result.txt -dd
 
 # 指定 IPv4 数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如含空格请加上引号）
-CloudflareST.exe -f C:\abc\ip.txt -o C:\abc\result.csv -dd
+CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
 ****
 #### \# 自定义下载测速地址
@@ -182,7 +182,12 @@ CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 ****
 #### \# 自定义测速条件
 
-- \# 仅指定 **[平均延迟上限]** 条件
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+- 仅指定 **[平均延迟上限]** 条件
 
 ``` bash
 # 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：10 个（可选）
@@ -194,7 +199,7 @@ CloudflareST.exe -tl 200 -dn 10
 
 ****
 
-- \# 仅指定 **[平均延迟上限]** 条件，且**只延迟测速，不下载测速**
+- 仅指定 **[平均延迟上限]** 条件，且**只延迟测速，不下载测速**
 
 ``` bash
 # 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：不知道多少 个
@@ -204,7 +209,7 @@ CloudflareST.exe -tl 200 -dd
 
 ****
 
-- \# 仅指定 **[下载速度下限]** 条件
+- 仅指定 **[下载速度下限]** 条件
 
 ``` bash
 # 平均延迟上限：9999 ms，下载速度下限：5 MB/s，数量：10 个（可选）
@@ -217,7 +222,7 @@ CloudflareST.exe -sl 5 -dn 10
 
 ****
 
-- \# 同时指定 **[平均延迟上限] + [下载速度下限]** 条件
+- 同时指定 **[平均延迟上限] + [下载速度下限]** 条件
 
 ``` bash
 # 平均延迟上限、下载速度下限均支持小数（如 -sl 0.5）
@@ -233,8 +238,15 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 > 因为Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
 > 运行时可以加上 `-sl 0.01`（下载速度下限），过滤掉**回源 IP**（下载测速低于 0.01MB/s 的结果）。
 
+</details>
+
 ****
-#### \# Windows 快捷方式
+#### \# Windows 快捷方式如何使用参数
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
 
 ``` bash
 ## 右键快捷方式 - 目标
@@ -244,17 +256,26 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
 "D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
 ```
+
+</details>
+
 ****
-#### \# 单独测速 IP
+#### \# 单独对一个或多个 IP 测速
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
 
 如果要单独**对一个或多个 IP 进行测速**，只需要把这些 IP 按如下格式写入到任意文本文件中，例如：`1.txt`
 
 ``` json
-1.1.1.1/32
+1.1.1.1
+1.1.1.200
 1.0.0.1/24
 ```
 
-> 子网掩码 `/32` 指的是这个 IP 本身，即 `1.1.1.1`。  
+> 自从 v1.4.10 版本后，单个 IP 就不需要添加子网掩码 `/32` 了（`1.1.1.1`等同于 `1.1.1.1/32`）。  
 > 子网掩码 `/24` 指的是这个 IP 最后一段，即 `1.0.0.1~1.0.0.255`。
 
 
@@ -271,14 +292,16 @@ CloudflareST.exe -f 1.txt
 # 对于 IP 段 1.0.0.1/24 软件只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，需要加上 -allip 参数。
 ```
 
+</details>
+
 ****
 #### \# 一劳永逸加速所有使用 Cloudflare CDN 的网站（不需要再一个个添加域名到 Hosts 了）
 
 我以前说过，开发该软件项目的目的就是为了通过**改 Hosts 的方式来加速访问使用 Cloudflare CDN 的网站**。
 
-但就如 #8 所说，一个个添加域名到 Hosts 实在**太麻烦**了，于是我就找到了个**一劳永逸**的办法！
+但就如 [**#8**](https://github.com/XIU2/CloudflareSpeedTest/issues/8) 所说，一个个添加域名到 Hosts 实在**太麻烦**了，于是我就找到了个**一劳永逸**的办法！
 
-可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/XIU2/CloudflareSpeedTest/discussions/71) ！
+可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/XIU2/CloudflareSpeedTest/discussions/71) 
 
 ****
 #### \# 自动更新 Hosts
