@@ -11,7 +11,7 @@
 
 该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
 
-> _我另一个开源项目： **[一个 \[油猴脚本\] 轻松解决「Github」文件下载速度慢的问题！](https://github.com/XIU2/UserScript)**_   
+> _我另一个开源项目： **[一个 \[油猴脚本\] 轻松解决「Github」文件下载速度慢的问题！+ 其他原创油猴脚本~](https://github.com/XIU2/UserScript)**_   
 
 ****
 ## 快速使用
@@ -153,10 +153,10 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 #### \# IPv4/IPv6
 
 ``` bash
-# 指定 IPv4 数据文件（-f 默认值就是 ip.txt，所以该参数可以省略）
+# 测速 IPv4 时，需要指定 IPv4 数据文件（-f 默认值就是 ip.txt，所以该参数可以省略）
 CloudflareST.exe -f ip.txt
 
-# 指定 IPv6 数据文件( ipv6.txt )，需要加上 -ipv6 参数
+# 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt )，需要加上 -ipv6 参数
 CloudflareST.exe -f ipv6.txt -ipv6
 ```
 ****
@@ -313,13 +313,6 @@ CloudflareST.exe -f 1.txt
 考虑到很多人获得最快 Cloudflare CDN IP 后，需要替换 Hosts 文件中的 IP。
 
 可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/42) 获取 **Windows/Linux 自动更新 Hosts 脚本**！
-
-****
-#### \# 自动更新域名解析记录
-
-如果你的域名托管在 Cloudflare，则可以通过 Cloudflare 官方提供的 API 来自动更新域名解析记录。  
-
-可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/40) 获取**手动教程**或 **Windows/Linux 自动更新脚本**！
 
 ****
 ## 问题反馈
