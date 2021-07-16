@@ -9,7 +9,7 @@
 [国外很多网站](https://github.com/XIU2/CloudflareSpeedTest/discussions/62)都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好（高延迟/高丢包/速度慢等）。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
 
-该软件可以**测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！觉得好用请**点个⭐鼓励一下下~**  
+**「自选 IP/优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！好用的话**点个⭐鼓励一下下~**  
 
 > _我另一个开源项目： **[一个 \[油猴脚本\] 轻松解决「Github」文件下载速度慢的问题！+ 其他原创油猴脚本~](https://github.com/XIU2/UserScript)**_   
 
