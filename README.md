@@ -18,7 +18,7 @@
 
 ### 下载运行
 
-1. 下载编译好的可执行文件 [蓝奏云](https://pan.lanzoui.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
+1. 下载编译好的可执行文件 [蓝奏云](https://pan.lanzou.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
 2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
 
 <details>
