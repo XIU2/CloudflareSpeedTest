@@ -130,7 +130,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -f ip.txt
         IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt )
     -o result.csv
-        输出结果文件；如路径含有空格请加上引号；值为空格时不输出 [-o " "]；(默认 result.csv )
+        写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv )
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用 )
     -ipv6
@@ -166,8 +166,8 @@ CloudflareST.exe -f ipv6.txt -ipv6
 # 指定 IPv4 数据文件，不显示结果直接退出，输出结果到文件（-p 值为 0）
 CloudflareST.exe -f 1.txt -p 0 -dd
 
-# 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条，-o 值为空格）
-CloudflareST.exe -f 2.txt -o " " -p 10 -dd
+# 指定 IPv4 数据文件，不输出结果到文件，直接显示结果（-p 值为 10 条，-o 值为空但引号不能少）
+CloudflareST.exe -f 2.txt -o "" -p 10 -dd
 
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
 CloudflareST.exe -f 3.txt -o result.txt -dd
