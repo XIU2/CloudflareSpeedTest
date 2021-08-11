@@ -18,7 +18,7 @@ import (
 var version, ipFile, outputFile, versionNew string
 var disableDownload, ipv6Mode, allip bool
 var tcpPort, printResultNum, downloadSecond int
-var timeLimit, speedLimit float64
+var timeLimit, timeLimitLow, speedLimit float64
 
 func init() {
 	var printVersion bool
@@ -41,7 +41,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，如地址含有空格请加上引号；
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，可单独使用也可搭配下载速度下限；(默认 9999.00 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
+    -tll 40
+        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配，过滤被假蔷的 IP；(默认 0 ms)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
     -p 20
@@ -69,6 +71,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadSecond, "dt", 10, "下载测速时间")
 	flag.StringVar(&url, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
 	flag.Float64Var(&timeLimit, "tl", 9999, "平均延迟上限")
+	flag.Float64Var(&timeLimitLow, "tll", 0, "平均延迟下限")
 	flag.Float64Var(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
@@ -109,8 +112,11 @@ https://github.com/XIU2/CloudflareSpeedTest
 	if url == "" {
 		url = "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png"
 	}
-	if timeLimit <= 0 {
+	if timeLimit <= 0 || timeLimit > 9999 {
 		timeLimit = 9999
+	}
+	if timeLimitLow < 0 || timeLimitLow > 9999 {
+		timeLimitLow = 0
 	}
 	if speedLimit < 0 {
 		speedLimit = 0
@@ -142,9 +148,9 @@ func main() {
 	// 开始延迟测速
 	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
 	if ipv6Mode { // IPv6 模式判断
-		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms）：")
+		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms" + "，平均延迟下限：" + fmt.Sprintf("%.2f", timeLimitLow) + " ms）：")
 	} else {
-		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms）：")
+		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms" + "，平均延迟下限：" + fmt.Sprintf("%.2f", timeLimitLow) + " ms）：")
 	}
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
@@ -158,11 +164,15 @@ func main() {
 
 	sort.Sort(CloudflareIPDataSet(data)) // 排序（按延迟，从低到高，不同丢包率会分开单独按延迟和丢包率排序）
 
-	// 延迟测速完毕后，以 [平均延迟上限] 条件过滤结果
-	if timeLimit < 9999 && timeLimit > 0 {
+	// 延迟测速完毕后，以 [平均延迟上限] + [平均延迟下限] 条件过滤结果
+	if timeLimit != 9999 || timeLimitLow != 0 {
 		for i := 0; i < len(data); i++ {
-			if float64(data[i].pingTime) <= timeLimit {
-				data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
+			if float64(data[i].pingTime) <= timeLimit { // 平均延迟上限
+				if float64(data[i].pingTime) > timeLimitLow { // 平均延迟下限
+					data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
+				} else {
+					continue
+				}
 			} else {
 				break
 			}
