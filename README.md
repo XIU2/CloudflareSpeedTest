@@ -196,7 +196,7 @@ CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 - 指定 **[平均延迟下限]** 条件（用于过滤**被假蔷的 IP**，这类 IP 都被 TCP 劫持，因此延迟很低只有几十ms）
 
 ``` bash
-# 平均延迟下限：40 ms
+# 平均延迟下限：40 ms （一般除了移动直连香港外，几乎不存在低于 100ms 的，自行测试适合的下限延迟）
 # 平均延迟下限和其他的上下限参数一样，都可以单独使用、互相搭配使用！
 CloudflareST.exe -tll 40
 ```
