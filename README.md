@@ -193,7 +193,7 @@ CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 
 ****
 
-- 如果想要过滤被假蔷的 IP，可以指定 **[平均延迟下限]** 条件
+- 指定 **[平均延迟下限]** 条件（用于过滤**被假蔷的 IP**，这类 IP 都被 TCP 劫持，因此延迟很低只有几十ms）
 
 ``` bash
 # 平均延迟下限：40 ms
