@@ -122,9 +122,11 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，如地址含有空格请加上引号；
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，可单独使用也可搭配下载速度下限；(默认 9999.00 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
+    -tll 40
+        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配，过滤被假蔷的 IP；(默认 0 ms)
     -sl 5
-        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s )
+        下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
     -p 20
         显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20 )
     -f ip.txt
@@ -190,6 +192,14 @@ CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
 
 ****
+
+- 如果想要过滤被假蔷的 IP，可以指定 **[平均延迟下限]** 条件
+
+``` bash
+# 平均延迟下限：40 ms
+# 平均延迟下限和其他的上下限参数一样，都可以单独使用、互相搭配使用！
+CloudflareST.exe -tll 40
+```
 
 - 仅指定 **[平均延迟上限]** 条件
 
