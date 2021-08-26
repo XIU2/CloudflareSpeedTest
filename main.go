@@ -28,8 +28,8 @@ CloudflareSpeedTest ` + version + `
 https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
-    -n 500
-        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请适当调低；(默认 500 最多 1000)
+    -n 200
+        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000)
     -t 4
         延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -tp 443
@@ -64,7 +64,7 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 `
 
-	flag.IntVar(&pingRoutine, "n", 500, "测速线程数量")
+	flag.IntVar(&pingRoutine, "n", 200, "测速线程数量")
 	flag.IntVar(&pingTime, "t", 4, "延迟测速次数")
 	flag.IntVar(&tcpPort, "tp", 443, "延迟测速端口")
 	flag.IntVar(&downloadTestCount, "dn", 20, "下载测速数量")
@@ -95,7 +95,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 		os.Exit(0)
 	}
 	if pingRoutine <= 0 {
-		pingRoutine = 500
+		pingRoutine = 200
 	}
 	if pingTime <= 0 {
 		pingTime = 4
