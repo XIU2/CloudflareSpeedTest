@@ -18,7 +18,7 @@ type CloudflareIPData struct {
 	pingReceived  int
 	recvRate      float32
 	downloadSpeed float32
-	pingTime      float32
+	pingTime      time.Duration
 }
 
 func (cf *CloudflareIPData) getRecvRate() float32 {
@@ -32,7 +32,7 @@ func (cf *CloudflareIPData) getRecvRate() float32 {
 func ExportCsv(filePath string, data []CloudflareIPData) {
 	fp, err := os.Create(filePath)
 	if err != nil {
-		log.Fatalf("创建文件["+filePath+"]句柄失败,%v", err)
+		log.Fatalf("创建文件[%s]失败：%v", filePath, err)
 		return
 	}
 	defer fp.Close()
@@ -48,7 +48,7 @@ func (cf *CloudflareIPData) toString() []string {
 	result[1] = strconv.Itoa(cf.pingCount)
 	result[2] = strconv.Itoa(cf.pingReceived)
 	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 2, 32)
-	result[4] = strconv.FormatFloat(float64(cf.pingTime), 'f', 2, 32)
+	result[4] = cf.pingTime.String()
 	result[5] = strconv.FormatFloat(float64(cf.downloadSpeed)/1024/1024, 'f', 2, 32)
 	return result
 }
