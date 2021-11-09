@@ -1,2 +1,4 @@
 dist
 Releases
+*.exe
+*.csv

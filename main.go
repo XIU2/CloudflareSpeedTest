@@ -158,7 +158,7 @@ func main() {
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
-		control <- false
+		// control <- false
 		handleProgress := handleProgressGenerator(bar) // 多线程进度条
 		go tcpingGoroutine(&wg, &mu, ip, tcpPort, pingTime, &data, control, handleProgress)
 	}
@@ -253,7 +253,7 @@ func printResult(data []CloudflareIPData) {
 	} else {
 		fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", resHeader...)
 		for i := 0; i < printResultNum; i++ {
-			fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+			fmt.Printf("%-18s%-8s%-8s%-8s%-15s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 		}
 	}
 

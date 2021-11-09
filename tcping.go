@@ -66,6 +66,7 @@ func tcpingHandler(ip net.IPAddr, tcpPort, pingCount int, progressHandler func(e
 	}
 	progressHandler(AvailableIPFound)
 	for i := failTime; i < pingCount; i++ {
+		fmt.Println("failTime", failTime)
 		pingSuccess, pingTimeCurrent := tcping(ip, tcpPort)
 		progressHandler(NormalPing)
 		if pingSuccess {
@@ -78,6 +79,7 @@ func tcpingHandler(ip net.IPAddr, tcpPort, pingCount int, progressHandler func(e
 
 func tcpingGoroutine(wg *sync.WaitGroup, mutex *sync.Mutex, ip net.IPAddr, tcpPort int, pingCount int, csv *[]CloudflareIPData, control chan bool, progressHandler func(e progressEvent)) {
 	defer wg.Done()
+	// fmt.Println(ip.String())
 	success, pingRecv, pingTimeAvg, currentIP := tcpingHandler(ip, tcpPort, pingCount, progressHandler)
 	if success {
 		mutex.Lock()
@@ -89,7 +91,7 @@ func tcpingGoroutine(wg *sync.WaitGroup, mutex *sync.Mutex, ip net.IPAddr, tcpPo
 		*csv = append(*csv, cfdata)
 		mutex.Unlock()
 	}
-	<-control
+	// <-control
 }
 
 func GetDialContextByAddr(fakeSourceAddr string) func(ctx context.Context, network, address string) (net.Conn, error) {
