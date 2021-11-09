@@ -8,17 +8,18 @@ import (
 	"os"
 	"runtime"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 
 	"github.com/cheggaaa/pb/v3"
 )
 
-var version, ipFile, outputFile, versionNew string
-var disableDownload, ipv6Mode, allip bool
-var tcpPort, printResultNum, downloadSecond int
-var timeLimit, timeLimitLow, speedLimit float64
+var (
+	version, ipFile, outputFile, versionNew string
+	disableDownload, ipv6Mode, allip        bool
+	tcpPort, printResultNum, downloadSecond int
+	timeLimit, timeLimitLow, speedLimit     float64
+)
 
 func init() {
 	var printVersion bool
@@ -139,19 +140,21 @@ func main() {
 	ips := loadFirstIPOfRangeFromFile(ipFile) // 读入IP
 	pingCount := len(ips) * pingTime          // 计算进度条总数（IP*测试次数）
 	bar := pb.Simple.Start(pingCount)         // 进度条总数
-	var wg sync.WaitGroup
-	var mu sync.Mutex
-	var data = make([]CloudflareIPData, 0)
-	var data2 = make([]CloudflareIPData, 0)
+	var (
+		wg    sync.WaitGroup
+		mu    sync.Mutex
+		data  = make([]CloudflareIPData, 0)
+		data2 = make([]CloudflareIPData, 0)
+	)
 	downloadTestTime = time.Duration(downloadSecond) * time.Second
 
 	// 开始延迟测速
-	fmt.Println("# XIU2/CloudflareSpeedTest " + version + "\n")
+	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n", version)
+	ipVersion := "IPv4"
 	if ipv6Mode { // IPv6 模式判断
-		fmt.Println("开始延迟测速（模式：TCP IPv6，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms" + "，平均延迟下限：" + fmt.Sprintf("%.2f", timeLimitLow) + " ms）：")
-	} else {
-		fmt.Println("开始延迟测速（模式：TCP IPv4，端口：" + strconv.Itoa(tcpPort) + "，平均延迟上限：" + fmt.Sprintf("%.2f", timeLimit) + " ms" + "，平均延迟下限：" + fmt.Sprintf("%.2f", timeLimitLow) + " ms）：")
+		ipVersion = "IPv6"
 	}
+	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d ，平均延迟上限：%.2f ms，平均延迟下限：%.2f ms）：\n", ipVersion, tcpPort, timeLimit, timeLimitLow)
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
@@ -167,15 +170,13 @@ func main() {
 	// 延迟测速完毕后，以 [平均延迟上限] + [平均延迟下限] 条件过滤结果
 	if timeLimit != 9999 || timeLimitLow != 0 {
 		for i := 0; i < len(data); i++ {
-			if float64(data[i].pingTime) <= timeLimit { // 平均延迟上限
-				if float64(data[i].pingTime) > timeLimitLow { // 平均延迟下限
-					data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
-				} else {
-					continue
-				}
-			} else {
+			if float64(data[i].pingTime) > timeLimit { // 平均延迟上限
 				break
 			}
+			if float64(data[i].pingTime) <= timeLimitLow { // 平均延迟下限
+				continue
+			}
+			data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
 		}
 		data = data2
 		data2 = []CloudflareIPData{}
@@ -183,34 +184,7 @@ func main() {
 
 	// 开始下载测速
 	if !disableDownload { // 如果禁用下载测速就跳过
-		if len(data) > 0 { // IP数组长度(IP数量) 大于 0 时才会继续下载测速
-			if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于下载测速数量（-dn），则次数修正为IP数
-				downloadTestCount = len(data)
-			}
-			var downloadTestCount2 int // 临时的下载测速次数，即实际的下载测速数量
-			if speedLimit > 0 {
-				downloadTestCount2 = len(data) // 如果指定了 [下载速度下限] 条件，则临时变量改为总数量（即一直测速下去，直到凑够下载测速数量 -dn）
-			} else {
-				downloadTestCount2 = downloadTestCount // 如果没有指定 [下载速度下限] 条件，则临时变量为下载测速数量（-dn）
-			}
-			fmt.Println("开始下载测速（下载速度下限：" + fmt.Sprintf("%.2f", speedLimit) + " MB/s，下载测速数量：" + strconv.Itoa(downloadTestCount) + "，下载测速队列：" + strconv.Itoa(downloadTestCount2) + "）：")
-			bar = pb.Simple.Start(downloadTestCount)
-			for i := 0; i < downloadTestCount2; i++ {
-				_, speed := DownloadSpeedHandler(data[i].ip)
-				data[i].downloadSpeed = speed
-				// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
-				if float64(speed)/1024/1024 >= speedLimit {
-					data2 = append(data2, data[i]) // 高于下载速度下限时，添加到新数组中
-					bar.Add(1)
-					if len(data2) == downloadTestCount { // 凑够满足条件的 IP 时（下载测速数量 -dn），就跳出循环
-						break
-					}
-				}
-			}
-			bar.Finish()
-		} else {
-			fmt.Println("\n[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。")
-		}
+		testDownloadSpeed(data, data2, bar)
 	}
 
 	if len(data2) > 0 { // 如果该数组有内容，说明指定了 [下载测速下限] 条件，且最少有 1 个满足条件的 IP
@@ -223,49 +197,77 @@ func main() {
 	printResult(data) // 显示最快结果
 }
 
+func testDownloadSpeed(data, data2 []CloudflareIPData, bar *pb.ProgressBar) {
+	if len(data) <= 0 { // IP数组长度(IP数量) 大于 0 时才会继续下载测速
+		fmt.Println("\n[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。")
+		return
+	}
+	if len(data) < downloadTestCount { // 如果IP数组长度(IP数量) 小于下载测速数量（-dn），则次数修正为IP数
+		downloadTestCount = len(data)
+	}
+	// 临时的下载测速次数，即实际的下载测速数量
+	downloadTestCount2 := downloadTestCount
+	// 如果没有指定 [下载速度下限] 条件，则临时变量为下载测速数量（-dn）
+	if speedLimit > 0 {
+		// 如果指定了 [下载速度下限] 条件，则临时变量改为总数量（即一直测速下去，直到凑够下载测速数量 -dn）
+		downloadTestCount2 = len(data)
+	}
+	fmt.Printf("开始下载测速（下载速度下限：%.2f MB/s，下载测速数量：%d，下载测速队列：%d）：\n", speedLimit, downloadTestCount, downloadTestCount2)
+	bar = pb.Simple.Start(downloadTestCount)
+	for i := 0; i < downloadTestCount2; i++ {
+		_, speed := DownloadSpeedHandler(data[i].ip)
+		data[i].downloadSpeed = speed
+		// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
+		if float64(speed) >= speedLimit*1024*1024 {
+			data2 = append(data2, data[i]) // 高于下载速度下限时，添加到新数组中
+			bar.Add(1)
+			if len(data2) == downloadTestCount { // 凑够满足条件的 IP 时（下载测速数量 -dn），就跳出循环
+				break
+			}
+		}
+	}
+	bar.Finish()
+}
+
 // 显示最快结果
 func printResult(data []CloudflareIPData) {
 	sysType := runtime.GOOS
-	if printResultNum > 0 { // 如果禁止直接输出结果就跳过
-		dateString := convertToString(data) // 转为多维数组 [][]String
-		if len(dateString) > 0 {            // IP数组长度(IP数量) 大于 0 时继续
-			if len(dateString) < printResultNum { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
-				printResultNum = len(dateString)
-			}
-			if ipv6Mode { // IPv6 太长了，所以需要调整一下间隔
-				fmt.Printf("%-40s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
-				for i := 0; i < printResultNum; i++ {
-					fmt.Printf("%-42s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
-				}
-			} else {
-				fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
-				for i := 0; i < printResultNum; i++ {
-					fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
-				}
-			}
-
-			if versionNew != "" {
-				fmt.Println("\n*** 发现新版本 [" + versionNew + "]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***")
-			}
-
-			if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
-				if outputFile != "" {
-					fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n按下 回车键 或 Ctrl+C 退出。", outputFile)
-				} else {
-					fmt.Printf("\n按下 回车键 或 Ctrl+C 退出。")
-				}
-				var pause int
-				fmt.Scanln(&pause)
-			} else { // 其它系统直接退出
-				if outputFile != "" {
-					fmt.Println("\n完整测速结果已写入 " + outputFile + " 文件，请使用记事本/表格软件查看。")
-				}
-			}
-		} else {
-			fmt.Println("\n[信息] 完整测速结果 IP 数量为 0，跳过输出结果。")
+	if printResultNum <= 0 { // 如果禁止直接输出结果就跳过
+		fmt.Printf("完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", outputFile)
+		return
+	}
+	dateString := convertToString(data) // 转为多维数组 [][]String
+	if len(dateString) <= 0 {           // IP数组长度(IP数量) 大于 0 时继续
+		fmt.Println("\n[信息] 完整测速结果 IP 数量为 0，跳过输出结果。")
+		return
+	}
+	if len(dateString) < printResultNum { // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
+		printResultNum = len(dateString)
+	}
+	resHeader := []interface{}{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"}
+	if ipv6Mode { // IPv6 太长了，所以需要调整一下间隔
+		fmt.Printf("%-40s%-5s%-5s%-5s%-6s%-11s\n", resHeader...)
+		for i := 0; i < printResultNum; i++ {
+			fmt.Printf("%-42s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 		}
 	} else {
-		fmt.Println("\n完整测速结果已写入 " + outputFile + " 文件，请使用记事本/表格软件查看。")
+		fmt.Printf("%-16s%-5s%-5s%-5s%-6s%-11s\n", resHeader...)
+		for i := 0; i < printResultNum; i++ {
+			fmt.Printf("%-18s%-8s%-8s%-8s%-10s%-15s\n", ipPadding(dateString[i][0]), dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+		}
+	}
+
+	if versionNew != "" {
+		fmt.Printf("\n*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***\n", versionNew)
+	}
+
+	if outputFile != "" {
+		fmt.Printf("完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", outputFile)
+	}
+	if sysType == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
+		fmt.Printf("按下 回车键 或 Ctrl+C 退出。\n")
+		var pause int
+		fmt.Scanln(&pause)
 	}
 }
 
@@ -274,15 +276,17 @@ func checkUpdate() {
 	timeout := time.Duration(10 * time.Second)
 	client := http.Client{Timeout: timeout}
 	res, err := client.Get("https://api.xiuer.pw/ver/cloudflarespeedtest.txt")
-	if err == nil {
-		// 读取资源数据 body: []byte
-		body, err := ioutil.ReadAll(res.Body)
-		// 关闭资源流
-		res.Body.Close()
-		if err == nil {
-			if string(body) != version {
-				versionNew = string(body)
-			}
-		}
+	if err != nil {
+		return
+	}
+	// 读取资源数据 body: []byte
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	// 关闭资源流
+	defer res.Body.Close()
+	if string(body) != version {
+		versionNew = string(body)
 	}
 }

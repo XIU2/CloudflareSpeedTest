@@ -35,8 +35,7 @@ func getCidrIPRange(cidr string) (uint8, uint8) {
 	seg4MinIP, seg4MaxIP := getIPSeg4Range(ipSegs, maskLen)
 	//ipPrefix := ipSegs[0] + "." + ipSegs[1] + "." + ipSegs[2] + "."
 
-	return seg4MinIP,
-		seg4MaxIP
+	return seg4MinIP, seg4MaxIP
 }
 
 // 获取 IP 最后一段的区间
@@ -59,6 +58,7 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
 	firstIPs := make([]net.IPAddr, 0)
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
@@ -83,8 +83,8 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 			MaxIPNum := getCidrHostNum(Mask)                         // 根据子网掩码获取主机数量
 			for IPRange.Contains(firstIP) {
 				if allip { // 如果是测速全部 IP
-					for i := int(minIP); i <= int(maxIP); i++ { // 遍历 IP 最后一段最小值到最大值
-						firstIP[15] = uint8(i)
+					for i := minIP; i <= maxIP; i++ { // 遍历 IP 最后一段最小值到最大值
+						firstIP[15] = i
 						firstIPCopy := make([]byte, len(firstIP))
 						copy(firstIPCopy, firstIP)
 						firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})
@@ -103,60 +103,60 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 					}
 				}
 			}
-		} else { //IPv6
-			var tempIP uint8
-			for IPRange.Contains(firstIP) {
-				//fmt.Println(firstIP)
-				//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
-				if !strings.Contains(IPString, "/128") {
-					firstIP[15] = randipEndWith(255) // 随机 IP 的最后一段
-					firstIP[14] = randipEndWith(255) // 随机 IP 的最后一段
-				}
-				firstIPCopy := make([]byte, len(firstIP))
-				copy(firstIPCopy, firstIP)
-				firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})
-				tempIP = firstIP[13]
-				firstIP[13] += randipEndWith(255)
-				if firstIP[13] < tempIP {
-					tempIP = firstIP[12]
-					firstIP[12] += randipEndWith(255)
-					if firstIP[12] < tempIP {
-						tempIP = firstIP[11]
-						firstIP[11] += randipEndWith(255)
-						if firstIP[11] < tempIP {
-							tempIP = firstIP[10]
-							firstIP[10] += randipEndWith(255)
-							if firstIP[10] < tempIP {
-								tempIP = firstIP[9]
-								firstIP[9] += randipEndWith(255)
-								if firstIP[9] < tempIP {
-									tempIP = firstIP[8]
-									firstIP[8] += randipEndWith(255)
-									if firstIP[8] < tempIP {
-										tempIP = firstIP[7]
-										firstIP[7] += randipEndWith(255)
-										if firstIP[7] < tempIP {
-											tempIP = firstIP[6]
-											firstIP[6] += randipEndWith(255)
-											if firstIP[6] < tempIP {
-												tempIP = firstIP[5]
-												firstIP[5] += randipEndWith(255)
-												if firstIP[5] < tempIP {
-													tempIP = firstIP[4]
-													firstIP[4] += randipEndWith(255)
-													if firstIP[4] < tempIP {
-														tempIP = firstIP[3]
-														firstIP[3] += randipEndWith(255)
-														if firstIP[3] < tempIP {
-															tempIP = firstIP[2]
-															firstIP[2] += randipEndWith(255)
-															if firstIP[2] < tempIP {
-																tempIP = firstIP[1]
-																firstIP[1] += randipEndWith(255)
-																if firstIP[1] < tempIP {
-																	tempIP = firstIP[0]
-																	firstIP[0] += randipEndWith(255)
-																}
+		}
+		//IPv6
+		var tempIP uint8
+		for IPRange.Contains(firstIP) {
+			//fmt.Println(firstIP)
+			//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
+			if !strings.Contains(IPString, "/128") {
+				firstIP[15] = randipEndWith(255) // 随机 IP 的最后一段
+				firstIP[14] = randipEndWith(255) // 随机 IP 的最后一段
+			}
+			firstIPCopy := make([]byte, len(firstIP))
+			copy(firstIPCopy, firstIP)
+			firstIPs = append(firstIPs, net.IPAddr{IP: firstIPCopy})
+			tempIP = firstIP[13]
+			firstIP[13] += randipEndWith(255)
+			if firstIP[13] < tempIP {
+				tempIP = firstIP[12]
+				firstIP[12] += randipEndWith(255)
+				if firstIP[12] < tempIP {
+					tempIP = firstIP[11]
+					firstIP[11] += randipEndWith(255)
+					if firstIP[11] < tempIP {
+						tempIP = firstIP[10]
+						firstIP[10] += randipEndWith(255)
+						if firstIP[10] < tempIP {
+							tempIP = firstIP[9]
+							firstIP[9] += randipEndWith(255)
+							if firstIP[9] < tempIP {
+								tempIP = firstIP[8]
+								firstIP[8] += randipEndWith(255)
+								if firstIP[8] < tempIP {
+									tempIP = firstIP[7]
+									firstIP[7] += randipEndWith(255)
+									if firstIP[7] < tempIP {
+										tempIP = firstIP[6]
+										firstIP[6] += randipEndWith(255)
+										if firstIP[6] < tempIP {
+											tempIP = firstIP[5]
+											firstIP[5] += randipEndWith(255)
+											if firstIP[5] < tempIP {
+												tempIP = firstIP[4]
+												firstIP[4] += randipEndWith(255)
+												if firstIP[4] < tempIP {
+													tempIP = firstIP[3]
+													firstIP[3] += randipEndWith(255)
+													if firstIP[3] < tempIP {
+														tempIP = firstIP[2]
+														firstIP[2] += randipEndWith(255)
+														if firstIP[2] < tempIP {
+															tempIP = firstIP[1]
+															firstIP[1] += randipEndWith(255)
+															if firstIP[1] < tempIP {
+																tempIP = firstIP[0]
+																firstIP[0] += randipEndWith(255)
 															}
 														}
 													}
