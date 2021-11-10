@@ -11,6 +11,8 @@ import (
 	"sync"
 	"time"
 
+	"CloudflareSpeedTest/task"
+
 	"github.com/cheggaaa/pb/v3"
 )
 
@@ -76,11 +78,15 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.Float64Var(&speedLimit, "sl", 0, "下载速度下限")
 	flag.IntVar(&printResultNum, "p", 20, "显示结果数量")
 	flag.BoolVar(&disableDownload, "dd", false, "禁用下载测速")
-	flag.BoolVar(&ipv6Mode, "ipv6", false, "禁用下载测速")
+	flag.BoolVar(&ipv6Mode, "ipv6", false, "启用IPv6")
 	flag.BoolVar(&allip, "allip", false, "测速全部 IP")
 	flag.StringVar(&ipFile, "f", "ip.txt", "IP 数据文件")
 	flag.StringVar(&outputFile, "o", "result.csv", "输出结果文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
+
+	task.TCPPort = tcpPort
+	task.IPv6 = ipv6Mode
+	task.DefaultRoutine = pingRoutine
 
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
@@ -155,16 +161,20 @@ func main() {
 		ipVersion = "IPv6"
 	}
 	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d ，平均延迟上限：%.2f ms，平均延迟下限：%.2f ms）：\n", ipVersion, tcpPort, timeLimit, timeLimitLow)
+
+	// ping := task.NewPing(ips)
+	// ping.Run()
 	control := make(chan bool, pingRoutine)
 	for _, ip := range ips {
 		wg.Add(1)
-		// control <- false
+		control <- false
 		handleProgress := handleProgressGenerator(bar) // 多线程进度条
 		go tcpingGoroutine(&wg, &mu, ip, tcpPort, pingTime, &data, control, handleProgress)
 	}
 	wg.Wait()
 	bar.Finish()
-
+	// data := ping.Data()
+	// sort.Sort(utils.CloudflareIPDataSet(data))
 	sort.Sort(CloudflareIPDataSet(data)) // 排序（按延迟，从低到高，不同丢包率会分开单独按延迟和丢包率排序）
 
 	// 延迟测速完毕后，以 [平均延迟上限] + [平均延迟下限] 条件过滤结果

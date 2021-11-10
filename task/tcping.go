@@ -1,0 +1,135 @@
+package task
+
+import (
+	"fmt"
+	"net"
+	"sync"
+	"time"
+
+	"CloudflareSpeedTest/utils"
+)
+
+const (
+	tcpConnectTimeout = time.Second * 1
+	maxRoutine        = 1000
+)
+
+var (
+	DefaultRoutine     = 200
+	TCPPort        int = 443
+	PingTimes      int = 4
+)
+
+type Ping struct {
+	wg      *sync.WaitGroup
+	m       *sync.Mutex
+	ips     []net.IPAddr
+	csv     utils.PingDelaySet
+	control chan bool
+	bar     *utils.Bar
+}
+
+func NewPing(ips []net.IPAddr) *Ping {
+	return &Ping{
+		wg:      &sync.WaitGroup{},
+		m:       &sync.Mutex{},
+		ips:     ips,
+		csv:     make(utils.PingDelaySet, 0),
+		control: make(chan bool, DefaultRoutine),
+		bar:     utils.NewBar(len(ips) * PingTimes),
+	}
+}
+
+func (p *Ping) Run() utils.PingDelaySet {
+	for _, ip := range p.ips {
+		p.wg.Add(1)
+		p.control <- false
+		go p.start(ip)
+	}
+	p.wg.Wait()
+	p.bar.Done()
+	return p.csv
+}
+
+func (p *Ping) start(ip net.IPAddr) {
+	defer p.wg.Done()
+	p.tcpingHandler(ip)
+	<-p.control
+}
+
+//bool connectionSucceed float32 time
+func (p *Ping) tcping(ip net.IPAddr) (bool, time.Duration) {
+	startTime := time.Now()
+	fullAddress := fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+	//fmt.Println(ip.String())
+	if IPv6 { // IPv6 需要加上 []
+		fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
+	}
+	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)
+	if err != nil {
+		return false, 0
+	}
+	defer conn.Close()
+	duration := time.Since(startTime)
+	return true, duration
+}
+
+//pingReceived pingTotalTime
+func (p *Ping) checkConnection(ip net.IPAddr) (recv int, totalDelay time.Duration) {
+	for i := 0; i < PingTimes; i++ {
+		if ok, delay := p.tcping(ip); ok {
+			recv++
+			totalDelay += delay
+		}
+	}
+	return
+}
+
+func (p *Ping) appendIPData(data *utils.PingData) {
+	p.m.Lock()
+	defer p.m.Unlock()
+	p.csv = append(p.csv, utils.CloudflareIPData{
+		PingData: data,
+	})
+}
+
+//return Success packetRecv averagePingTime specificIPAddr
+func (p *Ping) tcpingHandler(ip net.IPAddr) {
+	ipCanConnect := false
+	pingRecv := 0
+	var delay time.Duration
+	for !ipCanConnect {
+		recv, totalDlay := p.checkConnection(ip)
+		if recv > 0 {
+			ipCanConnect = true
+			pingRecv = recv
+			delay = totalDlay
+		} else {
+			ip.IP[15]++
+			if ip.IP[15] == 0 {
+				break
+			}
+			break
+		}
+	}
+	p.bar.Grow(PingTimes)
+	if !ipCanConnect {
+		return
+	}
+	// for i := 0; i < PingTimes; i++ {
+	// 	pingSuccess, pingTimeCurrent := p.tcping(ip)
+	// 	progressHandler(utils.NormalPing)
+	// 	if pingSuccess {
+	// 		pingRecv++
+	// 		pingTime += pingTimeCurrent
+	// 	}
+	// }
+	data := &utils.PingData{
+		IP:       ip,
+		Sended:    PingTimes,
+		Received: pingRecv,
+		Delay:    delay / time.Duration(pingRecv),
+	}
+	p.appendIPData(data)
+	return
+}

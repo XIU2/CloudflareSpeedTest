@@ -11,11 +11,19 @@ const (
 )
 
 type Bar struct {
-	*pb.ProgressBar
+	pb *pb.ProgressBar
 }
 
 func NewBar(count int) *Bar {
 	return &Bar{pb.Simple.Start(count)}
+}
+
+func (b *Bar) Grow(num int) {
+	b.pb.Add(num)
+}
+
+func (b *Bar) Done() {
+	b.pb.Finish()
 }
 
 func handleProgressGenerator(pb *pb.ProgressBar) func(e ProgressEvent) {

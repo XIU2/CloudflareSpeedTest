@@ -91,7 +91,7 @@ func tcpingGoroutine(wg *sync.WaitGroup, mutex *sync.Mutex, ip net.IPAddr, tcpPo
 		*csv = append(*csv, cfdata)
 		mutex.Unlock()
 	}
-	// <-control
+	<-control
 }
 
 func GetDialContextByAddr(fakeSourceAddr string) func(ctx context.Context, network, address string) (net.Conn, error) {
