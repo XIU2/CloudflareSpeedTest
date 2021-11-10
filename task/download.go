@@ -67,7 +67,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (sppedSet utils.DownloadSpeedSe
 	fmt.Printf("开始下载测速（下载速度下限：%.2f MB/s，下载测速数量：%d，下载测速队列：%d）：\n", MinSpeed, TestCount, testNum)
 	bar := utils.NewBar(TestCount)
 	for i := 0; i < testNum; i++ {
-		speed := downloadSpeedHandler(&ipSet[i].IP)
+		speed := downloadSpeedHandler(ipSet[i].IP)
 		ipSet[i].DownloadSpeed = speed
 		// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
 		if speed >= MinSpeed*1024*1024 {

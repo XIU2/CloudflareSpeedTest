@@ -23,7 +23,7 @@ var (
 )
 
 type PingData struct {
-	IP       net.IPAddr
+	IP       *net.IPAddr
 	Sended   int
 	Received int
 	Delay    time.Duration

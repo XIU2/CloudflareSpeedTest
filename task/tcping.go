@@ -27,7 +27,7 @@ var (
 type Ping struct {
 	wg      *sync.WaitGroup
 	m       *sync.Mutex
-	ips     []net.IPAddr
+	ips     []*net.IPAddr
 	csv     utils.PingDelaySet
 	control chan bool
 	bar     *utils.Bar
@@ -45,7 +45,7 @@ func checkPingDefault() {
 	}
 }
 
-func NewPing(ips []net.IPAddr) *Ping {
+func NewPing(ips []*net.IPAddr) *Ping {
 	checkPingDefault()
 	return &Ping{
 		wg:      &sync.WaitGroup{},
@@ -69,14 +69,14 @@ func (p *Ping) Run() utils.PingDelaySet {
 	return p.csv
 }
 
-func (p *Ping) start(ip net.IPAddr) {
+func (p *Ping) start(ip *net.IPAddr) {
 	defer p.wg.Done()
 	p.tcpingHandler(ip)
 	<-p.control
 }
 
 //bool connectionSucceed float32 time
-func (p *Ping) tcping(ip net.IPAddr) (bool, time.Duration) {
+func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	startTime := time.Now()
 	fullAddress := fmt.Sprintf("%s:%d", ip.String(), TCPPort)
 	//fmt.Println(ip.String())
@@ -93,7 +93,7 @@ func (p *Ping) tcping(ip net.IPAddr) (bool, time.Duration) {
 }
 
 //pingReceived pingTotalTime
-func (p *Ping) checkConnection(ip net.IPAddr) (recv int, totalDelay time.Duration) {
+func (p *Ping) checkConnection(ip *net.IPAddr) (recv int, totalDelay time.Duration) {
 	for i := 0; i < PingTimes; i++ {
 		if ok, delay := p.tcping(ip); ok {
 			recv++
@@ -112,7 +112,7 @@ func (p *Ping) appendIPData(data *utils.PingData) {
 }
 
 //return Success packetRecv averagePingTime specificIPAddr
-func (p *Ping) tcpingHandler(ip net.IPAddr) {
+func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 	ipCanConnect := false
 	pingRecv := 0
 	var delay time.Duration

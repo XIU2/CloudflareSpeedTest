@@ -95,8 +95,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 func main() {
 	go checkUpdate()                          // 检查版本更新
-	initRandSeed()                            // 置随机数种子
-	ips := loadFirstIPOfRangeFromFile(task.IPFile) // 读入IP
+	ips := task.LoadIPRanges()
+	// ips := loadFirstIPOfRangeFromFile(task.IPFile) // 读入IP
 
 	// 开始延迟测速
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n", version)
@@ -123,48 +123,6 @@ func main() {
 		var pause int
 		fmt.Scanln(&pause)
 	}
-
-	// control := make(chan bool, pingRoutine)
-	// for _, ip := range ips {
-	// 	wg.Add(1)
-	// 	control <- false
-	// 	handleProgress := handleProgressGenerator(bar) // 多线程进度条
-	// 	go tcpingGoroutine(&wg, &mu, ip, tcpPort, pingTime, &data, control, handleProgress)
-	// }
-	// wg.Wait()
-	// bar.Finish()
-	// data := ping.Data()
-	// sort.Sort(utils.CloudflareIPDataSet(data))
-	// sort.Sort(CloudflareIPDataSet(data)) // 排序（按延迟，从低到高，不同丢包率会分开单独按延迟和丢包率排序）
-
-	// 延迟测速完毕后，以 [平均延迟上限] + [平均延迟下限] 条件过滤结果
-	// if timeLimit != 9999 || timeLimitLow != 0 {
-	// 	for i := 0; i < len(data); i++ {
-	// 		if float64(data[i].pingTime) > timeLimit { // 平均延迟上限
-	// 			break
-	// 		}
-	// 		if float64(data[i].pingTime) <= timeLimitLow { // 平均延迟下限
-	// 			continue
-	// 		}
-	// 		data2 = append(data2, data[i]) // 延迟满足条件时，添加到新数组中
-	// 	}
-	// 	data = data2
-	// 	data2 = []CloudflareIPData{}
-	// }
-
-	// 开始下载测速
-	// if !disableDownload { // 如果禁用下载测速就跳过
-	// 	testDownloadSpeed(data, data2, bar)
-	// }
-
-	// if len(data2) > 0 { // 如果该数组有内容，说明指定了 [下载测速下限] 条件，且最少有 1 个满足条件的 IP
-	// 	data = data2
-	// }
-	// sort.Sort(CloudflareIPDataSetD(data)) // 排序（按下载速度，从高到低）
-	// if outputFile != "" {
-	// 	ExportCsv(outputFile, data) // 输出结果到文件
-	// }
-	// printResult(data) // 显示最快结果
 }
 
 // 检查更新
