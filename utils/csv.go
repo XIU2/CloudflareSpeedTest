@@ -10,14 +10,15 @@ import (
 	"time"
 )
 
-const defaultOutput = "result.csv"
+const (
+	defaultOutput = "result.csv"
+	maxDelay      = 9999 * time.Millisecond
+	minDelay      = time.Duration(0)
+)
 
 var (
-	MaxDelay = 9999 * time.Millisecond
-	MinDelay = time.Duration(0)
-
-	InputMaxDelay = MaxDelay
-	InputMinDelay = MinDelay
+	InputMaxDelay = maxDelay
+	InputMinDelay = minDelay
 	Output        = defaultOutput
 	PrintNum      = 20
 )
@@ -81,14 +82,14 @@ func convertToString(data []CloudflareIPData) [][]string {
 type PingDelaySet []CloudflareIPData
 
 func (s PingDelaySet) FilterDelay() (data PingDelaySet) {
-	if InputMaxDelay >= MaxDelay || InputMinDelay <= MinDelay {
+	if InputMaxDelay >= maxDelay || InputMinDelay <= minDelay {
 		return s
 	}
 	for _, v := range s {
-		if v.Delay > MaxDelay { // 平均延迟上限
+		if v.Delay > maxDelay { // 平均延迟上限
 			break
 		}
-		if v.Delay <= MinDelay { // 平均延迟下限
+		if v.Delay <= minDelay { // 平均延迟下限
 			continue
 		}
 		data = append(data, v) // 延迟满足条件时，添加到新数组中

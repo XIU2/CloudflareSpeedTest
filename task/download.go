@@ -18,8 +18,8 @@ const (
 	bufferSize                     = 1024
 	defaultURL                     = "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png"
 	defaultTimeout                 = 10 * time.Second
-	defaultDisableDownlaod         = false
-	defaultTestNum                 = 20
+	defaultDisableDownload         = false
+	defaultTestNum                 = 10
 	defaultMinSpeed        float64 = 0.0
 )
 
@@ -29,7 +29,7 @@ var (
 	// download timeout
 	Timeout = defaultTimeout
 	// disable download
-	Disable = defaultDisableDownlaod
+	Disable = defaultDisableDownload
 
 	TestCount = defaultTestNum
 	MinSpeed  = defaultMinSpeed

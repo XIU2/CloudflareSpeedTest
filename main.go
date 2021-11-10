@@ -67,7 +67,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.DurationVar(&utils.InputMaxDelay, "tl", 9999*time.Millisecond, "平均延迟上限")
 	flag.DurationVar(&utils.InputMinDelay, "tll", time.Duration(0), "平均延迟下限")
 	flag.DurationVar(&task.Timeout, "dt", 10*time.Second, "下载测速时间")
-	flag.IntVar(&task.TestCount, "dn", 20, "下载测速数量")
+	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.IPv6, "ipv6", false, "启用IPv6")
@@ -94,9 +94,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	go checkUpdate()                          // 检查版本更新
-	ips := task.LoadIPRanges()
-	// ips := loadFirstIPOfRangeFromFile(task.IPFile) // 读入IP
+	go checkUpdate() // 检查版本更新
 
 	// 开始延迟测速
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n", version)
@@ -106,7 +104,7 @@ func main() {
 	}
 	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d ，平均延迟上限：%v，平均延迟下限：%v)\n", ipVersion, task.TCPPort, utils.InputMaxDelay, utils.InputMinDelay)
 
-	pingData := task.NewPing(ips).Run().FilterDelay()
+	pingData := task.NewPing().Run().FilterDelay()
 	speedData := task.TestDownloadSpeed(pingData)
 	utils.ExportCsv(speedData)
 	speedData.Print(task.IPv6)

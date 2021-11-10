@@ -45,8 +45,9 @@ func checkPingDefault() {
 	}
 }
 
-func NewPing(ips []*net.IPAddr) *Ping {
+func NewPing() *Ping {
 	checkPingDefault()
+	ips := loadIPRanges()
 	return &Ping{
 		wg:      &sync.WaitGroup{},
 		m:       &sync.Mutex{},
