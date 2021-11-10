@@ -3,6 +3,7 @@ package task
 import (
 	"fmt"
 	"net"
+	"sort"
 	"sync"
 	"time"
 
@@ -12,12 +13,15 @@ import (
 const (
 	tcpConnectTimeout = time.Second * 1
 	maxRoutine        = 1000
+	defaultRoutines   = 200
+	defaultPort       = 443
+	defaultPingTimes  = 4
 )
 
 var (
-	DefaultRoutine     = 200
-	TCPPort        int = 443
-	PingTimes      int = 4
+	Routines      = defaultRoutines
+	TCPPort   int = defaultPort
+	PingTimes int = defaultPingTimes
 )
 
 type Ping struct {
@@ -29,14 +33,27 @@ type Ping struct {
 	bar     *utils.Bar
 }
 
+func checkPingDefault() {
+	if Routines <= 0 {
+		Routines = defaultRoutines
+	}
+	if TCPPort <= 0 || TCPPort >= 65535 {
+		TCPPort = defaultPort
+	}
+	if PingTimes <= 0 {
+		PingTimes = defaultPingTimes
+	}
+}
+
 func NewPing(ips []net.IPAddr) *Ping {
+	checkPingDefault()
 	return &Ping{
 		wg:      &sync.WaitGroup{},
 		m:       &sync.Mutex{},
 		ips:     ips,
 		csv:     make(utils.PingDelaySet, 0),
-		control: make(chan bool, DefaultRoutine),
-		bar:     utils.NewBar(len(ips) * PingTimes),
+		control: make(chan bool, Routines),
+		bar:     utils.NewBar(len(ips)),
 	}
 }
 
@@ -48,6 +65,7 @@ func (p *Ping) Run() utils.PingDelaySet {
 	}
 	p.wg.Wait()
 	p.bar.Done()
+	sort.Sort(p.csv)
 	return p.csv
 }
 
@@ -112,7 +130,7 @@ func (p *Ping) tcpingHandler(ip net.IPAddr) {
 			break
 		}
 	}
-	p.bar.Grow(PingTimes)
+	p.bar.Grow(1)
 	if !ipCanConnect {
 		return
 	}
@@ -126,7 +144,7 @@ func (p *Ping) tcpingHandler(ip net.IPAddr) {
 	// }
 	data := &utils.PingData{
 		IP:       ip,
-		Sended:    PingTimes,
+		Sended:   PingTimes,
 		Received: pingRecv,
 		Delay:    delay / time.Duration(pingRecv),
 	}

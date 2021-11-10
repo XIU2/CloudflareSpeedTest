@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CloudflareSpeedTest/task"
 	"bufio"
 	"log"
 	"net"
@@ -65,7 +66,7 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 	for scanner.Scan() {
 		IPString := scanner.Text()
 		if !strings.Contains(IPString, "/") { // 如果不含有 / 则代表不是 IP 段，而是一个单独的 IP，因此需要加上 /32 /128 子网掩码
-			if ipv6Mode {
+			if task.IPv6 {
 				IPString += "/128"
 			} else {
 				IPString += "/32"
@@ -77,12 +78,12 @@ func loadFirstIPOfRangeFromFile(ipFile string) []net.IPAddr {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if !ipv6Mode { // IPv4
+		if !task.IPv6 { // IPv4
 			minIP, maxIP := getCidrIPRange(IPString)                 // 获取 IP 最后一段最小值和最大值
 			Mask, _ := strconv.Atoi(strings.Split(IPString, "/")[1]) // 获取子网掩码
 			MaxIPNum := getCidrHostNum(Mask)                         // 根据子网掩码获取主机数量
 			for IPRange.Contains(firstIP) {
-				if allip { // 如果是测速全部 IP
+				if task.TestAll { // 如果是测速全部 IP
 					for i := minIP; i <= maxIP; i++ { // 遍历 IP 最后一段最小值到最大值
 						firstIP[15] = i
 						firstIPCopy := make([]byte, len(firstIP))

@@ -2,13 +2,15 @@ package utils
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"net"
 	"os"
-	"sort"
 	"strconv"
 	"time"
 )
+
+const defaultOutput = "result.csv"
 
 var (
 	MaxDelay = 9999 * time.Millisecond
@@ -16,6 +18,8 @@ var (
 
 	InputMaxDelay = MaxDelay
 	InputMinDelay = MinDelay
+	Output        = defaultOutput
+	PrintNum      = 20
 )
 
 type PingData struct {
@@ -28,7 +32,7 @@ type PingData struct {
 type CloudflareIPData struct {
 	*PingData
 	recvRate      float32
-	downloadSpeed float32
+	DownloadSpeed float64
 }
 
 func (cf *CloudflareIPData) getRecvRate() float32 {
@@ -46,14 +50,17 @@ func (cf *CloudflareIPData) toString() []string {
 	result[2] = strconv.Itoa(cf.Received)
 	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 2, 32)
 	result[4] = cf.Delay.String()
-	result[5] = strconv.FormatFloat(float64(cf.downloadSpeed)/1024/1024, 'f', 2, 32)
+	result[5] = strconv.FormatFloat(cf.DownloadSpeed/1024/1024, 'f', 2, 32)
 	return result
 }
 
-func ExportCsv(filePath string, data []CloudflareIPData) {
-	fp, err := os.Create(filePath)
+func ExportCsv(data []CloudflareIPData) {
+	if Output == "" {
+		Output = defaultOutput
+	}
+	fp, err := os.Create(Output)
 	if err != nil {
-		log.Fatalf("创建文件[%s]失败：%v", filePath, err)
+		log.Fatalf("创建文件[%s]失败：%v", Output, err)
 		return
 	}
 	defer fp.Close()
@@ -74,7 +81,6 @@ func convertToString(data []CloudflareIPData) [][]string {
 type PingDelaySet []CloudflareIPData
 
 func (s PingDelaySet) FilterDelay() (data PingDelaySet) {
-	sort.Sort(s)
 	if InputMaxDelay >= MaxDelay || InputMinDelay <= MinDelay {
 		return s
 	}
@@ -114,9 +120,30 @@ func (s DownloadSpeedSet) Len() int {
 }
 
 func (s DownloadSpeedSet) Less(i, j int) bool {
-	return s[i].downloadSpeed > s[j].downloadSpeed
+	return s[i].DownloadSpeed > s[j].DownloadSpeed
 }
 
 func (s DownloadSpeedSet) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
+}
+
+func (s DownloadSpeedSet) Print(ipv6 bool) {
+	if len(s) <= 0 { // IP数组长度(IP数量) 大于 0 时继续
+		fmt.Println("\n[信息] 完整测速结果 IP 数量为 0，跳过输出结果。")
+		return
+	}
+	dateString := convertToString(s) // 转为多维数组 [][]String
+	if len(dateString) < PrintNum {  // 如果IP数组长度(IP数量) 小于  打印次数，则次数改为IP数量
+		PrintNum = len(dateString)
+	}
+	headFormat := "%-16s%-5s%-5s%-5s%-6s%-11s\n"
+	dataFormat := "%-18s%-8s%-8s%-8s%-15s%-15s\n"
+	if ipv6 { // IPv6 太长了，所以需要调整一下间隔
+		headFormat = "%-40s%-5s%-5s%-5s%-6s%-11s\n"
+		dataFormat = "%-42s%-8s%-8s%-8s%-10s%-15s\n"
+	}
+	fmt.Printf(headFormat, "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
+	for i := 0; i < PrintNum; i++ {
+		fmt.Printf(dataFormat, dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
+	}
 }
