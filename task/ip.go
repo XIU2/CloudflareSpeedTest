@@ -2,6 +2,7 @@ package task
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"math/rand"
 	"net"
@@ -22,9 +23,176 @@ var (
 	IPFile = defaultInputFile
 )
 
-func randipEndWith(num int) uint8 {
+func randIPEndWith(num byte) byte {
 	rand.Seed(time.Now().UnixNano())
-	return uint8(rand.Intn(num))
+	return byte(rand.Intn(int(num)))
+}
+
+type IPRanges struct {
+	ips     []*net.IPAddr
+	mask    string
+	firstIP net.IP
+	ipNet   *net.IPNet
+}
+
+func newIPRanges() *IPRanges {
+	return &IPRanges{
+		ips: make([]*net.IPAddr, 0),
+	}
+}
+
+func (r *IPRanges) fixIP(ip string) string {
+	// 如果不含有 '/' 则代表不是 IP 段，而是一个单独的 IP，因此需要加上 /32 /128 子网掩码
+	if i := strings.IndexByte(ip, '/'); i < 0 {
+		r.mask = "/32"
+		if IPv6 {
+			r.mask = "/128"
+		}
+		ip += r.mask
+	} else {
+		r.mask = ip[i:]
+	}
+	return ip
+}
+
+func (r *IPRanges) parseCIDR(ip string) {
+	var err error
+	if r.firstIP, r.ipNet, err = net.ParseCIDR(r.fixIP(ip)); err != nil {
+		log.Fatalln("ParseCIDR err", err)
+	}
+}
+
+func (r *IPRanges) appendIPv4(d byte) {
+	r.appendIP(net.IPv4(r.firstIP[12], r.firstIP[13], r.firstIP[14], d))
+}
+
+func (r *IPRanges) appendIP(ip net.IP) {
+	r.ips = append(r.ips, &net.IPAddr{IP: ip})
+}
+
+// 返回第四段 ip 的最小值及可用数目
+func (r *IPRanges) getIPRange() (minIP, hosts byte) {
+	minIP = r.firstIP[15] & r.ipNet.Mask[3] // IP 第四段最小值
+
+	// 根据子网掩码获取主机数量
+	m := net.IPv4Mask(255, 255, 255, 255)
+	for i, v := range r.ipNet.Mask {
+		m[i] ^= v
+	}
+	total, _ := strconv.ParseInt(m.String(), 16, 32) // 总可用 IP 数
+	if total > 255 {                                 // 矫正 第四段 可用 IP 数
+		hosts = 255
+		return
+	}
+	if total == 0 {
+		hosts = 1
+		return
+	}
+	hosts = byte(total)
+	return
+}
+
+func (r *IPRanges) chooseIPv4() {
+	minIP, hosts := r.getIPRange()
+	fmt.Println(minIP, hosts)
+	for r.ipNet.Contains(r.firstIP) {
+		if TestAll { // 如果是测速全部 IP
+			for i := byte(0); i <= hosts; i++ { // 遍历 IP 最后一段最小值到最大值
+				r.appendIPv4(i + minIP)
+			}
+		} else { // 随机 IP 的最后一段 0.0.0.X
+			r.appendIPv4(minIP + randIPEndWith(hosts))
+		}
+		r.firstIP[14]++ // 0.0.(X+1).X
+		if r.firstIP[14] == 0 {
+			r.firstIP[13]++ // 0.(X+1).X.X
+			if r.firstIP[13] == 0 {
+				r.firstIP[12]++ // (X+1).X.X.X
+			}
+		}
+	}
+}
+
+func (r *IPRanges) chooseIPv6() {
+	var tempIP uint8
+	for r.ipNet.Contains(r.firstIP) {
+		//fmt.Println(firstIP)
+		//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
+		if r.mask == "/128" {
+			r.firstIP[15] = randIPEndWith(255) // 随机 IP 的最后一段
+			r.firstIP[14] = randIPEndWith(255) // 随机 IP 的最后一段
+		}
+		firstIPCopy := make([]byte, len(r.firstIP))
+		copy(firstIPCopy, r.firstIP)
+		r.appendIP(firstIPCopy)
+		tempIP = r.firstIP[13]
+		r.firstIP[13] += randIPEndWith(255)
+		if r.firstIP[13] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[12]
+		r.firstIP[12] += randIPEndWith(255)
+		if r.firstIP[12] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[11]
+		r.firstIP[11] += randIPEndWith(255)
+		if r.firstIP[11] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[10]
+		r.firstIP[10] += randIPEndWith(255)
+		if r.firstIP[10] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[9]
+		r.firstIP[9] += randIPEndWith(255)
+		if r.firstIP[9] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[8]
+		r.firstIP[8] += randIPEndWith(255)
+		if r.firstIP[8] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[7]
+		r.firstIP[7] += randIPEndWith(255)
+		if r.firstIP[7] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[6]
+		r.firstIP[6] += randIPEndWith(255)
+		if r.firstIP[6] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[5]
+		r.firstIP[5] += randIPEndWith(255)
+		if r.firstIP[5] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[4]
+		r.firstIP[4] += randIPEndWith(255)
+		if r.firstIP[4] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[3]
+		r.firstIP[3] += randIPEndWith(255)
+		if r.firstIP[3] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[2]
+		r.firstIP[2] += randIPEndWith(255)
+		if r.firstIP[2] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[1]
+		r.firstIP[1] += randIPEndWith(255)
+		if r.firstIP[1] >= tempIP {
+			continue
+		}
+		tempIP = r.firstIP[0]
+		r.firstIP[0] += randIPEndWith(255)
+	}
 }
 
 func loadIPRanges() []*net.IPAddr {
@@ -36,186 +204,15 @@ func loadIPRanges() []*net.IPAddr {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	firstIPs := make([]*net.IPAddr, 0)
+	ranges := newIPRanges()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		ipString := scanner.Text()
-		// 如果不含有 '/' 则代表不是 IP 段，而是一个单独的 IP，因此需要加上 /32 /128 子网掩码
-		if !strings.Contains(ipString, "/") {
-			mask := "/32"
-			if IPv6 {
-				mask = "/128"
-			}
-			ipString += mask
-		}
+		ranges.parseCIDR(scanner.Text())
 		if IPv6 {
-			//IPv6
-			firstIPs = append(firstIPs, loadIPv6(ipString)...)
+			ranges.chooseIPv6()
 			continue
 		}
-		// IPv4
-		firstIPs = append(firstIPs, loadIPv4(ipString)...)
+		ranges.chooseIPv4()
 	}
-	return firstIPs
-}
-
-func loadIPv4(ipString string) (firstIPs []*net.IPAddr) {
-	firstIP, IPRange, err := net.ParseCIDR(ipString)
-	// fmt.Println(firstIP)
-	// fmt.Println(IPRange)
-	if err != nil {
-		log.Fatal(err)
-	}
-	minIP, maxIP, hostNum := getCidrIPRange(ipString) // 获取 IP 最后一段最小值和最大值
-	for IPRange.Contains(firstIP) {
-		if TestAll { // 如果是测速全部 IP
-			for i := minIP; i <= maxIP; i++ { // 遍历 IP 最后一段最小值到最大值
-				firstIP[15] = i
-				firstIPCopy := make([]byte, len(firstIP))
-				copy(firstIPCopy, firstIP)
-				firstIPs = append(firstIPs, &net.IPAddr{IP: firstIPCopy})
-			}
-		} else { // 随机 IP 的最后一段 0.0.0.X
-			firstIP[15] = minIP + randipEndWith(hostNum)
-			firstIPCopy := make([]byte, len(firstIP))
-			copy(firstIPCopy, firstIP)
-			firstIPs = append(firstIPs, &net.IPAddr{IP: firstIPCopy})
-		}
-		firstIP[14]++ // 0.0.(X+1).X
-		if firstIP[14] == 0 {
-			firstIP[13]++ // 0.(X+1).X.X
-			if firstIP[13] == 0 {
-				firstIP[12]++ // (X+1).X.X.X
-			}
-		}
-	}
-	return
-}
-
-func loadIPv6(ipString string) (firstIPs []*net.IPAddr) {
-	firstIP, IPRange, err := net.ParseCIDR(ipString)
-	// fmt.Println(firstIP)
-	// fmt.Println(IPRange)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var tempIP uint8
-	for IPRange.Contains(firstIP) {
-		//fmt.Println(firstIP)
-		//fmt.Println(firstIP[0], firstIP[1], firstIP[2], firstIP[3], firstIP[4], firstIP[5], firstIP[6], firstIP[7], firstIP[8], firstIP[9], firstIP[10], firstIP[11], firstIP[12], firstIP[13], firstIP[14], firstIP[15])
-		if !strings.Contains(ipString, "/128") {
-			firstIP[15] = randipEndWith(255) // 随机 IP 的最后一段
-			firstIP[14] = randipEndWith(255) // 随机 IP 的最后一段
-		}
-		firstIPCopy := make([]byte, len(firstIP))
-		copy(firstIPCopy, firstIP)
-		firstIPs = append(firstIPs, &net.IPAddr{IP: firstIPCopy})
-		tempIP = firstIP[13]
-		firstIP[13] += randipEndWith(255)
-		if firstIP[13] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[12]
-		firstIP[12] += randipEndWith(255)
-		if firstIP[12] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[11]
-		firstIP[11] += randipEndWith(255)
-		if firstIP[11] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[10]
-		firstIP[10] += randipEndWith(255)
-		if firstIP[10] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[9]
-		firstIP[9] += randipEndWith(255)
-		if firstIP[9] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[8]
-		firstIP[8] += randipEndWith(255)
-		if firstIP[8] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[7]
-		firstIP[7] += randipEndWith(255)
-		if firstIP[7] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[6]
-		firstIP[6] += randipEndWith(255)
-		if firstIP[6] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[5]
-		firstIP[5] += randipEndWith(255)
-		if firstIP[5] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[4]
-		firstIP[4] += randipEndWith(255)
-		if firstIP[4] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[3]
-		firstIP[3] += randipEndWith(255)
-		if firstIP[3] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[2]
-		firstIP[2] += randipEndWith(255)
-		if firstIP[2] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[1]
-		firstIP[1] += randipEndWith(255)
-		if firstIP[1] >= tempIP {
-			continue
-		}
-		tempIP = firstIP[0]
-		firstIP[0] += randipEndWith(255)
-	}
-	return
-}
-
-// 根据子网掩码获取主机数量
-func getCIDRHostNum(mask uint8) (subnetNum int) {
-	if mask >= 32 {
-		return 1
-	}
-
-	if mask < 32 {
-		for i := int(32 - mask - 1); i >= 1; i-- {
-			subnetNum += 1 << i
-		}
-		subnetNum += 2
-	}
-	if subnetNum > 0xFF {
-		subnetNum = 0xFF
-	}
-	return
-}
-
-// 获取 IP 最后一段最小值和最大值、主机数量
-func getCidrIPRange(cidr string) (minIP, maxIP uint8, ipNum int) {
-	i := strings.IndexByte(cidr, '/')
-	addr := cidr[:i]
-	mask, _ := strconv.ParseUint(cidr[i+1:], 10, 8)
-	i = strings.LastIndexByte(addr, '.')
-	seg4, _ := strconv.ParseUint(addr[i+1:], 10, 8)
-	minIP, maxIP = getIPSegRange(uint8(seg4), uint8(32-mask))
-	ipNum = getCIDRHostNum(uint8(mask))
-	return
-}
-
-// 根据输入的基础IP地址和CIDR掩码计算一个IP片段的区间
-func getIPSegRange(userSegIP, offset uint8) (uint8, uint8) {
-	var ipSegMax uint8 = 0xFF
-	netSegIP := ipSegMax << offset
-	segMinIP := netSegIP & userSegIP
-	segMaxIP := userSegIP&(0xFF<<offset) | ^(0xFF << offset)
-	return segMinIP, segMaxIP
+	return ranges.ips
 }
