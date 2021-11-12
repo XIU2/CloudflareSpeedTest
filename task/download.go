@@ -65,14 +65,14 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (sppedSet utils.DownloadSpeedSe
 	}
 
 	fmt.Printf("开始下载测速（下载速度下限：%.2f MB/s，下载测速数量：%d，下载测速队列：%d）：\n", MinSpeed, TestCount, testNum)
-	bar := utils.NewBar(TestCount)
+	bar := utils.NewBar(testNum)
 	for i := 0; i < testNum; i++ {
-		speed := downloadSpeedHandler(ipSet[i].IP)
+		speed := downloadHandler(ipSet[i].IP)
 		ipSet[i].DownloadSpeed = speed
+		bar.Grow(1)
 		// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
 		if speed >= MinSpeed*1024*1024 {
 			sppedSet = append(sppedSet, ipSet[i]) // 高于下载速度下限时，添加到新数组中
-			bar.Grow(1)
 			if len(sppedSet) == TestCount { // 凑够满足条件的 IP 时（下载测速数量 -dn），就跳出循环
 				break
 			}
@@ -94,8 +94,8 @@ func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address s
 	}
 }
 
-//bool : can download,float32 downloadSpeed
-func downloadSpeedHandler(ip *net.IPAddr) float64 {
+// return download Speed
+func downloadHandler(ip *net.IPAddr) float64 {
 	client := &http.Client{
 		Transport: &http.Transport{DialContext: getDialContext(ip)},
 		Timeout:   Timeout,
@@ -136,13 +136,13 @@ func downloadSpeedHandler(ip *net.IPAddr) float64 {
 			break
 		}
 		bufferRead, err := response.Body.Read(buffer)
-		contentRead += int64(bufferRead)
 		if err != nil {
 			if err != io.EOF {
 				break
 			}
 			e.Add(float64(contentRead-lastContentRead) / (float64(nextTime.Sub(currentTime)) / float64(timeSlice)))
 		}
+		contentRead += int64(bufferRead)
 	}
 	return e.Value() / (Timeout.Seconds() / 120)
 
