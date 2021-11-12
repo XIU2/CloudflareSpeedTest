@@ -96,15 +96,11 @@ https://github.com/XIU2/CloudflareSpeedTest
 func main() {
 	go checkUpdate() // 检查版本更新
 
-	// 开始延迟测速
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n", version)
-	ipVersion := "IPv4"
-	if task.IPv6 { // IPv6 模式判断
-		ipVersion = "IPv6"
-	}
-	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d ，平均延迟上限：%v，平均延迟下限：%v)\n", ipVersion, task.TCPPort, utils.InputMaxDelay, utils.InputMinDelay)
 
+	// 开始延迟测速
 	pingData := task.NewPing().Run().FilterDelay()
+	// 开始下载测速
 	speedData := task.TestDownloadSpeed(pingData)
 	utils.ExportCsv(speedData)
 	speedData.Print(task.IPv6)
@@ -113,11 +109,8 @@ func main() {
 		fmt.Printf("\n*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***\n", versionNew)
 	}
 
-	if utils.Output != "" {
-		fmt.Printf("完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", utils.Output)
-	}
 	if runtime.GOOS == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
-		fmt.Printf("按下 回车键 或 Ctrl+C 退出。\n")
+		fmt.Println("\n按下 回车键 或 Ctrl+C 退出。")
 		var pause int
 		fmt.Scanln(&pause)
 	}

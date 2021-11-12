@@ -59,6 +59,9 @@ func ExportCsv(data []CloudflareIPData) {
 	if Output == "" {
 		Output = defaultOutput
 	}
+	if len(data) == 0 {
+		return
+	}
 	fp, err := os.Create(Output)
 	if err != nil {
 		log.Fatalf("创建文件[%s]失败：%v", Output, err)
@@ -69,6 +72,7 @@ func ExportCsv(data []CloudflareIPData) {
 	w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
 	w.WriteAll(convertToString(data))
 	w.Flush()
+	fmt.Printf("完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
 }
 
 func convertToString(data []CloudflareIPData) [][]string {

@@ -59,6 +59,14 @@ func NewPing() *Ping {
 }
 
 func (p *Ping) Run() utils.PingDelaySet {
+	if len(p.ips) == 0 {
+		return p.csv
+	}
+	ipVersion := "IPv4"
+	if IPv6 { // IPv6 模式判断
+		ipVersion = "IPv6"
+	}
+	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d ，平均延迟上限：%v，平均延迟下限：%v)\n", ipVersion, TCPPort, utils.InputMaxDelay, utils.InputMinDelay)
 	for _, ip := range p.ips {
 		p.wg.Add(1)
 		p.control <- false
