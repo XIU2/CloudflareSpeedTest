@@ -2,7 +2,6 @@ package task
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"math/rand"
 	"net"
@@ -94,7 +93,6 @@ func (r *IPRanges) getIPRange() (minIP, hosts byte) {
 
 func (r *IPRanges) chooseIPv4() {
 	minIP, hosts := r.getIPRange()
-	fmt.Println(minIP, hosts)
 	for r.ipNet.Contains(r.firstIP) {
 		if TestAll { // 如果是测速全部 IP
 			for i := byte(0); i <= hosts; i++ { // 遍历 IP 最后一段最小值到最大值
@@ -122,76 +120,16 @@ func (r *IPRanges) chooseIPv6() {
 			r.firstIP[15] = randIPEndWith(255) // 随机 IP 的最后一段
 			r.firstIP[14] = randIPEndWith(255) // 随机 IP 的最后一段
 		}
-		firstIPCopy := make([]byte, len(r.firstIP))
-		copy(firstIPCopy, r.firstIP)
-		r.appendIP(firstIPCopy)
-		tempIP = r.firstIP[13]
-		r.firstIP[13] += randIPEndWith(255)
-		if r.firstIP[13] >= tempIP {
-			continue
+		targetIP := make([]byte, len(r.firstIP))
+		copy(targetIP, r.firstIP)
+		r.appendIP(targetIP)
+		for i := 13; i >= 0; i-- {
+			tempIP = r.firstIP[i]
+			r.firstIP[i] += randIPEndWith(255)
+			if r.firstIP[i] >= tempIP {
+				break
+			}
 		}
-		tempIP = r.firstIP[12]
-		r.firstIP[12] += randIPEndWith(255)
-		if r.firstIP[12] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[11]
-		r.firstIP[11] += randIPEndWith(255)
-		if r.firstIP[11] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[10]
-		r.firstIP[10] += randIPEndWith(255)
-		if r.firstIP[10] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[9]
-		r.firstIP[9] += randIPEndWith(255)
-		if r.firstIP[9] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[8]
-		r.firstIP[8] += randIPEndWith(255)
-		if r.firstIP[8] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[7]
-		r.firstIP[7] += randIPEndWith(255)
-		if r.firstIP[7] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[6]
-		r.firstIP[6] += randIPEndWith(255)
-		if r.firstIP[6] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[5]
-		r.firstIP[5] += randIPEndWith(255)
-		if r.firstIP[5] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[4]
-		r.firstIP[4] += randIPEndWith(255)
-		if r.firstIP[4] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[3]
-		r.firstIP[3] += randIPEndWith(255)
-		if r.firstIP[3] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[2]
-		r.firstIP[2] += randIPEndWith(255)
-		if r.firstIP[2] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[1]
-		r.firstIP[1] += randIPEndWith(255)
-		if r.firstIP[1] >= tempIP {
-			continue
-		}
-		tempIP = r.firstIP[0]
-		r.firstIP[0] += randIPEndWith(255)
 	}
 }
 
