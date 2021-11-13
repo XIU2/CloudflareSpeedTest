@@ -20,7 +20,7 @@ var (
 	InputMaxDelay = maxDelay
 	InputMinDelay = minDelay
 	Output        = defaultOutput
-	PrintNum      = 20
+	PrintNum      = 10
 )
 
 type PingData struct {
@@ -50,7 +50,7 @@ func (cf *CloudflareIPData) toString() []string {
 	result[1] = strconv.Itoa(cf.Sended)
 	result[2] = strconv.Itoa(cf.Received)
 	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 2, 32)
-	result[4] = cf.Delay.String()
+	result[4] = strconv.FormatFloat(cf.Delay.Seconds()*1000, 'f', 2, 32)
 	result[5] = strconv.FormatFloat(cf.DownloadSpeed/1024/1024, 'f', 2, 32)
 	return result
 }
@@ -72,7 +72,6 @@ func ExportCsv(data []CloudflareIPData) {
 	w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
 	w.WriteAll(convertToString(data))
 	w.Flush()
-	fmt.Printf("完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
 }
 
 func convertToString(data []CloudflareIPData) [][]string {
@@ -142,7 +141,7 @@ func (s DownloadSpeedSet) Print(ipv6 bool) {
 		PrintNum = len(dateString)
 	}
 	headFormat := "%-16s%-5s%-5s%-5s%-6s%-11s\n"
-	dataFormat := "%-18s%-8s%-8s%-8s%-15s%-15s\n"
+	dataFormat := "%-18s%-8s%-8s%-8s%-10s%-15s\n"
 	if ipv6 { // IPv6 太长了，所以需要调整一下间隔
 		headFormat = "%-40s%-5s%-5s%-5s%-6s%-11s\n"
 		dataFormat = "%-42s%-8s%-8s%-8s%-10s%-15s\n"
@@ -151,4 +150,5 @@ func (s DownloadSpeedSet) Print(ipv6 bool) {
 	for i := 0; i < PrintNum; i++ {
 		fmt.Printf(dataFormat, dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 	}
+	fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
 }
