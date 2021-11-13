@@ -89,10 +89,10 @@ func (s PingDelaySet) FilterDelay() (data PingDelaySet) {
 		return s
 	}
 	for _, v := range s {
-		if v.Delay > maxDelay { // 平均延迟上限
+		if v.Delay > InputMaxDelay { // 平均延迟上限
 			break
 		}
-		if v.Delay <= minDelay { // 平均延迟下限
+		if v.Delay <= InputMinDelay { // 平均延迟下限
 			continue
 		}
 		data = append(data, v) // 延迟满足条件时，添加到新数组中
