@@ -31,8 +31,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -tp 443
         延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
-    -dn 20
-        下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 20)
+    -dn 10
+        下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 10)
     -dt 10
         下载测速时间；单个 IP 下载测速最长时间，单位：秒；(默认 10)
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
@@ -43,8 +43,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配，过滤被假蔷的 IP；(默认 0 ms)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
-    -p 20
-        显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 20)
+    -p 10
+        显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 10)
     -f ip.txt
         IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
     -o result.csv
@@ -60,13 +60,13 @@ https://github.com/XIU2/CloudflareSpeedTest
     -h
         打印帮助说明
 `
-
+	var minDelay, maxDelay, downloadTime int
 	flag.IntVar(&task.Routines, "n", 200, "测速线程数量")
 	flag.IntVar(&task.PingTimes, "t", 4, "延迟测速次数")
 	flag.IntVar(&task.TCPPort, "tp", 443, "延迟测速端口")
-	flag.DurationVar(&utils.InputMaxDelay, "tl", 9999*time.Millisecond, "平均延迟上限")
-	flag.DurationVar(&utils.InputMinDelay, "tll", time.Duration(0), "平均延迟下限")
-	flag.DurationVar(&task.Timeout, "dt", 10*time.Second, "下载测速时间")
+	flag.IntVar(&maxDelay, "tl", 9999, "平均延迟上限")
+	flag.IntVar(&minDelay, "tll", 0, "平均延迟下限")
+	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
@@ -74,12 +74,16 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP 数据文件")
 	flag.Float64Var(&task.MinSpeed, "sl", 0, "下载速度下限")
-	flag.IntVar(&utils.PrintNum, "p", 20, "显示结果数量")
+	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
-
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
+
+	utils.InputMaxDelay = time.Duration(maxDelay) * time.Millisecond
+	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
+	task.Timeout = time.Duration(downloadTime) * time.Second
+
 	if printVersion {
 		println(version)
 		fmt.Println("检查版本更新中...")
@@ -118,7 +122,7 @@ func main() {
 
 // 检查更新
 func checkUpdate() {
-	timeout := time.Duration(10 * time.Second)
+	timeout := 10 * time.Second
 	client := http.Client{Timeout: timeout}
 	res, err := client.Get("https://api.xiuer.pw/ver/cloudflarespeedtest.txt")
 	if err != nil {
