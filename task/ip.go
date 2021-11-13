@@ -95,7 +95,7 @@ func (r *IPRanges) chooseIPv4() {
 	minIP, hosts := r.getIPRange()
 	for r.ipNet.Contains(r.firstIP) {
 		if TestAll { // 如果是测速全部 IP
-			for i := byte(0); i <= hosts; i++ { // 遍历 IP 最后一段最小值到最大值
+			for i := byte(0); i < hosts; i++ { // 遍历 IP 最后一段最小值到最大值
 				r.appendIPv4(i + minIP)
 			}
 		} else { // 随机 IP 的最后一段 0.0.0.X
