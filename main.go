@@ -80,6 +80,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
 
+	if task.MinSpeed > 0 && time.Duration(maxDelay)*time.Millisecond == utils.InputMaxDelay {
+		fmt.Println("[警告] '-sl' 参数建议和 '-tl' 参数一起使用")
+	}
 	utils.InputMaxDelay = time.Duration(maxDelay) * time.Millisecond
 	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
 	task.Timeout = time.Duration(downloadTime) * time.Second
@@ -112,7 +115,10 @@ func main() {
 	if versionNew != "" {
 		fmt.Printf("\n*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***\n", versionNew)
 	}
+	endPrint()
+}
 
+func endPrint() {
 	if runtime.GOOS == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
 		fmt.Println("\n按下 回车键 或 Ctrl+C 退出。")
 		var pause int
