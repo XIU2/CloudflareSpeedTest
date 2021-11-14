@@ -120,43 +120,18 @@ func (p *Ping) appendIPData(data *utils.PingData) {
 	})
 }
 
-//return Success packetRecv averagePingTime specificIPAddr
+// handle tcping
 func (p *Ping) tcpingHandler(ip *net.IPAddr) {
-	ipCanConnect := false
-	pingRecv := 0
-	var delay time.Duration
-	for !ipCanConnect {
-		recv, totalDlay := p.checkConnection(ip)
-		if recv > 0 {
-			ipCanConnect = true
-			pingRecv = recv
-			delay = totalDlay
-		} else {
-			ip.IP[15]++
-			if ip.IP[15] == 0 {
-				break
-			}
-			break
-		}
-	}
+	recv, totalDlay := p.checkConnection(ip)
 	p.bar.Grow(1)
-	if !ipCanConnect {
+	if recv == 0 {
 		return
 	}
-	// for i := 0; i < PingTimes; i++ {
-	// 	pingSuccess, pingTimeCurrent := p.tcping(ip)
-	// 	progressHandler(utils.NormalPing)
-	// 	if pingSuccess {
-	// 		pingRecv++
-	// 		pingTime += pingTimeCurrent
-	// 	}
-	// }
 	data := &utils.PingData{
 		IP:       ip,
 		Sended:   PingTimes,
-		Received: pingRecv,
-		Delay:    delay / time.Duration(pingRecv),
+		Received: recv,
+		Delay:    totalDlay / time.Duration(recv),
 	}
 	p.appendIPData(data)
-	return
 }
