@@ -119,6 +119,9 @@ func main() {
 }
 
 func endPrint() {
+	if utils.NoPrintResult() {
+		return
+	}
 	if runtime.GOOS == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
 		fmt.Println("\n按下 回车键 或 Ctrl+C 退出。")
 		var pause int

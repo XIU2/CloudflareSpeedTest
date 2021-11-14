@@ -23,6 +23,10 @@ var (
 	PrintNum      = 10
 )
 
+func NoPrintResult() bool {
+	return PrintNum == 0
+}
+
 type PingData struct {
 	IP       *net.IPAddr
 	Sended   int
@@ -132,6 +136,9 @@ func (s DownloadSpeedSet) Swap(i, j int) {
 }
 
 func (s DownloadSpeedSet) Print(ipv6 bool) {
+	if NoPrintResult() {
+		return
+	}
 	if len(s) <= 0 { // IP数组长度(IP数量) 大于 0 时继续
 		fmt.Println("\n[信息] 完整测速结果 IP 数量为 0，跳过输出结果。")
 		return
