@@ -23,8 +23,14 @@ var (
 	PrintNum      = 10
 )
 
+// 是否打印测试结果
 func NoPrintResult() bool {
 	return PrintNum == 0
+}
+
+// 是否输出到文件
+func noOutput() bool {
+	return Output == "" || Output == " "
 }
 
 type PingData struct {
@@ -60,10 +66,7 @@ func (cf *CloudflareIPData) toString() []string {
 }
 
 func ExportCsv(data []CloudflareIPData) {
-	if Output == "" {
-		Output = defaultOutput
-	}
-	if len(data) == 0 {
+	if noOutput() || len(data) == 0 {
 		return
 	}
 	fp, err := os.Create(Output)
@@ -73,8 +76,8 @@ func ExportCsv(data []CloudflareIPData) {
 	}
 	defer fp.Close()
 	w := csv.NewWriter(fp) //创建一个新的写入文件流
-	w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
-	w.WriteAll(convertToString(data))
+	_ = w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
+	_ = w.WriteAll(convertToString(data))
 	w.Flush()
 }
 
@@ -157,5 +160,7 @@ func (s DownloadSpeedSet) Print(ipv6 bool) {
 	for i := 0; i < PrintNum; i++ {
 		fmt.Printf(dataFormat, dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 	}
-	fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
+	if !noOutput() {
+		fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
+	}
 }
