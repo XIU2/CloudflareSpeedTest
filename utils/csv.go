@@ -161,6 +161,6 @@ func (s DownloadSpeedSet) Print(ipv6 bool) {
 		fmt.Printf(dataFormat, dateString[i][0], dateString[i][1], dateString[i][2], dateString[i][3], dateString[i][4], dateString[i][5])
 	}
 	if !noOutput() {
-		fmt.Printf("\n完整测速结果已写入 %v 文件，请使用记事本/表格软件查看。\n", Output)
+		fmt.Printf("\n完整测速结果已写入 %v 文件，可使用记事本/表格软件查看。", Output)
 	}
 }

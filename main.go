@@ -40,7 +40,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -tl 200
         平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
     -tll 40
-        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配，过滤被假蔷的 IP；(默认 0 ms)
+        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配、过滤被假蔷的 IP；(默认 0 ms)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
     -p 10
@@ -81,7 +81,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.Parse()
 
 	if task.MinSpeed > 0 && time.Duration(maxDelay)*time.Millisecond == utils.InputMaxDelay {
-		fmt.Println("[警告] '-sl' 参数建议和 '-tl' 参数一起使用")
+		fmt.Println("[小提示] 在使用 [-sl] 参数时，建议搭配 [-tl] 参数，以避免因凑不够 [-dn] 数量而一直测速...")
 	}
 	utils.InputMaxDelay = time.Duration(maxDelay) * time.Millisecond
 	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
@@ -92,7 +92,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 		fmt.Println("检查版本更新中...")
 		checkUpdate()
 		if versionNew != "" {
-			fmt.Println("发现新版本 [" + versionNew + "]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！")
+			fmt.Printf("*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***", versionNew)
 		} else {
 			fmt.Println("当前为最新版本 [" + version + "]！")
 		}
@@ -103,7 +103,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 func main() {
 	go checkUpdate() // 检查版本更新
 
-	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n", version)
+	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
 	// 开始延迟测速
 	pingData := task.NewPing().Run().FilterDelay()
@@ -123,7 +123,7 @@ func endPrint() {
 		return
 	}
 	if runtime.GOOS == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
-		fmt.Println("\n按下 回车键 或 Ctrl+C 退出。")
+		fmt.Printf("\n按下 回车键 或 Ctrl+C 退出。")
 		var pause int
 		fmt.Scanln(&pause)
 	}
