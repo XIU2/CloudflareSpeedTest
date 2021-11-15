@@ -256,6 +256,41 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 </details>
 
 ****
+#### \# 单独对一个或多个 IP 测速
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+如果要单独**对一个或多个 IP 进行测速**，只需要把这些 IP 按如下格式写入到任意文本文件中，例如：`1.txt`
+
+```
+1.1.1.1
+1.1.1.200
+1.0.0.1/24
+```
+
+> 单个 IP 的话可以省略 `/32` 子网掩码了（即 `1.1.1.1`等同于 `1.1.1.1/32`）。  
+> 子网掩码 `/24` 指的是这个 IP 最后一段，即 `1.0.0.1~1.0.0.255`。
+
+
+然后运行 CloudflareST 时加上启动参数 `-f 1.txt` 即可。
+
+``` bash
+# 先进入 CloudflareST 所在目录，然后运行：
+# Windows 系统（在 CMD 中运行）
+CloudflareST.exe -f 1.txt
+
+# Linux 系统
+./CloudflareST -f 1.txt
+
+# 对于 1.0.0.1/24 这样的 IP 段只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，请加上 -allip 参数。
+```
+
+</details>
+
+****
 #### \# Windows 快捷方式如何使用参数
 
 <details>
@@ -270,41 +305,6 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
 "D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
-```
-
-</details>
-
-****
-#### \# 单独对一个或多个 IP 测速
-
-<details>
-<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
-
-****
-
-如果要单独**对一个或多个 IP 进行测速**，只需要把这些 IP 按如下格式写入到任意文本文件中，例如：`1.txt`
-
-``` json
-1.1.1.1
-1.1.1.200
-1.0.0.1/24
-```
-
-> 自从 v1.4.10 版本后，单个 IP 就不需要添加子网掩码 `/32` 了（`1.1.1.1`等同于 `1.1.1.1/32`）。  
-> 子网掩码 `/24` 指的是这个 IP 最后一段，即 `1.0.0.1~1.0.0.255`。
-
-
-然后运行 CloudflareST 时加上启动参数 `-f 1.txt` 即可。
-
-``` bash
-# 先进入 CloudflareST 所在目录，然后运行：
-# Windows 系统（在 CMD 中运行）
-CloudflareST.exe -f 1.txt
-
-# Linux 系统
-./CloudflareST -f 1.txt
-
-# 对于 IP 段 1.0.0.1/24 软件只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，需要加上 -allip 参数。
 ```
 
 </details>
