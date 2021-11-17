@@ -101,7 +101,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	go checkUpdate() // 检查版本更新
+	go checkUpdate()    // 检查版本更新
+	task.InitRandSeed() // 置随机数种子
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
@@ -123,7 +124,7 @@ func endPrint() {
 		return
 	}
 	if runtime.GOOS == "windows" { // 如果是 Windows 系统，则需要按下 回车键 或 Ctrl+C 退出（避免通过双击运行时，测速完毕后直接关闭）
-		fmt.Printf("\n按下 回车键 或 Ctrl+C 退出。")
+		fmt.Printf("按下 回车键 或 Ctrl+C 退出。")
 		var pause int
 		fmt.Scanln(&pause)
 	}
