@@ -175,7 +175,16 @@ CloudflareST.exe -f 2.txt -o "" -p 10 -dd
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
 CloudflareST.exe -f 3.txt -o result.txt -dd
 
+# 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录内的 abc 文件夹下，如含空格请加上引号）
+# Linux（CloudflareST 程序所在目录内的 abc 文件夹下）
+./CloudflareST -f abc/3.txt -o abc/result.txt -dd
+# Windows（注意是反斜杠）
+CloudflareST.exe -f abc\3.txt -o abc\result.txt -dd
+
 # 指定 IPv4 数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如含空格请加上引号）
+# Linux（/abc/ 目录下）
+./CloudflareST -f /abc/4.txt -o /abc/result.csv -dd
+# Windows（注意是反斜杠）
 CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
 ****
