@@ -30,7 +30,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -t 4
         延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -tp 443
-        延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
+        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443)
     -dn 10
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 10)
     -dt 10
@@ -63,7 +63,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	var minDelay, maxDelay, downloadTime int
 	flag.IntVar(&task.Routines, "n", 200, "测速线程数量")
 	flag.IntVar(&task.PingTimes, "t", 4, "延迟测速次数")
-	flag.IntVar(&task.TCPPort, "tp", 443, "延迟测速端口")
+	flag.IntVar(&task.TCPPort, "tp", 443, "指定测速端口")
 	flag.IntVar(&maxDelay, "tl", 9999, "平均延迟上限")
 	flag.IntVar(&minDelay, "tll", 0, "平均延迟下限")
 	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
@@ -134,7 +134,7 @@ func endPrint() {
 func checkUpdate() {
 	timeout := 10 * time.Second
 	client := http.Client{Timeout: timeout}
-	res, err := client.Get("https://api.xiuer.pw/ver/cloudflarespeedtest.txt")
+	res, err := client.Get("https://api.xiu2.xyz/ver/cloudflarespeedtest.txt")
 	if err != nil {
 		return
 	}

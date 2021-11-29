@@ -63,6 +63,9 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	if len(ipSet) < TestCount || MinSpeed > 0 { // 如果IP数组长度(IP数量) 小于下载测速数量（-dn），则次数修正为IP数
 		testNum = len(ipSet)
 	}
+	if testNum < TestCount {
+		TestCount = testNum
+	}
 
 	fmt.Printf("开始下载测速（下载速度下限：%.2f MB/s，下载测速数量：%d，下载测速队列：%d）：\n", MinSpeed, TestCount, testNum)
 	bar := utils.NewBar(TestCount)
@@ -88,9 +91,9 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 }
 
 func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address string) (net.Conn, error) {
-	fakeSourceAddr := ip.String() + ":443"
+	fakeSourceAddr := ip.String() + ":" + fmt.Sprintf("%d", TCPPort)
 	if IPv6 { // IPv6 需要加上 []
-		fakeSourceAddr = "[" + ip.String() + "]:443"
+		fakeSourceAddr = "[" + ip.String() + "]:" + fmt.Sprintf("%d", TCPPort)
 	}
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)

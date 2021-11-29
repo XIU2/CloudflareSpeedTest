@@ -115,7 +115,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -t 4
         延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4)
     -tp 443
-        延迟测速端口；延迟测速 TCP 协议的端口；(默认 443)
+        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443)
     -dn 10
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 10)
     -dt 10
@@ -175,7 +175,16 @@ CloudflareST.exe -f 2.txt -o "" -p 10 -dd
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
 CloudflareST.exe -f 3.txt -o result.txt -dd
 
+# 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录内的 abc 文件夹下，如含空格请加上引号）
+# Linux（CloudflareST 程序所在目录内的 abc 文件夹下）
+./CloudflareST -f abc/3.txt -o abc/result.txt -dd
+# Windows（注意是反斜杠）
+CloudflareST.exe -f abc\3.txt -o abc\result.txt -dd
+
 # 指定 IPv4 数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如含空格请加上引号）
+# Linux（/abc/ 目录下）
+./CloudflareST -f /abc/4.txt -o /abc/result.csv -dd
+# Windows（注意是反斜杠）
 CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
 ****
@@ -185,6 +194,11 @@ CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
 CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
 # 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
+# 因此也可以使用 Cloudflare CDN 官方的下载测速地址（500MB）：
+CloudflareST.exe -url https://speed.cloudflare.com/__down?bytes=500000000
+
+# 注意：如果下载测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
+CloudflareST.exe -tp 80 -url http://xxx/xxx
 ```
 ****
 #### \# 自定义测速条件
