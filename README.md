@@ -36,8 +36,8 @@ mkdir CloudflareST
 # 进入文件夹（后续更新，只需要从这里重复下面的下载、解压命令即可）
 cd CloudflareST
 
-# 下载 CloudflareST 压缩包（自行根据需求替换 URL 中版本号和文件名）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v1.5.0/CloudflareST_linux_amd64.tar.gz
+# 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.0.2/CloudflareST_linux_amd64.tar.gz
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
 tar -zxf CloudflareST_linux_amd64.tar.gz
@@ -45,8 +45,11 @@ tar -zxf CloudflareST_linux_amd64.tar.gz
 # 赋予执行权限
 chmod +x CloudflareST
 
-# 运行
+# 运行（不带参数）
 ./CloudflareST
+
+# 运行（带参数示例）
+./CloudflareST -dd -tll 90
 ```
 
 > 如果平**均延迟非常低**（如 0.xx），则说明 CloudflareST **测速时走了代理**，请先关闭代理软件后再测速。  
@@ -78,6 +81,7 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 ...
 
 # 如果平均延迟非常低（如 0.xx），则说明 CloudflareST 测速时走了代理，请先关闭代理软件后再测速。
+# 如果延迟很低 (几十ms)，且你也不是移动 (香港直连)，那么你就是遇到假墙 IP 了，记得加上 -tll 参数。
 # 如果在路由器上运行（如 OpenWrt），请先关闭路由器内的代理，否则测速结果会不准确且无法使用。
 
 # 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
