@@ -6,24 +6,24 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 
-[国外很多网站](https://github.com/XIU2/CloudflareSpeedTest/discussions/62)都在使用 Cloudflare CDN，但分配给中国访客的 IP 并不友好（高延迟/高丢包/速度慢等）。  
-虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，所以就有了这个软件。  
+[国外很多网站](https://github.com/XIU2/CloudflareSpeedTest/discussions/62)都在使用 Cloudflare CDN，但分配给中国内地访客的 IP 并不友好（延迟高、丢包多、速度慢）。  
+虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，于是就有了这个软件。  
 
-**「自选 IP/优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！好用的话**点个⭐鼓励一下叭~**  
+**「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！好用的话**点个`⭐`鼓励一下叭~**  
 
 > _分享我其他开源项目：[**TrackersList.com** - 全网热门 BT Tracker 列表！有效提高 BT 下载速度~](https://github.com/XIU2/TrackersListCollection) <img src="https://img.shields.io/github/stars/XIU2/TrackersListCollection.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_   
 > _[**UserScript** - 🐵 Github 高速下载、知乎增强、自动无缝翻页、护眼模式 等十几个**油猴脚本**！](https://github.com/XIU2/UserScript)<img src="https://img.shields.io/github/stars/XIU2/UserScript.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_   
 
 ****
-## 快速使用
+## \# 快速使用
 
 ### 下载运行
 
 1. 下载编译好的可执行文件 [蓝奏云](https://pan.lanzouo.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
-2. 双击运行 `CloudflareST.exe`文件（Windows），等待测速完成...  
+2. 双击运行 `CloudflareST.exe` 文件（Windows 系统），等待测速完成...  
 
 <details>
-<summary><code><strong>「 点击查看 Linux 下载运行命令示例 」</strong></code></summary>
+<summary><code><strong>「 点击查看 Linux 系统下的使用示例 」</strong></code></summary>
 
 ****
 
@@ -81,6 +81,7 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 # 如果在路由器上运行（如 OpenWrt），请先关闭路由器内的代理，否则测速结果会不准确且无法使用。
 
 # 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
+# 也可以使用 Cloudflare 官方 500MB 下载测速地址：https://speed.cloudflare.com/__down?bytes=500000000
 # 因为每次测速都是在每个 IP 段中随机 IP，所以每次的测速结果都不可能相同，这是正常的！
 
 # 软件是先 延迟测速并按从低到高排序后，再从 最低延迟的 IP 开始下载测速的，所以：
@@ -98,7 +99,7 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 > _大家可以按自己需求，对完整结果**进一步筛选处理**，或者去看一看进阶使用**指定过滤条件**！_
 
 ****
-## 进阶使用
+## \# 进阶使用
 
 直接运行使用的是默认参数，如果想要测速结果更全面、更符合自己的要求，可以自定义参数。  
 
@@ -175,15 +176,19 @@ CloudflareST.exe -f 2.txt -o "" -p 10 -dd
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录下，如含空格请加上引号）
 CloudflareST.exe -f 3.txt -o result.txt -dd
 
+
 # 指定 IPv4 数据文件 及 输出结果到文件（相对路径，即当前目录内的 abc 文件夹下，如含空格请加上引号）
 # Linux（CloudflareST 程序所在目录内的 abc 文件夹下）
 ./CloudflareST -f abc/3.txt -o abc/result.txt -dd
+
 # Windows（注意是反斜杠）
 CloudflareST.exe -f abc\3.txt -o abc\result.txt -dd
+
 
 # 指定 IPv4 数据文件 及 输出结果到文件（绝对路径，即 C:\abc\ 目录下，如含空格请加上引号）
 # Linux（/abc/ 目录下）
 ./CloudflareST -f /abc/4.txt -o /abc/result.csv -dd
+
 # Windows（注意是反斜杠）
 CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
