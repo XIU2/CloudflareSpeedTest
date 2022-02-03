@@ -36,7 +36,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -dt 10
         下载测速时间；单个 IP 下载测速最长时间，不能太短；(默认 10 秒)
     -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png  (默认 300MB)
-    -url https://speed.cloudflare.com/__down?bytes=500000000 (官方 500MB 且可自定义大小)
+    -url https://speed.cloudflare.com/__down?bytes=300000000 (官方 300MB 且可自定义大小)
         下载测速地址；用来下载测速的 Cloudflare CDN 文件地址，文件太小可能导致测速结果不准确；
     -tl 200
         平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
