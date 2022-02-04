@@ -159,11 +159,24 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ### 使用示例
 
-Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中。  
+Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中（适合固定参数经常运行的）。  
 
 > **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。  
 
+#### \# CMD 带参数运行 CloudflareST
+
+对命令行程序不熟悉的人，可能不知道该如何带参数运行，我就简单说一下。
+很多人打开 CMD 直接以**绝对路径**运行 CloudflareST 会发现报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
+
+1. 打开 CloudflareST 程序所在目录
+2. 空白处按下 <kbd>Shift + 鼠标右键</kbd>
+3. 选择 [在此处打开命令窗口] 来打开 CMD 窗口，此时默认就位于当前目录下
+4. 输入带参数的如：`CloudflareST.exe -tll 90`即可运行
+
+> 当然你也可以直接打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
+
+****
 #### \# IPv4/IPv6
 
 ``` bash
@@ -340,6 +353,8 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
 "D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
+
+# 注意！快捷方式 - 起始位置 不能是空的，否则就会因为绝对路径而找不到 ip.txt 文件
 ```
 
 </details>
