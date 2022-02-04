@@ -164,10 +164,13 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 > **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。  
 
+****
+
 #### \# CMD 带参数运行 CloudflareST
 
 对命令行程序不熟悉的人，可能不知道该如何带参数运行，我就简单说一下。
-很多人打开 CMD 直接以**绝对路径**运行 CloudflareST 会发现报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
+
+很多人打开 CMD 以**绝对路径**运行 CloudflareST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
 
 1. 打开 CloudflareST 程序所在目录
 2. 空白处按下 <kbd>Shift + 鼠标右键</kbd>
@@ -177,6 +180,7 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 > 当然你也可以直接打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
 
 ****
+
 #### \# IPv4/IPv6
 
 ``` bash
@@ -186,13 +190,16 @@ CloudflareST.exe -f ip.txt
 # 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt )，需要加上 -ipv6 参数
 CloudflareST.exe -f ipv6.txt -ipv6
 ```
+
 ****
+
 #### \# 文件相对/绝对路径
 
 <details>
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
 
 ****
+
 ``` bash
 # 指定 IPv4 数据文件，不显示结果直接退出，输出结果到文件（-p 值为 0）
 CloudflareST.exe -f 1.txt -p 0 -dd
@@ -222,6 +229,7 @@ CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 </details>
 
 ****
+
 #### \# 自定义下载测速地址
 
 ``` bash
@@ -234,7 +242,9 @@ CloudflareST.exe -url https://speed.cloudflare.com/__down?bytes=300000000
 # 注意：如果下载测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
 CloudflareST.exe -tp 80 -url http://xxx/xxx
 ```
+
 ****
+
 #### \# 自定义测速条件
 
 <details>
@@ -304,6 +314,7 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 </details>
 
 ****
+
 #### \# 单独对一个或多个 IP 测速
 
 <details>
@@ -339,6 +350,7 @@ CloudflareST.exe -f 1.txt
 </details>
 
 ****
+
 #### \# Windows 快捷方式如何使用参数
 
 <details>
@@ -360,6 +372,7 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 </details>
 
 ****
+
 #### \# 一劳永逸加速所有使用 Cloudflare CDN 的网站（不需要再一个个添加域名到 Hosts 了）
 
 我以前说过，开发该软件项目的目的就是为了通过**改 Hosts 的方式来加速访问使用 Cloudflare CDN 的网站**。
@@ -369,6 +382,7 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/XIU2/CloudflareSpeedTest/discussions/71) 
 
 ****
+
 #### \# 自动更新 Hosts
 
 考虑到很多人获得最快 Cloudflare CDN IP 后，需要替换 Hosts 文件中的 IP。
@@ -376,6 +390,7 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/42) 获取 **Windows/Linux 自动更新 Hosts 脚本**！
 
 ****
+
 ## 问题反馈
 
 如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
@@ -384,6 +399,7 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 > _有问题请**大胆告诉我**，描述越详细越好（必要时可远程协助），如果不说那我怎么去完善功能或~~修复 BUG~~ 呢？！_
 
 ****
+
 ## 感谢项目
 
 * https://github.com/Spedoske/CloudflareScanner
@@ -392,5 +408,6 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 > _本软件基于该项目制作，但**已添加大量功能及修复 BUG**，并根据大家的使用反馈积极添加、优化功能（闲）..._
 
 ****
+
 ## License
 The GPL-3.0 License.
