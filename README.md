@@ -173,11 +173,11 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 很多人打开 CMD 以**绝对路径**运行 CloudflareST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
 
 1. 打开 CloudflareST 程序所在目录
-2. 空白处按下 <kbd>Shift + 鼠标右键</kbd>
-3. 选择 [在此处打开命令窗口] 来打开 CMD 窗口，此时默认就位于当前目录下
-4. 输入带参数的如：`CloudflareST.exe -tll 90`即可运行
+2. 空白处按下 <kbd>Shift + 鼠标右键</kbd> 显示右键菜单
+3. 选择 **\[在此处打开命令窗口\]** 来打开 CMD 窗口，此时默认就位于当前目录下
+4. 输入带参数的命令，如：`CloudflareST.exe -tll 50 -tl 200`即可运行
 
-> 当然你也可以直接打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
+> 当然你也可以随便打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
 
 ****
 
