@@ -159,7 +159,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ### 使用示例
 
-Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中（适合固定参数经常运行的）。  
+Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中。  
 
 > **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。  
@@ -170,6 +170,11 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 
 对命令行程序不熟悉的人，可能不知道该如何带参数运行，我就简单说一下。
 
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
 很多人打开 CMD 以**绝对路径**运行 CloudflareST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
 
 1. 打开 CloudflareST 程序所在目录
@@ -178,6 +183,33 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 4. 输入带参数的命令，如：`CloudflareST.exe -tll 50 -tl 200`即可运行
 
 > 当然你也可以随便打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
+
+</details>
+
+****
+
+#### \# Windows 快捷方式带参数运行 CloudflareST
+
+如果不经常修改运行参数（比如平时都是直接双击运行）的人，建议使用快捷方式，更方便点。
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+右键 `CloudflareST.exe` 文件 - **\[创建快捷方式\]**，然后右键该快捷方式 - **\[属性\]**，修改其**目标**：
+
+``` bash
+# 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
+D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
+
+# 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
+"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
+
+# 注意！快捷方式 - 起始位置 不能是空的，否则就会因为绝对路径而找不到 ip.txt 文件
+```
+
+</details>
 
 ****
 
@@ -345,29 +377,6 @@ CloudflareST.exe -f 1.txt
 ./CloudflareST -f 1.txt
 
 # 对于 1.0.0.1/24 这样的 IP 段只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，请加上 -allip 参数。
-```
-
-</details>
-
-****
-
-#### \# Windows 快捷方式带参数运行 CloudflareST
-
-<details>
-<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
-
-****
-
-右键 `CloudflareST.exe` 文件 - **\[创建快捷方式\]**，然后右键该快捷方式 - **\[属性\]**，修改其**目标**：
-
-``` bash
-# 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
-D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
-
-# 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
-"D:\Program Files\CloudflareST\CloudflareST.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
-
-# 注意！快捷方式 - 起始位置 不能是空的，否则就会因为绝对路径而找不到 ip.txt 文件
 ```
 
 </details>
