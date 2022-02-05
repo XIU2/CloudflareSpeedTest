@@ -33,7 +33,7 @@
 
 以下命令仅为示例，版本号和文件名请前往 [**Releases**](https://github.com/XIU2/CloudflareSpeedTest/releases) 查看。
 
-``` bash
+``` yaml
 # 如果是第一次使用，则建议创建新文件夹（后续更新请跳过该步骤）
 mkdir CloudflareST
 
