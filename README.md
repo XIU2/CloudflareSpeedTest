@@ -351,15 +351,16 @@ CloudflareST.exe -f 1.txt
 
 ****
 
-#### \# Windows 快捷方式如何使用参数
+#### \# Windows 快捷方式带参数运行 CloudflareST
 
 <details>
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
 
 ****
 
+右键 `CloudflareST.exe` 文件 - **\[创建快捷方式\]**，然后右键该快捷方式 - **\[属性\]**，修改其**目标**：
+
 ``` bash
-## 右键快捷方式 - 目标
 # 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
 D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
