@@ -283,7 +283,7 @@ C:\abc\CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 
 ****
 
-因为目前默认下载测速地址流量太大被 Cloudflare 限速，因此建议大家**改用其他**下载测速地址（如下面的 Cloudflare 官方下载测速地址），更多请见： #168 
+因为目前默认下载测速地址流量太大被 Cloudflare 限速，因此建议大家**改用其他**下载测速地址（如下面的 Cloudflare 官方下载测速地址），更多请见： [#168](https://github.com/XIU2/CloudflareSpeedTest/issues/168) 
 
 ``` bash
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
