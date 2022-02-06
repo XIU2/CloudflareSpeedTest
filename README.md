@@ -215,13 +215,19 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 
 #### \# IPv4/IPv6
 
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
 ``` bash
 # 测速 IPv4 时，需要指定 IPv4 数据文件（-f 默认值就是 ip.txt，所以该参数可以省略）
 CloudflareST.exe -f ip.txt
 
-# 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt )，需要加上 -ipv6 参数
+# 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt ) 的同时再加上 -ipv6 参数
 CloudflareST.exe -f ipv6.txt -ipv6
 ```
+
+</details>
 
 ****
 
@@ -272,9 +278,17 @@ C:\abc\CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 
 #### \# 自定义下载测速地址
 
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+因为目前默认下载测速地址流量太大被 Cloudflare 限速，因此建议大家**改用其他**下载测速地址（如下面的 Cloudflare 官方下载测速地址），更多请见： #168 
+
 ``` bash
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
 CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
+
 # 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
 # 因此推荐使用 Cloudflare CDN 官方下载测速地址（300MB 且可自定义大小，即末尾数字）：
 CloudflareST.exe -url https://speed.cloudflare.com/__down?bytes=300000000
@@ -282,6 +296,8 @@ CloudflareST.exe -url https://speed.cloudflare.com/__down?bytes=300000000
 # 注意：如果下载测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
 CloudflareST.exe -tp 80 -url http://xxx/xxx
 ```
+
+</details>
 
 ****
 
