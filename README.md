@@ -6,7 +6,7 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 
-## 前排提醒：[因使用人数越来越多，Cloudflare 限速了默认下载测速地址，为避免影响使用，建议大家改用其他下载测速地址...](https://github.com/XIU2/CloudflareSpeedTest/issues/168)
+## 前排提醒：[近期下载测速不可用（0.00）的说明 及 解决方法...](https://github.com/XIU2/CloudflareSpeedTest/issues/168)
 
 国外很多网站都在使用 Cloudflare CDN，但分配给中国内地访客的 IP 并不友好（延迟高、丢包多、速度慢）。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，于是就有了这个软件。  
@@ -257,6 +257,14 @@ CloudflareST.exe -f abc\3.txt -o abc\result.txt -dd
 
 # Windows（注意是反斜杠）
 CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
+
+
+# 如果要以【绝对路径】运行 CloudflareST，那么 -f / -o 参数中的文件名也必须是【绝对路径】，否则会报错找不到文件！
+# Linux（/abc/ 目录下）
+/abc/CloudflareST -f /abc/4.txt -o /abc/result.csv -dd
+
+# Windows（注意是反斜杠）
+C:\abc\CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
 </details>
 
