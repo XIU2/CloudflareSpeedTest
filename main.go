@@ -68,7 +68,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&minDelay, "tll", 0, "平均延迟下限")
 	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
-	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png", "下载测速地址")
+	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "下载测速地址")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.IPv6, "ipv6", false, "启用IPv6")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
