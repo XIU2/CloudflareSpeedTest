@@ -89,8 +89,6 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 # 如果延迟很低 (几十ms)，且你也不是移动 (香港直连)，那么你就是遇到假墙 IP 了，记得加上 -tll 参数。
 # 如果在路由器上运行（如 OpenWrt），请先关闭路由器内的代理，否则测速结果会不准确且无法使用。
 
-# 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
-# 官方 300MB (可自定义大小) 下载测速地址：https://speed.cloudflare.com/__down?bytes=300000000
 # 因为每次测速都是在每个 IP 段中随机 IP，所以每次的测速结果都不可能相同，这是正常的！
 
 # 软件是先 延迟测速并按从低到高排序后，再从 最低延迟的 IP 开始下载测速的，所以：
@@ -286,7 +284,7 @@ C:\abc\CloudflareST.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 
 ``` bash
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
-CloudflareST.exe -url https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png
+CloudflareST.exe -url https://cf.xiu2.xyz/url
 
 # 因为默认下载测速地址的文件大小只有 300MB，如果你速度太快的话，测速结果可能会低于实际速度。
 # 因此推荐使用 Cloudflare CDN 官方下载测速地址（300MB 且可自定义大小，即末尾数字）：
