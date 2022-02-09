@@ -16,7 +16,7 @@ import (
 
 const (
 	bufferSize                     = 1024
-	defaultURL                     = "https://cf.xiu2.xyz/Github/CloudflareSpeedTest.png"
+	defaultURL                     = "https://cf.xiu2.xyz/url"
 	defaultTimeout                 = 10 * time.Second
 	defaultDisableDownload         = false
 	defaultTestNum                 = 10
@@ -105,8 +105,24 @@ func downloadHandler(ip *net.IPAddr) float64 {
 	client := &http.Client{
 		Transport: &http.Transport{DialContext: getDialContext(ip)},
 		Timeout:   Timeout,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if len(via) > 10 { // 限制最多重定向 10 次
+				return http.ErrUseLastResponse
+			}
+			if req.Header.Get("Referer") == defaultURL { // 当使用默认下载测速地址时，重定向不携带 Referer
+				req.Header.Del("Referer")
+			}
+			return nil
+		},
 	}
-	response, err := client.Get(URL)
+	req, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		return 0.0
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
+
+	response, err := client.Do(req)
 	if err != nil {
 		return 0.0
 	}
@@ -114,10 +130,10 @@ func downloadHandler(ip *net.IPAddr) float64 {
 	if response.StatusCode != 200 {
 		return 0.0
 	}
-	timeStart := time.Now()
-	timeEnd := timeStart.Add(Timeout)
+	timeStart := time.Now()           // 开始时间（当前）
+	timeEnd := timeStart.Add(Timeout) // 加上下载测速时间得到的结束时间
 
-	contentLength := response.ContentLength
+	contentLength := response.ContentLength // 文件大小
 	buffer := make([]byte, bufferSize)
 
 	var (
@@ -130,6 +146,7 @@ func downloadHandler(ip *net.IPAddr) float64 {
 	var nextTime = timeStart.Add(timeSlice * time.Duration(timeCounter))
 	e := ewma.NewMovingAverage()
 
+	// 循环计算，如果文件下载完了（两者相等），则退出循环（终止测速）
 	for contentLength != contentRead {
 		currentTime := time.Now()
 		if currentTime.After(nextTime) {
@@ -138,12 +155,13 @@ func downloadHandler(ip *net.IPAddr) float64 {
 			e.Add(float64(contentRead - lastContentRead))
 			lastContentRead = contentRead
 		}
+		// 如果超出下载测速时间，则退出循环（终止测速）
 		if currentTime.After(timeEnd) {
 			break
 		}
 		bufferRead, err := response.Body.Read(buffer)
 		if err != nil {
-			if err != io.EOF {
+			if err != io.EOF { // 文件下载完了，或因网络等问题导致链接中断，则退出循环（终止测速）
 				break
 			}
 			e.Add(float64(contentRead-lastContentRead) / (float64(nextTime.Sub(currentTime)) / float64(timeSlice)))
@@ -151,5 +169,4 @@ func downloadHandler(ip *net.IPAddr) float64 {
 		contentRead += int64(bufferRead)
 	}
 	return e.Value() / (Timeout.Seconds() / 120)
-
 }
