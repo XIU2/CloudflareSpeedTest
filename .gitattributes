@@ -1,2 +1,1 @@
-*.sh linguist-language=None
-*.bat linguist-language=None
+script/*.* linguist-language=None
