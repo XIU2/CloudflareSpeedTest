@@ -27,6 +27,9 @@ func InitRandSeed() {
 }
 
 func randIPEndWith(num byte) byte {
+	if num == 0 { // 对于 /32 这种单独的 IP
+		return byte(0)
+	}
 	return byte(rand.Intn(int(num)))
 }
 
@@ -84,10 +87,6 @@ func (r *IPRanges) getIPRange() (minIP, hosts byte) {
 	total, _ := strconv.ParseInt(m.String(), 16, 32) // 总可用 IP 数
 	if total > 255 {                                 // 矫正 第四段 可用 IP 数
 		hosts = 255
-		return
-	}
-	if total == 0 {
-		hosts = 1
 		return
 	}
 	hosts = byte(total)
