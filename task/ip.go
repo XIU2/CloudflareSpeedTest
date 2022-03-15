@@ -22,7 +22,7 @@ var (
 	IPFile = defaultInputFile
 )
 
-func InitRandSeed() {
+func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 

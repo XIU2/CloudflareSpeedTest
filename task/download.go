@@ -9,9 +9,8 @@ import (
 	"sort"
 	"time"
 
-	"CloudflareSpeedTest/utils"
-
 	"github.com/VividCortex/ewma"
+	"github.com/XIU2/CloudflareSpeedTest/utils"
 )
 
 const (

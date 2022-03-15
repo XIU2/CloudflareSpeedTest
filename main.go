@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"time"
 
-	"CloudflareSpeedTest/task"
-	"CloudflareSpeedTest/utils"
+	"github.com/XIU2/CloudflareSpeedTest/task"
+	"github.com/XIU2/CloudflareSpeedTest/utils"
 )
 
 var (
@@ -19,8 +19,7 @@ var (
 
 func init() {
 	var printVersion bool
-	var help = `
-CloudflareSpeedTest ` + version + `
+	var help = "\nCloudflareSpeedTest " + version + `
 测试 Cloudflare CDN 所有 IP 的延迟和速度，获取最快 IP (IPv4+IPv6)！
 https://github.com/XIU2/CloudflareSpeedTest
 
@@ -101,8 +100,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	go checkUpdate()    // 检查版本更新
-	task.InitRandSeed() // 置随机数种子
+	go checkUpdate() // 检查版本更新
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
