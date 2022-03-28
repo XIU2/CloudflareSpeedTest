@@ -430,7 +430,13 @@ CloudflareST.exe -f 1.txt
 如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
 如果没找到类似问题，请新开个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！
 
-> _有问题请**大胆告诉我**，描述越详细越好（必要时可远程协助），如果不说那我怎么去完善功能或~~修复 BUG~~ 呢？！_
+> _有问题请**大胆告诉我**，描述越详细越好（随时可远程协助），如果不说那我怎么去完善功能或~~修复 BUG~~ 呢？！_
+
+****
+
+### 赞赏支持
+
+![微信赞赏](https://cdn.dogimg.com/pic/2022/03/28/6241159b1f315.png)![支付宝赞赏](https://cdn.dogimg.com/pic/2022/03/28/6241159b19b2c.png)
 
 ****
 
