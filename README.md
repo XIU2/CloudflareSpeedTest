@@ -67,8 +67,7 @@ chmod +x CloudflareST
 
 ****
 
-> _在**手机**上独立运行 CloudflareST 测速的简单教程：**[Android](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)、[IOS](https://github.com/XIU2/CloudflareSpeedTest/issues/151)**_  
-> _**建议测速时避开晚上高峰期（20:00~24:00）**，否则测速结果会与其他时间**相差很大...**_  
+> _在**手机**上独立运行 CloudflareST 测速的简单教程：**[Android](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)、[IOS](https://github.com/XIU2/CloudflareSpeedTest/issues/151)**_
 
 ### 结果示例
 
@@ -122,7 +121,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 200
-        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000)
+        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000 )
     -t 4
         延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4 次)
     -tp 443
@@ -436,7 +435,7 @@ CloudflareST.exe -f 1.txt
 
 ## 赞赏支持
 
-![微信赞赏](https://fastly.jsdelivr.net/gh/XIU2/TrackersListCollection/img/zs-01.png)![支付宝赞赏](https://fastly.jsdelivr.net/gh/XIU2/TrackersListCollection/img/zs-02.png)
+![微信赞赏](https://cdn.staticaly.com/gh/XIU2/XIU2/master/img/zs-01.png)![支付宝赞赏](https://cdn.staticaly.com/gh/XIU2/XIU2/master/img/zs-02.png)
 
 ****
 
