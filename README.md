@@ -226,7 +226,7 @@ CloudflareST.exe -f ip.txt
 CloudflareST.exe -f ipv6.txt -ipv6
 ```
 
-> 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： #120
+> 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： [#120](https://github.com/XIU2/CloudflareSpeedTest/issues/120)  
 
 </details>
 
