@@ -67,7 +67,7 @@ chmod +x CloudflareST
 
 ****
 
-> _在**手机**上独立运行 CloudflareST 测速的简单教程：**[Android](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)、[IOS](https://github.com/XIU2/CloudflareSpeedTest/issues/151)**_
+> _在**手机**上独立运行 CloudflareST 测速的简单教程：**[Android](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)、[Android APP](https://github.com/xianshenglu/cloudflare-ip-tester-app)、[IOS](https://github.com/XIU2/CloudflareSpeedTest/issues/151)**_
 
 ### 结果示例
 
@@ -225,6 +225,8 @@ CloudflareST.exe -f ip.txt
 # 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt ) 的同时再加上 -ipv6 参数
 CloudflareST.exe -f ipv6.txt -ipv6
 ```
+
+> 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： #120
 
 </details>
 
