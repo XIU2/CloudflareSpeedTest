@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 const defaultInputFile = "ip.txt"
@@ -21,10 +20,6 @@ var (
 	// IPFile is the filename of IP Rangs
 	IPFile = defaultInputFile
 )
-
-func InitRandSeed() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 func randIPEndWith(num byte) byte {
 	if num == 0 { // 对于 /32 这种单独的 IP

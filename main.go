@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 	"runtime"
@@ -110,7 +111,7 @@ func main() {
 		go checkUpdate() // 检查版本更新
 	}
 
-	task.InitRandSeed() // 置随机数种子
+	rand.Seed(time.Now().UnixNano()) // 置随机数种子
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
