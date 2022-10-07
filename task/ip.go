@@ -93,7 +93,6 @@ func loadIPRanges() []*net.IPAddr {
 			for addr := prefix.Addr(); prefix.Contains(addr); addr = addr.Next() {
 				addrs = append(addrs, addr)
 			}
-			addrs = addrs[1 : len(addrs)-1]
 		}
 
 		// add them to the original "ips" array
