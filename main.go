@@ -15,7 +15,6 @@ import (
 
 var (
 	version, versionNew string
-	noUpdateCheck       bool
 )
 
 func init() {
@@ -56,8 +55,6 @@ https://github.com/XIU2/CloudflareSpeedTest
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
     -v
         打印程序版本 + 检查版本更新
-    --no-update
-        禁止检查更新
     -h
         打印帮助说明
 `
@@ -77,7 +74,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
-	flag.BoolVar(&noUpdateCheck, "no-update", false, "禁止检查更新")
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
 
@@ -102,11 +98,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-
-	if !noUpdateCheck {
-		go checkUpdate() // 检查版本更新
-	}
-
 	task.InitRandSeed() // 置随机数种子
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
