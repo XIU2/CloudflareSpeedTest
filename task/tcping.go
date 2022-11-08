@@ -62,11 +62,7 @@ func (p *Ping) Run() utils.PingDelaySet {
 	if len(p.ips) == 0 {
 		return p.csv
 	}
-	ipVersion := "IPv4"
-	if IPv6 { // IPv6 模式判断
-		ipVersion = "IPv6"
-	}
-	fmt.Printf("开始延迟测速（模式：TCP %s，端口：%d，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", ipVersion, TCPPort, utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
+	fmt.Printf("开始延迟测速（模式：TCP，端口：%d，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", TCPPort, utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
 	for _, ip := range p.ips {
 		p.wg.Add(1)
 		p.control <- false
@@ -87,9 +83,10 @@ func (p *Ping) start(ip *net.IPAddr) {
 //bool connectionSucceed float32 time
 func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	startTime := time.Now()
-	fullAddress := fmt.Sprintf("%s:%d", ip.String(), TCPPort)
-	//fmt.Println(ip.String())
-	if IPv6 { // IPv6 需要加上 []
+	var fullAddress string
+	if isIPv4(ip.String()) {
+		fullAddress = fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+	} else {
 		fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
 	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)

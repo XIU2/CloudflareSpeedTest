@@ -138,7 +138,7 @@ func (s DownloadSpeedSet) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func (s DownloadSpeedSet) Print(ipv6 bool) {
+func (s DownloadSpeedSet) Print() {
 	if NoPrintResult() {
 		return
 	}
@@ -152,9 +152,12 @@ func (s DownloadSpeedSet) Print(ipv6 bool) {
 	}
 	headFormat := "%-16s%-5s%-5s%-5s%-6s%-11s\n"
 	dataFormat := "%-18s%-8s%-8s%-8s%-10s%-15s\n"
-	if ipv6 { // IPv6 太长了，所以需要调整一下间隔
-		headFormat = "%-40s%-5s%-5s%-5s%-6s%-11s\n"
-		dataFormat = "%-42s%-8s%-8s%-8s%-10s%-15s\n"
+	for i := 0; i < PrintNum; i++ { // 如果要输出的 IP 中包含 IPv6，那么就需要调整一下间隔
+		if len(dateString[i][0]) > 15 {
+			headFormat = "%-40s%-5s%-5s%-5s%-6s%-11s\n"
+			dataFormat = "%-42s%-8s%-8s%-8s%-10s%-15s\n"
+			break
+		}
 	}
 	fmt.Printf(headFormat, "IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)")
 	for i := 0; i < PrintNum; i++ {

@@ -91,9 +91,11 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 }
 
 func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address string) (net.Conn, error) {
-	fakeSourceAddr := ip.String() + ":" + fmt.Sprintf("%d", TCPPort)
-	if IPv6 { // IPv6 需要加上 []
-		fakeSourceAddr = "[" + ip.String() + "]:" + fmt.Sprintf("%d", TCPPort)
+	var fakeSourceAddr string
+	if isIPv4(ip.String()) {
+		fakeSourceAddr = fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+	} else {
+		fakeSourceAddr = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)
