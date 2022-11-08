@@ -220,7 +220,7 @@ D:\ABC\CloudflareST\CloudflareST.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
 # 测速 IPv4 时，需要指定 IPv4 数据文件（-f 默认值就是 ip.txt，所以该参数可省略）
 CloudflareST.exe -f ip.txt
 
-# 测速 IPv6 时，需要指定 IPv6 数据文件( ipv6.txt )
+# 测速 IPv6 时，需要指定 IPv6 数据文件（v2.1.0 版本后支持 IPv4+IPv6 混合测速并移除了 -ipv6 参数）
 CloudflareST.exe -f ipv6.txt
 ```
 
