@@ -1,9 +1,15 @@
 package task
 
 import (
+	"context"
+	"crypto/tls"
 	"fmt"
+	"io"
+	"log"
 	"net"
+	"net/http"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -22,6 +28,7 @@ var (
 	Routines      = defaultRoutines
 	TCPPort   int = defaultPort
 	PingTimes int = defaultPingTimes
+	Colo      string
 )
 
 type Ping struct {
@@ -31,6 +38,8 @@ type Ping struct {
 	csv     utils.PingDelaySet
 	control chan bool
 	bar     *utils.Bar
+	colomap *sync.Map
+	request *http.Request
 }
 
 func checkPingDefault() {
@@ -55,6 +64,8 @@ func NewPing() *Ping {
 		csv:     make(utils.PingDelaySet, 0),
 		control: make(chan bool, Routines),
 		bar:     utils.NewBar(len(ips)),
+		colomap: mapColoMap(),
+		request: getRequest(),
 	}
 }
 
@@ -80,7 +91,7 @@ func (p *Ping) start(ip *net.IPAddr) {
 	<-p.control
 }
 
-//bool connectionSucceed float32 time
+// bool connectionSucceed float32 time
 func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	startTime := time.Now()
 	var fullAddress string
@@ -98,8 +109,12 @@ func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	return true, duration
 }
 
-//pingReceived pingTotalTime
+// pingReceived pingTotalTime
 func (p *Ping) checkConnection(ip *net.IPAddr) (recv int, totalDelay time.Duration) {
+	if p.colomap != nil {
+		recv, totalDelay = p.httpping(ip)
+		return
+	}
 	for i := 0; i < PingTimes; i++ {
 		if ok, delay := p.tcping(ip); ok {
 			recv++
@@ -131,4 +146,112 @@ func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 		Delay:    totalDlay / time.Duration(recv),
 	}
 	p.appendIPData(data)
+}
+
+// pingReceived pingTotalTime
+func (p *Ping) httpping(ip *net.IPAddr) (int, time.Duration) {
+
+	hc := http.Client{
+		Timeout: Timeout,
+		Transport: &http.Transport{
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				var fullAddress string
+				if isIPv4(ip.String()) {
+					fullAddress = fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+				} else {
+					fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
+				}
+				return (&net.Dialer{}).DialContext(ctx, network, fullAddress)
+			},
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	} // #nosec
+
+	traceURL := fmt.Sprintf("%s://www.cloudflare.com:%s/cdn-cgi/trace",
+		p.request.URL.Scheme,
+		p.request.URL.Port())
+
+	// for connect and get colo
+	{
+		requ, err := http.NewRequest(http.MethodGet, traceURL, nil)
+		if err != nil {
+			return 0, 0
+		}
+		requ.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
+		resp, err := hc.Do(requ)
+		if err != nil {
+			return 0, 0
+		}
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return 0, 0
+		}
+		colo := p.getColo(body)
+		if colo == "" {
+			return 0, 0
+		}
+	}
+
+	startTime := time.Now()
+	// for test delay
+	for i := 0; i < PingTimes; i++ {
+		requ, err := http.NewRequest(http.MethodGet, traceURL, nil)
+		if err != nil {
+			return 0, 0
+		}
+		requ.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
+		if i == PingTimes-1 {
+			requ.Header.Set("Connection", "close")
+		}
+		resp, err := hc.Do(requ)
+		if err != nil {
+			return 0, 0
+		}
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
+	}
+	duration := time.Since(startTime)
+	return PingTimes, duration
+
+}
+
+func mapColoMap() *sync.Map {
+	if Colo == "" {
+		return nil
+	}
+
+	colos := strings.Split(Colo, ",")
+	colomap := &sync.Map{}
+	for _, colo := range colos {
+		colomap.Store(colo, colo)
+	}
+	return colomap
+}
+
+func getRequest() *http.Request {
+	req, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return req
+}
+
+func (p *Ping) getColo(b []byte) string {
+	s := string(b)
+	idx := strings.Index(s, "colo=")
+	if idx == -1 {
+		return ""
+	}
+
+	out := s[idx+5 : idx+8]
+
+	utils.ColoAble.Store(out, out)
+
+	_, ok := p.colomap.Load(out)
+	if ok {
+		return out
+	}
+
+	return ""
 }

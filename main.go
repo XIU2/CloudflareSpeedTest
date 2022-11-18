@@ -53,6 +53,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
+    -colo
+        匹配机场三字码；需要匹配多个请使用英文逗号分割；(默认 不启用)
     -v
         打印程序版本 + 检查版本更新
     -h
@@ -67,6 +69,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "下载测速地址")
+	flag.StringVar(&task.Colo, "colo", "", "匹配机场三字码")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP 数据文件")
