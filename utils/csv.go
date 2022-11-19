@@ -151,7 +151,7 @@ func (s DownloadSpeedSet) Print() {
 	if len(colos) != 0 {
 		sort.Strings(colos)
 		colostrings := strings.Join(colos, ",")
-		fmt.Println("\n可用的colo为：" + colostrings + "\n")
+		fmt.Println("\n下次可以考虑机场三字码参数：" + colostrings + "\n")
 	}
 	if NoPrintResult() {
 		return

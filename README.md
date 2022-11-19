@@ -121,11 +121,11 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 参数：
     -n 200
-        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000 )
+        测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000)
     -t 4
-        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4 次)
+        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP；(默认 4 次)
     -tp 443
-        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
+        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口，httping模式下该参数无效)
     -dn 10
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 10 个)
     -dt 10
@@ -148,8 +148,16 @@ https://github.com/XIU2/CloudflareSpeedTest
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
+	-Httping
+		启用HTTP ping；启用后会将tcping换成httping模式；(默认 不启用)
+    -HttpingColo DFW,LAX,SEA,SJC,FRA,MAD
+        匹配机场三字码；需要匹配多个请使用英文逗号分割；(默认 匹配全部机场码，需要启用HTTP ping)
+		        	目前已知区域：KIX,HKG,SIN,NRT,ICN,DFW,LAX,SEA,SJC,FRA,MAD
+					目前已知大概率能扫描到美/法区域
+    -HttpingTimeout 2
+        指定httping超时时间；httping超时秒数；(默认 2，需要启用HTTP ping)
     -v
-        打印程序版本+检查版本更新
+        打印程序版本 + 检查版本更新
     -h
         打印帮助说明
 ```
