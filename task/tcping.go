@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -54,7 +55,7 @@ func NewPing() *Ping {
 		ips:     ips,
 		csv:     make(utils.PingDelaySet, 0),
 		control: make(chan bool, Routines),
-		bar:     utils.NewBar(len(ips)),
+		bar:     utils.NewBar(len(ips), "Able:", ""),
 	}
 }
 
@@ -63,10 +64,7 @@ func (p *Ping) Run() utils.PingDelaySet {
 		return p.csv
 	}
 	if Httping {
-		fmt.Printf("开始延迟测速（模式：HTTP，端口：%s，平均延迟上限：%v ms，平均延迟下限：%v ms)\n",
-			GetRequestPort(HttpingRequest),
-			utils.InputMaxDelay.Milliseconds(),
-			utils.InputMinDelay.Milliseconds())
+		fmt.Printf("开始延迟测速（模式：HTTP，端口：80，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
 	} else {
 		fmt.Printf("开始延迟测速（模式：TCP，端口：%d，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", TCPPort, utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
 	}
@@ -131,7 +129,11 @@ func (p *Ping) appendIPData(data *utils.PingData) {
 // handle tcping
 func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 	recv, totalDlay := p.checkConnection(ip)
-	p.bar.Grow(1)
+	nowAble := len(p.csv)
+	if recv != 0 {
+		nowAble++
+	}
+	p.bar.Grow(1, strconv.Itoa(nowAble))
 	if recv == 0 {
 		return
 	}

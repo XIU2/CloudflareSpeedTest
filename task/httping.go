@@ -1,7 +1,6 @@
 package task
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -26,39 +25,23 @@ var (
 	HttpingRequest *http.Request
 )
 
-func GetRequestPort(r *http.Request) string {
-	port := HttpingRequest.URL.Port()
-	if port == "" {
-		if HttpingRequest.URL.Scheme == "https" {
-			port = "443"
-		} else {
-			port = "80"
-		}
-	}
-	return port
-}
-
 // pingReceived pingTotalTime
 func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
+	var fullAddress string
+	if isIPv4(ip.String()) {
+		fullAddress = fmt.Sprintf("%s", ip.String())
+	} else {
+		fullAddress = fmt.Sprintf("[%s]", ip.String())
+	}
 	hc := http.Client{
 		Timeout: time.Duration(HttpingTimeout) * time.Millisecond,
 		Transport: &http.Transport{
-			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-				var fullAddress string
-				if isIPv4(ip.String()) {
-					fullAddress = fmt.Sprintf("%s:%s", ip.String(), GetRequestPort(HttpingRequest))
-				} else {
-					fullAddress = fmt.Sprintf("[%s]:%s", ip.String(), GetRequestPort(HttpingRequest))
-				}
-				return (&net.Dialer{}).DialContext(ctx, network, fullAddress)
-			},
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	} // #nosec
 
-	traceURL := fmt.Sprintf("%s://www.cloudflare.com:%s/cdn-cgi/trace",
-		HttpingRequest.URL.Scheme,
-		GetRequestPort(HttpingRequest))
+	traceURL := fmt.Sprintf("http://%s/cdn-cgi/trace",
+		fullAddress)
 
 	// for connect and get colo
 	{
