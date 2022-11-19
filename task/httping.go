@@ -17,7 +17,7 @@ import (
 
 var (
 	Httping        bool   //是否启用httping
-	HttpingTimeout int    //设置超时时间，单位秒
+	HttpingTimeout int    //设置超时时间，单位毫秒
 	HttpingColo    string //有值代表筛选机场三字码区域
 )
 
@@ -41,7 +41,7 @@ func GetRequestPort(r *http.Request) string {
 // pingReceived pingTotalTime
 func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 	hc := http.Client{
-		Timeout: time.Duration(HttpingTimeout) * time.Second,
+		Timeout: time.Duration(HttpingTimeout) * time.Millisecond,
 		Transport: &http.Transport{
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				var fullAddress string

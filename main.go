@@ -59,8 +59,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         匹配机场三字码；需要匹配多个请使用英文逗号分割；(默认 匹配全部机场码，需要启用HTTP ping)
 		        	目前已知区域：KIX,HKG,SIN,NRT,ICN,DFW,LAX,SEA,SJC,FRA,MAD
 					目前已知大概率能扫描到美/法区域
-    -HttpingTimeout 2
-        指定httping超时时间；httping超时秒数；(默认 2，需要启用HTTP ping)
+    -HttpingTimeout 2000
+        指定httping超时时间；httping超时毫秒；(默认 2000 ms，需要启用HTTP ping)
     -v
         打印程序版本 + 检查版本更新
     -h
@@ -77,7 +77,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "下载测速地址")
 	flag.BoolVar(&task.Httping, "Httping", false, "启用HTTP ping")
 	flag.StringVar(&task.HttpingColo, "HttpingColo", "", "匹配机场三字码")
-	flag.IntVar(&task.HttpingTimeout, "HttpingTimeout", 2, "指定httping超时时间")
+	flag.IntVar(&task.HttpingTimeout, "HttpingTimeout", 2000, "指定httping超时时间")
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP 数据文件")
