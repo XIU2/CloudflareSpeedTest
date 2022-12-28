@@ -452,9 +452,24 @@ CloudflareST.exe -f 1.txt
 
 ****
 
+## 衍生项目
+
+- _https://github.com/xianshenglu/cloudflare-ip-tester-app_  
+_**CloudflareST 安卓版 APP [#202](https://github.com/XIU2/CloudflareSpeedTest/issues/202)**_
+
+- _https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest_  
+_**CloudflareST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/CloudflareSpeedTest/issues/174)**_
+
+- _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
+_**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
+
+> _此处仅收集了在本项目 Issues 中宣传过的部分 CloudflareST 相关衍生项目，如果有遗漏可以告诉我~_  
+
+****
+
 ## 感谢项目
 
-* https://github.com/Spedoske/CloudflareScanner
+- _https://github.com/Spedoske/CloudflareScanner_
 
 > _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了（菜）..._  
 > _本软件基于该项目制作，但**已添加大量功能及修复 BUG**，并根据大家的使用反馈积极添加、优化功能（闲）..._
