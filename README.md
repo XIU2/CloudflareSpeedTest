@@ -244,7 +244,7 @@ CloudflareST.exe -f ip.txt
 CloudflareST.exe -f ipv6.txt
 
 # 当然你也可以将 IPv4 IPv6 混合在一起测速，也可以直接通过参数指定要测速的 IP
-CloudflareST.exe -ip "1.1.1.1,2606:4700::/32"
+CloudflareST.exe -ip 1.1.1.1,2606:4700::/32
 ```
 
 > 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： [#120](https://github.com/XIU2/CloudflareSpeedTest/issues/120)
@@ -449,10 +449,10 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 ``` bash
 # 先进入 CloudflareST 所在目录，然后运行：
 # Windows 系统（在 CMD 中运行）
-CloudflareST.exe -ip "1.1.1.1,2.2.2.2/24,2606:4700::/32"
+CloudflareST.exe -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
 
 # Linux 系统
-./CloudflareST -ip "1.1.1.1,2.2.2.2/24,2606:4700::/32"
+./CloudflareST -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
 ```
 
 ****
