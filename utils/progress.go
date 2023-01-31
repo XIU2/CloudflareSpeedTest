@@ -11,7 +11,7 @@ type Bar struct {
 }
 
 func NewBar(count int, MyStrStart, MyStrEnd string) *Bar {
-	tmpl := fmt.Sprintf(`{{counters . }}{{ bar . "[" "-" (cycle . "↖" "↗" "↘" "↙" ) "_" "]"}} %s {{string . "MyStr" | green}} %s `, MyStrStart, MyStrEnd)
+	tmpl := fmt.Sprintf(`{{counters . }} {{ bar . "[" "-" (cycle . "↖" "↗" "↘" "↙" ) "_" "]"}} %s {{string . "MyStr" | green}} %s `, MyStrStart, MyStrEnd)
 	bar := pb.ProgressBarTemplate(tmpl).Start(count)
 	return &Bar{pb: bar}
 }

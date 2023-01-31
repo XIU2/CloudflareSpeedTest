@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
 	"CloudflareSpeedTest/utils"
@@ -24,11 +25,8 @@ const (
 )
 
 var (
-	// download test url
-	URL = defaultURL
-	// download timeout
+	URL     = defaultURL
 	Timeout = defaultTimeout
-	// disable download
 	Disable = defaultDisableDownload
 
 	TestCount = defaultTestNum
@@ -68,7 +66,13 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	}
 
 	fmt.Printf("开始下载测速（下载速度下限：%.2f MB/s，下载测速数量：%d，下载测速队列：%d）：\n", MinSpeed, TestCount, testNum)
-	bar := utils.NewBar(TestCount, "", "")
+	// 控制 下载测速进度条 与 延迟测速进度条 长度一致（强迫症）
+	bar_a := len(strconv.Itoa(len(ipSet)))
+	bar_b := "     "
+	for i := 0; i < bar_a; i++ {
+		bar_b += " "
+	}
+	bar := utils.NewBar(TestCount, bar_b, "")
 	for i := 0; i < testNum; i++ {
 		speed := downloadHandler(ipSet[i].IP)
 		ipSet[i].DownloadSpeed = speed

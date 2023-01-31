@@ -1,8 +1,8 @@
 package task
 
 import (
-	"crypto/tls"
-	"fmt"
+	//"crypto/tls"
+	//"fmt"
 	"io"
 	"log"
 	"net"
@@ -10,42 +10,31 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"CloudflareSpeedTest/utils"
 )
 
 var (
-	Httping        bool   //是否启用httping
-	HttpingTimeout int    //设置超时时间，单位毫秒
-	HttpingColo    string //有值代表筛选机场三字码区域
-)
-
-var (
-	HttpingColomap *sync.Map
-	HttpingRequest *http.Request
+	Httping           bool
+	HttpingStatusCode int
+	HttpingCFColo     string
+	HttpingCFColomap  *sync.Map
 )
 
 // pingReceived pingTotalTime
 func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
-	var fullAddress string
-	if isIPv4(ip.String()) {
-		fullAddress = fmt.Sprintf("%s", ip.String())
-	} else {
-		fullAddress = fmt.Sprintf("[%s]", ip.String())
-	}
 	hc := http.Client{
-		Timeout: time.Duration(HttpingTimeout) * time.Millisecond,
+		Timeout: time.Second * 2,
 		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			DialContext: getDialContext(ip),
+			//TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // 跳过证书验证
 		},
-	} // #nosec
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse // 阻止重定向
+		},
+	}
 
-	traceURL := fmt.Sprintf("http://%s/cdn-cgi/trace",
-		fullAddress)
-
-	// for connect and get colo
+	// 先访问一次获得 HTTP 状态码 及 Cloudflare Colo
 	{
-		requ, err := http.NewRequest(http.MethodHead, traceURL, nil)
+		requ, err := http.NewRequest(http.MethodHead, URL, nil)
 		if err != nil {
 			return 0, 0
 		}
@@ -55,22 +44,35 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 			return 0, 0
 		}
 		defer resp.Body.Close()
+
+		//fmt.Println("IP:", ip, "StatusCode:", resp.StatusCode, resp.Request.URL)
+		if HttpingStatusCode == 0 || HttpingStatusCode < 100 && HttpingStatusCode > 599 {
+			if resp.StatusCode != 200 && resp.StatusCode != 301 && resp.StatusCode != 302 {
+				return 0, 0
+			}
+		} else {
+			if resp.StatusCode != HttpingStatusCode {
+				return 0, 0
+			}
+		}
+
 		io.Copy(io.Discard, resp.Body)
 
-		cfRay := resp.Header.Get("CF-RAY")
-
-		colo := p.getColo(cfRay)
-		if colo == "" {
-			return 0, 0
+		if HttpingCFColo != "" {
+			cfRay := resp.Header.Get("CF-RAY")
+			colo := p.getColo(cfRay)
+			if colo == "" {
+				return 0, 0
+			}
 		}
 
 	}
 
-	// for test delay
+	// 循环测速计算延迟
 	success := 0
 	var delay time.Duration
 	for i := 0; i < PingTimes; i++ {
-		requ, err := http.NewRequest(http.MethodHead, traceURL, nil)
+		requ, err := http.NewRequest(http.MethodHead, URL, nil)
 		if err != nil {
 			log.Fatal("意外的错误，情报告：", err)
 			return 0, 0
@@ -97,24 +99,16 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 }
 
 func MapColoMap() *sync.Map {
-	if HttpingColo == "" {
+	if HttpingCFColo == "" {
 		return nil
 	}
 
-	colos := strings.Split(HttpingColo, ",")
+	colos := strings.Split(HttpingCFColo, ",")
 	colomap := &sync.Map{}
 	for _, colo := range colos {
 		colomap.Store(colo, colo)
 	}
 	return colomap
-}
-
-func GetRequest() *http.Request {
-	req, err := http.NewRequest("GET", URL, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return req
 }
 
 func (p *Ping) getColo(b string) string {
@@ -125,13 +119,11 @@ func (p *Ping) getColo(b string) string {
 
 	out := idColo[1]
 
-	utils.ColoAble.Store(out, out)
-
-	if HttpingColomap == nil {
+	if HttpingCFColomap == nil {
 		return out
 	}
 
-	_, ok := HttpingColomap.Load(out)
+	_, ok := HttpingCFColomap.Load(out)
 	if ok {
 		return out
 	}

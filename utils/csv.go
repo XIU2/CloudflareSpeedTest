@@ -6,10 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
-	"sort"
 	"strconv"
-	"strings"
-	"sync"
 	"time"
 )
 
@@ -24,7 +21,6 @@ var (
 	InputMinDelay = minDelay
 	Output        = defaultOutput
 	PrintNum      = 10
-	ColoAble      sync.Map
 )
 
 // 是否打印测试结果
@@ -143,16 +139,6 @@ func (s DownloadSpeedSet) Swap(i, j int) {
 }
 
 func (s DownloadSpeedSet) Print() {
-	var colos []string
-	ColoAble.Range(func(key, value interface{}) bool {
-		colos = append(colos, key.(string))
-		return true
-	})
-	if len(colos) != 0 {
-		sort.Strings(colos)
-		colostrings := strings.Join(colos, ",")
-		fmt.Println("\n下次可以考虑机场三字码参数：" + colostrings + "\n")
-	}
 	if NoPrintResult() {
 		return
 	}

@@ -18,6 +18,7 @@ var (
 	TestAll = false
 	// IPFile is the filename of IP Rangs
 	IPFile = defaultInputFile
+	IPText string
 )
 
 func InitRandSeed() {
@@ -137,22 +138,34 @@ func (r *IPRanges) chooseIPv6() {
 }
 
 func loadIPRanges() []*net.IPAddr {
-	if IPFile == "" {
-		IPFile = defaultInputFile
-	}
-	file, err := os.Open(IPFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 	ranges := newIPRanges()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		ranges.parseCIDR(scanner.Text())
-		if isIPv4(scanner.Text()) {
-			ranges.chooseIPv4()
-		} else {
-			ranges.chooseIPv6()
+	if IPText != "" { // 从参数中获取 IP 段数据
+		IPs := strings.Split(IPText, ",")
+		for _, IP := range IPs {
+			ranges.parseCIDR(IP)
+			if isIPv4(IP) {
+				ranges.chooseIPv4()
+			} else {
+				ranges.chooseIPv6()
+			}
+		}
+	} else { // 从文件中获取 IP 段数据
+		if IPFile == "" {
+			IPFile = defaultInputFile
+		}
+		file, err := os.Open(IPFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			ranges.parseCIDR(scanner.Text())
+			if isIPv4(scanner.Text()) {
+				ranges.chooseIPv4()
+			} else {
+				ranges.chooseIPv6()
+			}
 		}
 	}
 	return ranges.ips
