@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -54,7 +55,7 @@ func NewPing() *Ping {
 		ips:     ips,
 		csv:     make(utils.PingDelaySet, 0),
 		control: make(chan bool, Routines),
-		bar:     utils.NewBar(len(ips)),
+		bar:     utils.NewBar(len(ips), "可用IP:", ""),
 	}
 }
 
@@ -62,7 +63,11 @@ func (p *Ping) Run() utils.PingDelaySet {
 	if len(p.ips) == 0 {
 		return p.csv
 	}
-	fmt.Printf("开始延迟测速（模式：TCP，端口：%d，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", TCPPort, utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
+	if Httping {
+		fmt.Printf("开始延迟测速（模式：HTTP，端口：80，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
+	} else {
+		fmt.Printf("开始延迟测速（模式：TCP，端口：%d，平均延迟上限：%v ms，平均延迟下限：%v ms)\n", TCPPort, utils.InputMaxDelay.Milliseconds(), utils.InputMinDelay.Milliseconds())
+	}
 	for _, ip := range p.ips {
 		p.wg.Add(1)
 		p.control <- false
@@ -80,7 +85,7 @@ func (p *Ping) start(ip *net.IPAddr) {
 	<-p.control
 }
 
-//bool connectionSucceed float32 time
+// bool connectionSucceed float32 time
 func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	startTime := time.Now()
 	var fullAddress string
@@ -98,8 +103,12 @@ func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	return true, duration
 }
 
-//pingReceived pingTotalTime
+// pingReceived pingTotalTime
 func (p *Ping) checkConnection(ip *net.IPAddr) (recv int, totalDelay time.Duration) {
+	if Httping {
+		recv, totalDelay = p.httping(ip)
+		return
+	}
 	for i := 0; i < PingTimes; i++ {
 		if ok, delay := p.tcping(ip); ok {
 			recv++
@@ -120,7 +129,11 @@ func (p *Ping) appendIPData(data *utils.PingData) {
 // handle tcping
 func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 	recv, totalDlay := p.checkConnection(ip)
-	p.bar.Grow(1)
+	nowAble := len(p.csv)
+	if recv != 0 {
+		nowAble++
+	}
+	p.bar.Grow(1, strconv.Itoa(nowAble))
 	if recv == 0 {
 		return
 	}

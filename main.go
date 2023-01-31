@@ -28,9 +28,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -n 200
         测速线程数量；越多测速越快，性能弱的设备 (如路由器) 请勿太高；(默认 200 最多 1000)
     -t 4
-        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP，TCP协议；(默认 4 次)
+        延迟测速次数；单个 IP 延迟测速次数，为 1 时将过滤丢包的IP；(默认 4 次)
     -tp 443
-        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
+        指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口，httping模式下该参数无效)
 
     -dn 10
         下载测速数量；延迟测速并排序后，从最低延迟起下载测速的数量；(默认 10 个)
@@ -58,6 +58,14 @@ https://github.com/XIU2/CloudflareSpeedTest
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 IP 段随机测速一个 IP)
 
+	-Httping
+		启用HTTP ping；启用后会将tcping换成httping模式；(默认 不启用)
+    -HttpingColo DFW,LAX,SEA,SJC,FRA,MAD
+        匹配机场三字码；需要匹配多个请使用英文逗号分割；(默认 匹配全部机场码，需要启用HTTP ping)
+		        	目前已知区域：KIX,HKG,SIN,NRT,ICN,DFW,LAX,SEA,SJC,FRA,MAD
+					目前已知大概率能扫描到美/法区域
+    -HttpingTimeout 2000
+        指定httping超时时间；httping超时毫秒；(默认 2000 ms，需要启用HTTP ping)
     -v
         打印程序版本 + 检查版本更新
     -h
@@ -79,6 +87,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
+	flag.BoolVar(&task.Httping, "Httping", false, "启用HTTP ping")
+	flag.StringVar(&task.HttpingColo, "HttpingColo", "", "匹配机场三字码")
+	flag.IntVar(&task.HttpingTimeout, "HttpingTimeout", 2000, "指定httping超时时间")
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
 
@@ -88,6 +99,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 	utils.InputMaxDelay = time.Duration(maxDelay) * time.Millisecond
 	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
 	task.Timeout = time.Duration(downloadTime) * time.Second
+	task.HttpingColomap = task.MapColoMap()
+	task.HttpingRequest = task.GetRequest()
 
 	if printVersion {
 		println(version)
