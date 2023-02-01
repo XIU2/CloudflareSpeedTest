@@ -41,10 +41,10 @@ mkdir CloudflareST
 cd CloudflareST
 
 # 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.1.0/CloudflareST_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
 # 如果你是在国内服务器上下载，那么请使用下面这几个镜像加速：
-# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.1.0/CloudflareST_linux_amd64.tar.gz
-# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.1.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm CloudflareST_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -291,8 +291,9 @@ CloudflareST.exe -httping -tp 80 -url http://xxx/xxx
 ****
 
 ``` bash
-# 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了
-# 节点地区名为当地机场三字码，指定多个时用英文逗号分隔
+# 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（也可以继续进行下载测速）
+# 节点地区名为当地 机场三字码，指定多个时用英文逗号分隔
+# 目前已知有：ARN,BOM,DFW,EWR,FRA,GRU,HKG,IAD,LAX,MAD,MRS,MXP,NRT,SEA,SJC,WAW （其他的自行寻找吧~
 # 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为要访问网页来获得）
 CloudflareST.exe -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 ```
