@@ -295,12 +295,13 @@ CloudflareST.exe -httping -tp 80 -url http://xxx/xxx
 ``` bash
 # 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（也可以继续进行下载测速）
 # 节点地区名为当地 机场三字码，指定多个时用英文逗号分隔
-# 我遇到的有：ARN,BOM,DFW,EWR,FRA,GRU,HKG,KHH,NRT,IAD,LAX,MAD,MRS,MXP,SEA,SJC,WAW （其他的自行寻找吧~
 
 CloudflareST.exe -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 
 # 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为要访问网页来获得）
 ```
+
+> Cloudflare 所有节点地区名（机场三字码），请看：https://www.cloudflarestatus.com/
 
 </details>
 
@@ -395,7 +396,7 @@ CloudflareST.exe -tll 40
 CloudflareST.exe -tl 200 -dn 10
 ```
 
-> 如果没有一个 IP **平均延迟低于 200ms**，那么不会输出任何内容。
+> 如果**没有找到一个满足延迟**条件的 IP，那么不会输出任何内容。
 
 ****
 
@@ -417,6 +418,8 @@ CloudflareST.exe -tl 200 -dd
 CloudflareST.exe -sl 5 -dn 10
 ```
 
+> 如果**没有找到一个满足速度**条件的 IP，那么会**忽略条件输出所有 IP 测速结果**（方便你下次测速时调整条件）。
+
 > 没有指定平均延迟上限时，如果一直**凑不够**满足条件的 IP 数量，就会**一直测速**下去。  
 > 所以建议**同时指定 [下载速度下限] + [平均延迟上限]**，这样测速到指定延迟上限还没凑够数量，就会终止测速。
 
@@ -431,8 +434,8 @@ CloudflareST.exe -sl 5 -dn 10
 CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 ```
 
-> 如果没有一个 IP **平均延迟低于 200ms**，那么不会输出任何内容。  
-> 如果没有一个 IP **下载速度高于 5.6 MB/s**，那么就会**和不指定 [下载速度下限] 条件一样**输出所有结果。  
+> 如果**没有找到一个满足延迟**条件的 IP，那么不会输出任何内容。  
+> 如果**没有找到一个满足速度**条件的 IP，那么会忽略条件输出所有 IP 测速结果（方便你下次测速时调整条件）。  
 > 所以建议先不指定条件测速一遍，看看平均延迟和下载速度大概在什么范围，避免指定条件**过低/过高**！
 
 > 因为Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
