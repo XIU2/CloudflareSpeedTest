@@ -6,12 +6,12 @@
 [![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 [![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
 
-国外很多网站都在使用 Cloudflare CDN，但分配给中国内地访客的 IP 并不友好（延迟高、丢包多、速度慢）。
+国外很多网站都在使用 Cloudflare CDN，但分配给中国内地访客的 IP 并不友好（延迟高、丢包多、速度慢）。  
 虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，于是就有了这个软件。
 
 **「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！好用的话**点个`⭐`鼓励一下叭~**
 
-> _分享我其他开源项目：[**TrackersList.com** - 全网热门 BT Tracker 列表！有效提高 BT 下载速度~](https://github.com/XIU2/TrackersListCollection) <img src="https://img.shields.io/github/stars/XIU2/TrackersListCollection.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_
+> _分享我其他开源项目：[**TrackersList.com** - 全网热门 BT Tracker 列表！有效提高 BT 下载速度~](https://github.com/XIU2/TrackersListCollection) <img src="https://img.shields.io/github/stars/XIU2/TrackersListCollection.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
 > _[**UserScript** - 🐵 Github 高速下载、知乎增强、自动无缝翻页、护眼模式 等十几个**油猴脚本**！](https://github.com/XIU2/UserScript)<img src="https://img.shields.io/github/stars/XIU2/UserScript.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_
 
 > 本项目也支持对**其他 CDN / 网站 IP** 延迟测速（如：[CloudFront](https://github.com/XIU2/CloudflareSpeedTest/issues/180)、[Gcore](https://github.com/XIU2/CloudflareSpeedTest/issues/267) CDN），但下载测速需自行寻找地址
@@ -23,7 +23,7 @@
 
 ### 下载运行
 
-1. 下载编译好的可执行文件 [蓝奏云](https://pan.lanzouv.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。
+1. 下载编译好的可执行文件 [蓝奏云](https://pan.lanzouv.com/b0742hkxe) / [Github](https://github.com/XIU2/CloudflareSpeedTest/releases) 并解压。  
 2. 双击运行 `CloudflareST.exe` 文件（Windows 系统），等待测速完成...
 
 <details>
@@ -189,14 +189,14 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 很多人打开 CMD 以**绝对路径**运行 CloudflareST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CloudflareST 程序目录下，以**相对路径**方式运行：
 
 **方式 一**：
-1. 打开 CloudflareST 程序所在目录
-2. 空白处按下 <kbd>Shift + 鼠标右键</kbd> 显示右键菜单
-3. 选择 **\[在此处打开命令窗口\]** 来打开 CMD 窗口，此时默认就位于当前目录下
+1. 打开 CloudflareST 程序所在目录  
+2. 空白处按下 <kbd>Shift + 鼠标右键</kbd> 显示右键菜单  
+3. 选择 **\[在此处打开命令窗口\]** 来打开 CMD 窗口，此时默认就位于当前目录下  
 4. 输入带参数的命令，如：`CloudflareST.exe -tll 50 -tl 200`即可运行
 
 **方式 二**：
-1. 打开 CloudflareST 程序所在目录
-2. 直接在文件夹地址栏中全选并输入 `cmd` 回车来打开 CMD 窗口，此时默认就位于当前目录下
+1. 打开 CloudflareST 程序所在目录  
+2. 直接在文件夹地址栏中全选并输入 `cmd` 回车来打开 CMD 窗口，此时默认就位于当前目录下  
 4. 输入带参数的命令，如：`CloudflareST.exe -tll 50 -tl 200`即可运行
 
 > 当然你也可以随便打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
@@ -261,9 +261,10 @@ CloudflareST.exe -ip 1.1.1.1,2606:4700::/32
 
 ****
 
-目前有两种延迟测速模式，分别为 **TCP 协议、HTTP 协议**。
-TCP 协议耗时更短、消耗资源更少，超时时间为 1 秒，该协议为默认模式。
-HTTP 协议适用于快速测试某域名指向某 IP 时是否可以访问，超时时间为 2 秒。
+目前有两种延迟测速模式，分别为 **TCP 协议、HTTP 协议**。  
+TCP 协议耗时更短、消耗资源更少，超时时间为 1 秒，该协议为默认模式。  
+HTTP 协议适用于快速测试某域名指向某 IP 时是否可以访问，超时时间为 2 秒。  
+同一个 IP，各协议去 Ping 得到的延迟一般为：**ICMP < TCP < HTTP**，越靠右对丢包等网络波动越敏感。
 
 ``` bash
 # 只需加上 -httping 参数即可切换到 HTTP 协议延迟测速模式
@@ -276,6 +277,7 @@ CloudflareST.exe -httping -httping-code 200
 CloudflareST.exe -httping -url https://cf.xiu2.xyz/url
 
 # 注意：如果测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
+# 同理，如果要测速 80 端口，那么也需要加上 -url 参数来指定一个 http:// 协议的地址才行（默认测速地址是 HTTPS 的）
 CloudflareST.exe -httping -tp 80 -url http://xxx/xxx
 ```
 
@@ -293,9 +295,11 @@ CloudflareST.exe -httping -tp 80 -url http://xxx/xxx
 ``` bash
 # 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（也可以继续进行下载测速）
 # 节点地区名为当地 机场三字码，指定多个时用英文逗号分隔
-# 目前已知有：ARN,BOM,DFW,EWR,FRA,GRU,HKG,IAD,LAX,MAD,MRS,MXP,NRT,SEA,SJC,WAW （其他的自行寻找吧~
-# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为要访问网页来获得）
+# 我遇到的有：ARN,BOM,DFW,EWR,FRA,GRU,HKG,KHH,NRT,IAD,LAX,MAD,MRS,MXP,SEA,SJC,WAW （其他的自行寻找吧~
+
 CloudflareST.exe -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
+
+# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为要访问网页来获得）
 ```
 
 </details>
@@ -465,6 +469,7 @@ CloudflareST.exe -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
 1.1.1.1
 1.1.1.200
 1.0.0.1/24
+2606:4700::/32
 ```
 
 > 单个 IP 的话可以省略 `/32` 子网掩码了（即 `1.1.1.1`等同于 `1.1.1.1/32`）。
@@ -508,7 +513,7 @@ CloudflareST.exe -f 1.txt
 
 ## 问题反馈
 
-如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。
+如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
 如果没找到类似问题，请新开个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！
 
 > _有问题请**大胆告诉我**，描述越详细越好（随时可远程协助），如果不说那我怎么去完善功能或~~修复 BUG~~ 呢？！_
@@ -523,13 +528,13 @@ CloudflareST.exe -f 1.txt
 
 ## 衍生项目
 
-- _https://github.com/xianshenglu/cloudflare-ip-tester-app_
+- _https://github.com/xianshenglu/cloudflare-ip-tester-app_  
 _**CloudflareST 安卓版 APP [#202](https://github.com/XIU2/CloudflareSpeedTest/issues/202)**_
 
-- _https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest_
+- _https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest_  
 _**CloudflareST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/CloudflareSpeedTest/issues/174)**_
 
-- _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_
+- _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
 _**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
 
 > _此处仅收集了在本项目 Issues 中宣传过的部分 CloudflareST 相关衍生项目，如果有遗漏可以告诉我~_
@@ -540,7 +545,7 @@ _**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/Cloudfl
 
 - _https://github.com/Spedoske/CloudflareScanner_
 
-> _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了（菜）..._
+> _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了（菜）..._  
 > _本软件基于该项目制作，但**已添加大量功能及修复 BUG**，并根据大家的使用反馈积极添加、优化功能（闲）..._
 
 ****
