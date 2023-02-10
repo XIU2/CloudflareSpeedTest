@@ -170,7 +170,11 @@ func downloadHandler(ip *net.IPAddr) float64 {
 			if err != io.EOF { // 文件下载完了，或因网络等问题导致链接中断，则退出循环（终止测速）
 				break
 			}
-			e.Add(float64(contentRead-lastContentRead) / (float64(nextTime.Sub(currentTime)) / float64(timeSlice)))
+			// 获取上个时间片
+			last_time_slice := timeStart.Add(timeSlice * time.Duration(timeCounter-1))
+			// 下载数据量 / (用当前时间 - 上个时间片/ 时间片)
+			e.Add(float64(contentRead-lastContentRead) / (float64(currentTime.Sub(last_time_slice)) / float64(timeSlice)))
+
 		}
 		contentRead += int64(bufferRead)
 	}
