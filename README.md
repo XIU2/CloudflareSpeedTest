@@ -41,10 +41,10 @@ mkdir CloudflareST
 cd CloudflareST
 
 # 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.1/CloudflareST_linux_amd64.tar.gz
 # 如果你是在国内服务器上下载，那么请使用下面这几个镜像加速：
-# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
-# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.2.1/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.1/CloudflareST_linux_amd64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm CloudflareST_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
