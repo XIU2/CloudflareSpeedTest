@@ -167,15 +167,13 @@ func downloadHandler(ip *net.IPAddr) float64 {
 		}
 		bufferRead, err := response.Body.Read(buffer)
 		if err != nil {
+			if err != io.EOF { // 如果文件下载过程中遇到报错（如 Timeout），且并不是因为文件下载完了，则退出循环（终止测速）
+				break
+			}
 			// 获取上个时间片
 			last_time_slice := timeStart.Add(timeSlice * time.Duration(timeCounter-1))
 			// 下载数据量 / (用当前时间 - 上个时间片/ 时间片)
 			e.Add(float64(contentRead-lastContentRead) / (float64(currentTime.Sub(last_time_slice)) / float64(timeSlice)))
-
-			if err == io.EOF { // 文件下载完了，或因网络等问题导致链接中断，则退出循环（终止测速）
-				break
-			}
-
 		}
 		contentRead += int64(bufferRead)
 	}
