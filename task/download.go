@@ -169,6 +169,8 @@ func downloadHandler(ip *net.IPAddr) float64 {
 		if err != nil {
 			if err != io.EOF { // 如果文件下载过程中遇到报错（如 Timeout），且并不是因为文件下载完了，则退出循环（终止测速）
 				break
+			} else if contentLength == -1 { // 文件下载完成 且 文件大小未知，则退出循环（终止测速），例如：https://speed.cloudflare.com/__down?bytes=200000000 这样的，如果在 10 秒内就下载完成了，会导致测速结果明显偏低甚至显示为 0.00（下载速度太快时）
+				break
 			}
 			// 获取上个时间片
 			last_time_slice := timeStart.Add(timeSlice * time.Duration(timeCounter-1))
