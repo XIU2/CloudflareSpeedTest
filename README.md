@@ -563,6 +563,60 @@ _**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/Cloudfl
 
 ****
 
+## 手动编译
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+为了方便，我是在编译的时候将版本号写入代码中的 version 变量，因此你手动编译时，需要像下面这样在 `go build` 命令后面加上 `-ldflags` 参数来指定版本号：
+
+```bash
+go build -ldflags "-s -w -X main.version=v2.3.3"
+# 在 CloudflareSpeedTest 目录中通过命令行（例如 CMD、Bat 脚本）运行该命令，即可编译一个可在和当前设备同样系统、位数、架构的环境下运行的二进制程序（Go 会自动检测你的系统位数、架构）且版本号为 v2.3.3
+```
+
+如果想要在 Windows 64位系统下编译**其他系统、架构、位数**，那么需要指定 **GOOS** 和 **GOARCH** 变量。
+
+例如在 Windows 系统下编译一个适用于 **Linux 系统 amd 架构 64 位**的二进制程序：
+
+```bat
+SET GOOS=linux
+SET GOARCH=amd64
+go build -ldflags "-s -w -X main.version=v2.3.3"
+```
+
+例如在 Linux 系统下编译一个适用于 **Windows 系统 amd 架构 32 位**的二进制程序：
+
+```bash
+GOOS=windows
+GOARCH=386
+go build -ldflags "-s -w -X main.version=v2.3.3"
+```
+
+> 可以运行 `go tool dist list` 来查看当前 Go 版本支持编译哪些组合。
+
+****
+
+当然，为了方便批量编译，我会专门指定一个变量来为版本号，后续编译就直接调用该版本号变量即可。
+
+```bat
+:: Windows 系统下是这样：
+SET version=v2.3.3
+go build -ldflags "-s -w -X main.version=%version%"
+```
+
+```bash
+# Linux 系统下是这样：
+version=v2.3.3
+go build -ldflags "-s -w -X main.version=${version}"
+```
+
+</details>
+
+****
+
 ## License
 
 The GPL-3.0 License.
