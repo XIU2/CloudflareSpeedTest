@@ -599,18 +599,23 @@ go build -ldflags "-s -w -X main.version=v2.3.3"
 
 ****
 
-当然，为了方便批量编译，我会专门指定一个变量来为版本号，后续编译就直接调用该版本号变量即可。
+当然，为了方便批量编译，我会专门指定一个变量为版本号，后续编译直接调用该版本号变量即可。  
+同时，批量编译的话，还需要分开放到不同文件夹才行（或者文件名不同），需要加上 `-o` 参数指定。
 
 ```bat
 :: Windows 系统下是这样：
 SET version=v2.3.3
-go build -ldflags "-s -w -X main.version=%version%"
+SET GOOS=linux
+SET GOARCH=amd64
+go build -o Releases\CloudflareST_linux_amd64\CloudflareST -ldflags "-s -w -X main.version=%version%"
 ```
 
 ```bash
 # Linux 系统下是这样：
 version=v2.3.3
-go build -ldflags "-s -w -X main.version=${version}"
+GOOS=windows
+GOARCH=386
+go build -o Releases/CloudflareST_windows_386/CloudflareST.exe -ldflags "-s -w -X main.version=${version}"
 ```
 
 </details>
