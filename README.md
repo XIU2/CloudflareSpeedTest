@@ -570,6 +570,9 @@ _**CloudflareST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/Cloudf
 - _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
 _**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
 
+- _https://github.com/hoseinnikkhah/CloudflareSpeedTest-English_  
+_**English language version of CloudflareST (Text language differences only) [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/68)**_
+
 > _此处仅收集了在本项目 Issues 中宣传过的部分 CloudflareST 相关衍生项目，如果有遗漏可以告诉我~_
 
 ****
