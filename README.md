@@ -181,6 +181,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中。
 
 > **注意**：各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
+> **提示**：如果用的是 PowerShell 只需把下面命令中的 `CloudflareST.exe` 改为 `.\CloudflareST.exe` 即可。
 > **提示**：Linux 系统只需要把下面命令中的 `CloudflareST.exe` 改为 `./CloudflareST` 即可。
 
 ****
@@ -208,6 +209,8 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 4. 输入带参数的命令，如：`CloudflareST.exe -tll 50 -tl 200`即可运行
 
 > 当然你也可以随便打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\CloudflareST"` 来进入程序目录
+
+> **提示**：如果用的是 **PowerShell** 只需把命令中的 `CloudflareST.exe` 改为 `.\CloudflareST.exe` 即可。
 
 </details>
 
