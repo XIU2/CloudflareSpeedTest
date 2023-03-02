@@ -1,0 +1,30 @@
+name: 反馈问题 (Bug report)
+description: 软件报错等异常情况，或遇到预期之外的问题...
+labels: 反馈问题
+body:
+  - type: markdown
+    attributes:
+      value: |
+        发之前，请先搜下有没有类似的 [Issues](https://github.com/XIU2/CloudflareSpeedTest/issues) 问题（包括[关闭](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed)的），请勿重复发起！
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 必填，最好写上 复现问题 的步骤，越详细越好，特别是一些复杂的问题
+      placeholder: 请输入...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 软件版本
+      description: 必填，可通过运行软件来获取版本信息（例如 v2.2.2）
+      placeholder: 请输入...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 附加截图
+      description: 可选，也可以是一些错误代码
+      placeholder: 可在此粘贴图片，或点击下方 [Attach files by dragging & dropping, selecting or pasting them.] 文字来选择图片...
