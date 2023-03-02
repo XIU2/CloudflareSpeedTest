@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 前往讨论区 (💬 Discussions)
+    url: https://github.com/XIU2/CloudflareSpeedTest/discussions
+    about: Issues 仅用于反馈问题、功能建议，其他话题请到 💬 Discussions 发帖讨论（不合适的 Issues 会被转过去
