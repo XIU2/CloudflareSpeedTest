@@ -109,7 +109,7 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 
 ```
 IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
-104.27.200.69, 4, 4, 0.00, 146.23, 28.64
+104.27.200.69,4,4,0.00,146.23,28.64
 ```
 
 > _大家可以按自己需求，对完整结果**进一步筛选处理**，或者去看一看进阶使用**指定过滤条件**！_
@@ -576,7 +576,7 @@ _**CloudflareST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/Cloudfl
 - _https://github.com/hoseinnikkhah/CloudflareSpeedTest-English_  
 _**English language version of CloudflareST (Text language differences only) [#64](https://github.com/XIU2/CloudflareSpeedTest/issues/68)**_
 
-> _此处仅收集了在本项目 Issues 中宣传过的部分 CloudflareST 相关衍生项目，如果有遗漏可以告诉我~_
+> _此处仅收集了在本项目中宣传过的部分 CloudflareST 相关衍生项目，如果有遗漏可以告诉我~_
 
 ****
 
