@@ -59,7 +59,7 @@ func (cf *CloudflareIPData) toString() []string {
 	result[0] = cf.IP.String()
 	result[1] = strconv.Itoa(cf.Sended)
 	result[2] = strconv.Itoa(cf.Received)
-	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()), 'f', 2, 32)
+	result[3] = strconv.FormatFloat(float64(cf.getRecvRate()*100), 'f', 2, 32) + "%"
 	result[4] = strconv.FormatFloat(cf.Delay.Seconds()*1000, 'f', 2, 32)
 	result[5] = strconv.FormatFloat(cf.DownloadSpeed/1024/1024, 'f', 2, 32)
 	return result
