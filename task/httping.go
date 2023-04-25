@@ -48,6 +48,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 		defer resp.Body.Close()
 
 		//fmt.Println("IP:", ip, "StatusCode:", resp.StatusCode, resp.Request.URL)
+		// 如果未指定的 HTTP 状态码，或指定的状态码不合规，则默认只认为 200、301、302 才算 HTTPing 通过
 		if HttpingStatusCode == 0 || HttpingStatusCode < 100 && HttpingStatusCode > 599 {
 			if resp.StatusCode != 200 && resp.StatusCode != 301 && resp.StatusCode != 302 {
 				return 0, 0
@@ -60,16 +61,17 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 
 		io.Copy(io.Discard, resp.Body)
 
+		// 只有指定了地区才匹配机场三字码
 		if HttpingCFColo != "" {
-			// 支持CloudFront
+			// 通过头部 Server 值判断是 Cloudflare 还是 AWS CloudFront 并设置 cfRay 为各自的机场三字码完整内容
 			cfRay := func() string {
 				if resp.Header.Get("Server") == "cloudflare" {
-					return resp.Header.Get("CF-RAY")
+					return resp.Header.Get("CF-RAY") // 示例 cf-ray: 7bd32409eda7b020-SJC
 				}
-				return resp.Header.Get("x-amz-cf-pop")
+				return resp.Header.Get("x-amz-cf-pop") // 示例 X-Amz-Cf-Pop: SIN52-P1
 			}()
 			colo := p.getColo(cfRay)
-			if colo == "" {
+			if colo == "" { // 没有匹配到三字码或不符合指定地区则直接结束该 IP 测试
 				return 0, 0
 			}
 		}
@@ -110,8 +112,8 @@ func MapColoMap() *sync.Map {
 	if HttpingCFColo == "" {
 		return nil
 	}
-
-	colos := strings.Split(HttpingCFColo, ",")
+	// 将参数指定的地区三字码转为大写并格式化
+	colos := strings.Split(strings.ToUpper(HttpingCFColo), ",")
 	colomap := &sync.Map{}
 	for _, colo := range colos {
 		colomap.Store(colo, colo)
@@ -123,13 +125,13 @@ func (p *Ping) getColo(b string) string {
 	if b == "" {
 		return ""
 	}
-
+	// 正则匹配并返回 机场三字码
 	out := OutRegexp.FindString(b)
 
 	if HttpingCFColomap == nil {
 		return out
 	}
-
+	// 匹配 机场三字码 是否为指定的地区
 	_, ok := HttpingCFColomap.Load(out)
 	if ok {
 		return out
