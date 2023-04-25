@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -17,6 +18,7 @@ var (
 	HttpingStatusCode int
 	HttpingCFColo     string
 	HttpingCFColomap  *sync.Map
+	OutRegexp         = regexp.MustCompile(`[A-Z]{3}`)
 )
 
 // pingReceived pingTotalTime
@@ -59,7 +61,13 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration) {
 		io.Copy(io.Discard, resp.Body)
 
 		if HttpingCFColo != "" {
-			cfRay := resp.Header.Get("CF-RAY")
+			// 支持CloudFront
+			cfRay := func() string {
+				if resp.Header.Get("Server") == "cloudflare" {
+					return resp.Header.Get("CF-RAY")
+				}
+				return resp.Header.Get("x-amz-cf-pop")
+			}()
 			colo := p.getColo(cfRay)
 			if colo == "" {
 				return 0, 0
@@ -115,9 +123,8 @@ func (p *Ping) getColo(b string) string {
 	if b == "" {
 		return ""
 	}
-	idColo := strings.Split(b, "-")
 
-	out := idColo[1]
+	out := OutRegexp.FindString(b)
 
 	if HttpingCFColomap == nil {
 		return out
