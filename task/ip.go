@@ -49,6 +49,7 @@ func newIPRanges() *IPRanges {
 	}
 }
 
+// 如果是单独 IP 则加上子网掩码，反之则获取子网掩码(r.mask)
 func (r *IPRanges) fixIP(ip string) string {
 	// 如果不含有 '/' 则代表不是 IP 段，而是一个单独的 IP，因此需要加上 /32 /128 子网掩码
 	if i := strings.IndexByte(ip, '/'); i < 0 {
@@ -64,6 +65,7 @@ func (r *IPRanges) fixIP(ip string) string {
 	return ip
 }
 
+// 解析 IP 段，获得 IP、IP 范围
 func (r *IPRanges) parseCIDR(ip string) {
 	var err error
 	if r.firstIP, r.ipNet, err = net.ParseCIDR(r.fixIP(ip)); err != nil {
@@ -140,8 +142,12 @@ func (r *IPRanges) chooseIPv6() {
 func loadIPRanges() []*net.IPAddr {
 	ranges := newIPRanges()
 	if IPText != "" { // 从参数中获取 IP 段数据
-		IPs := strings.Split(IPText, ",")
+		IPs := strings.Split(IPText, ",") // 以逗号分隔为数组并循环遍历
 		for _, IP := range IPs {
+			IP = strings.TrimSpace(IP) // 去除首尾的空白字符（空格、制表符、换行符等）
+			if IP == "" {              // 跳过空的（即开头、结尾或连续多个 ,, 的情况）
+				continue
+			}
 			ranges.parseCIDR(IP)
 			if isIPv4(IP) {
 				ranges.chooseIPv4()
@@ -159,9 +165,13 @@ func loadIPRanges() []*net.IPAddr {
 		}
 		defer file.Close()
 		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			ranges.parseCIDR(scanner.Text())
-			if isIPv4(scanner.Text()) {
+		for scanner.Scan() { // 循环遍历文件每一行
+			line := strings.TrimSpace(scanner.Text()) // 去除首尾的空白字符（空格、制表符、换行符等）
+			if line == "" {                           // 跳过空行
+				continue
+			}
+			ranges.parseCIDR(line)
+			if isIPv4(line) {
 				ranges.chooseIPv4()
 			} else {
 				ranges.chooseIPv6()
