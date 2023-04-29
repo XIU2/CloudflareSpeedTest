@@ -65,7 +65,7 @@ func (r *IPRanges) fixIP(ip string) string {
 	return ip
 }
 
-// 解析 IP 段，获得 IP、IP 范围
+// 解析 IP 段，获得 IP、IP 范围、子网掩码
 func (r *IPRanges) parseCIDR(ip string) {
 	var err error
 	if r.firstIP, r.ipNet, err = net.ParseCIDR(r.fixIP(ip)); err != nil {
@@ -100,40 +100,48 @@ func (r *IPRanges) getIPRange() (minIP, hosts byte) {
 }
 
 func (r *IPRanges) chooseIPv4() {
-	minIP, hosts := r.getIPRange()
-	for r.ipNet.Contains(r.firstIP) {
-		if TestAll { // 如果是测速全部 IP
-			for i := 0; i <= int(hosts); i++ { // 遍历 IP 最后一段最小值到最大值
-				r.appendIPv4(byte(i) + minIP)
+	if r.mask == "/32" { // 单个 IP 则无需随机，直接加入自身即可
+		r.appendIP(r.firstIP)
+	} else {
+		minIP, hosts := r.getIPRange()    // 返回第四段 IP 的最小值及可用数目
+		for r.ipNet.Contains(r.firstIP) { // 只要该 IP 没有超出 IP 网段范围，就继续循环随机
+			if TestAll { // 如果是测速全部 IP
+				for i := 0; i <= int(hosts); i++ { // 遍历 IP 最后一段最小值到最大值
+					r.appendIPv4(byte(i) + minIP)
+				}
+			} else { // 随机 IP 的最后一段 0.0.0.X
+				r.appendIPv4(minIP + randIPEndWith(hosts))
 			}
-		} else { // 随机 IP 的最后一段 0.0.0.X
-			r.appendIPv4(minIP + randIPEndWith(hosts))
-		}
-		r.firstIP[14]++ // 0.0.(X+1).X
-		if r.firstIP[14] == 0 {
-			r.firstIP[13]++ // 0.(X+1).X.X
-			if r.firstIP[13] == 0 {
-				r.firstIP[12]++ // (X+1).X.X.X
+			r.firstIP[14]++ // 0.0.(X+1).X
+			if r.firstIP[14] == 0 {
+				r.firstIP[13]++ // 0.(X+1).X.X
+				if r.firstIP[13] == 0 {
+					r.firstIP[12]++ // (X+1).X.X.X
+				}
 			}
 		}
 	}
 }
 
 func (r *IPRanges) chooseIPv6() {
-	var tempIP uint8
-	for r.ipNet.Contains(r.firstIP) {
-		if r.mask != "/128" {
+	if r.mask == "/128" { // 单个 IP 则无需随机，直接加入自身即可
+		r.appendIP(r.firstIP)
+	} else {
+		var tempIP uint8                  // 临时变量，用于记录前一位的值
+		for r.ipNet.Contains(r.firstIP) { // 只要该 IP 没有超出 IP 网段范围，就继续循环随机
 			r.firstIP[15] = randIPEndWith(255) // 随机 IP 的最后一段
 			r.firstIP[14] = randIPEndWith(255) // 随机 IP 的最后一段
-		}
-		targetIP := make([]byte, len(r.firstIP))
-		copy(targetIP, r.firstIP)
-		r.appendIP(targetIP)
-		for i := 13; i >= 0; i-- {
-			tempIP = r.firstIP[i]
-			r.firstIP[i] += randIPEndWith(255)
-			if r.firstIP[i] >= tempIP {
-				break
+
+			targetIP := make([]byte, len(r.firstIP))
+			copy(targetIP, r.firstIP)
+			r.appendIP(targetIP) // 加入 IP 地址池
+
+			for i := 13; i >= 0; i-- { // 从倒数第三位开始往前随机
+				tempIP = r.firstIP[i]              // 保存前一位的值
+				r.firstIP[i] += randIPEndWith(255) // 随机 0~255，加到当前位上
+				if r.firstIP[i] >= tempIP {        // 如果当前位的值大于等于前一位的值，说明随机成功了，可以退出该循环
+					break
+				}
 			}
 		}
 	}
@@ -148,8 +156,8 @@ func loadIPRanges() []*net.IPAddr {
 			if IP == "" {              // 跳过空的（即开头、结尾或连续多个 ,, 的情况）
 				continue
 			}
-			ranges.parseCIDR(IP)
-			if isIPv4(IP) {
+			ranges.parseCIDR(IP) // 解析 IP 段，获得 IP、IP 范围、子网掩码
+			if isIPv4(IP) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
 				ranges.chooseIPv4()
 			} else {
 				ranges.chooseIPv6()
@@ -170,8 +178,8 @@ func loadIPRanges() []*net.IPAddr {
 			if line == "" {                           // 跳过空行
 				continue
 			}
-			ranges.parseCIDR(line)
-			if isIPv4(line) {
+			ranges.parseCIDR(line) // 解析 IP 段，获得 IP、IP 范围、子网掩码
+			if isIPv4(line) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
 				ranges.chooseIPv4()
 			} else {
 				ranges.chooseIPv6()
