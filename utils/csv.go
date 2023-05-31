@@ -92,7 +92,10 @@ func convertToString(data []CloudflareIPData) [][]string {
 type PingDelaySet []CloudflareIPData
 
 func (s PingDelaySet) FilterDelay() (data PingDelaySet) {
-	if InputMaxDelay > maxDelay || InputMinDelay < minDelay {
+	if InputMaxDelay > maxDelay || InputMinDelay < minDelay { // 当输入的延迟条件不在默认范围内时，不进行过滤
+		return s
+	}
+	if InputMaxDelay == maxDelay && InputMinDelay == minDelay { // 当输入的延迟条件为默认值时，不进行过滤
 		return s
 	}
 	for _, v := range s {
