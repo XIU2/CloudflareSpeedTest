@@ -41,10 +41,10 @@ mkdir CloudflareST
 cd CloudflareST
 
 # 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.3/CloudflareST_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_amd64.tar.gz
 # 如果你是在国内服务器上下载，那么请使用下面这几个镜像加速：
-# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.2.3/CloudflareST_linux_amd64.tar.gz
-# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.3/CloudflareST_linux_amd64.tar.gz
+# wget -N https://download.fastgit.org/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghproxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.4/CloudflareST_linux_amd64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm CloudflareST_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -150,9 +150,11 @@ https://github.com/XIU2/CloudflareSpeedTest
         匹配指定地区；地区名为当地机场三字码，英文逗号分隔，支持小写，支持 Cloudflare、AWS CloudFront，仅 HTTPing 模式可用；(默认 所有地区)
 
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，各上下限条件可搭配使用；(默认 9999 ms)
     -tll 40
-        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 0 ms)
+        平均延迟下限；只输出高于指定平均延迟的 IP；(默认 0 ms)
+    -tlr 0.2
+        丢包几率上限；只输出低于/等于指定丢包率的 IP，范围 0.00~1.00，0 过滤任何丢包的 IP；(默认 1.00)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
 
@@ -412,7 +414,7 @@ CloudflareST.exe -tp 80 -url http://cdn.cloudflare.steamstatic.com/steam/apps/59
 
 ****
 
-#### \# 自定义测速条件（指定 延迟/下载速度 的目标范围）
+#### \# 自定义测速条件（指定 延迟/丢包/下载速度 的目标范围）
 
 <details>
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
@@ -421,20 +423,12 @@ CloudflareST.exe -tp 80 -url http://cdn.cloudflare.steamstatic.com/steam/apps/59
 
 > 注意：延迟测速进度条右边的**可用数量**，仅指延迟测速过程中**未超时的 IP 数量**，和延迟上下限条件无关。
 
-- 指定 **[平均延迟下限]** 条件
-
-``` bash
-# 平均延迟下限：40 ms （一般除了移动直连香港外，几乎不存在低于 100ms 的，自行测试适合的下限延迟）
-# 平均延迟下限和其他的上下限参数一样，都可以单独使用、互相搭配使用！
-CloudflareST.exe -tll 40
-```
-
 - 仅指定 **[平均延迟上限]** 条件
 
 ``` bash
-# 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：10 个（可选）
+# 平均延迟上限：200 ms，下载速度下限：0 MB/s
 # 即找到平均延迟低于 200 ms 的 IP，然后再按延迟从低到高进行 10 次下载测速
-CloudflareST.exe -tl 200 -dn 10
+CloudflareST.exe -tl 200
 ```
 
 > 如果**没有找到一个满足延迟**条件的 IP，那么不会输出任何内容。
@@ -447,6 +441,14 @@ CloudflareST.exe -tl 200 -dn 10
 # 平均延迟上限：200 ms，下载速度下限：0 MB/s，数量：不知道多少 个
 # 即只输出低于 200ms 的 IP，且不再下载测速（因为不再下载测速，所以 -dn 参数就无效了）
 CloudflareST.exe -tl 200 -dd
+```
+
+- 仅指定 **[丢包几率上限]** 条件
+
+``` bash
+# 丢包几率上限：0.25
+# 即找到丢包率低于等于 0.25 的 IP，范围 0.00~1.00，如果 -tlr 0 则代表过滤掉任何丢包的 IP
+CloudflareST.exe -tlr 0.25
 ```
 
 ****
@@ -479,7 +481,7 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 > 如果**没有找到一个满足速度**条件的 IP，那么会忽略条件输出所有 IP 测速结果（方便你下次测速时调整条件）。  
 > 所以建议先不指定条件测速一遍，看看平均延迟和下载速度大概在什么范围，避免指定条件**过低/过高**！
 
-> 因为Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
+> 因为 Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
 > 运行时可以加上 `-sl 0.01`（下载速度下限），过滤掉**回源 IP**（下载测速低于 0.01MB/s 的结果）。
 
 </details>
