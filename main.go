@@ -46,9 +46,11 @@ https://github.com/XIU2/CloudflareSpeedTest
         匹配指定地区；地区名为当地机场三字码，英文逗号分隔，仅 HTTPing 模式可用；(默认 所有地区)
 
     -tl 200
-        平均延迟上限；只输出低于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 9999 ms)
+        平均延迟上限；只输出低于指定平均延迟的 IP，各上下限条件可搭配使用；(默认 9999 ms)
     -tll 40
-        平均延迟下限；只输出高于指定平均延迟的 IP，可与其他上限/下限搭配；(默认 0 ms)
+        平均延迟下限；只输出高于指定平均延迟的 IP；(默认 0 ms)
+    -tlr 0.2
+        丢包几率上限；只输出低于/等于指定丢包率的 IP，范围 0.00~1.00，0 过滤任何丢包的 IP；(默认 1.00)
     -sl 5
         下载速度下限；只输出高于指定下载速度的 IP，凑够指定数量 [-dn] 才会停止测速；(默认 0.00 MB/s)
 
@@ -72,6 +74,7 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 `
 	var minDelay, maxDelay, downloadTime int
+	var maxLossRate float64
 	flag.IntVar(&task.Routines, "n", 200, "延迟测速线程")
 	flag.IntVar(&task.PingTimes, "t", 4, "延迟测速次数")
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
@@ -85,6 +88,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 	flag.IntVar(&maxDelay, "tl", 9999, "平均延迟上限")
 	flag.IntVar(&minDelay, "tll", 0, "平均延迟下限")
+	flag.Float64Var(&maxLossRate, "tlr", 1, "丢包几率上限")
 	flag.Float64Var(&task.MinSpeed, "sl", 0, "下载速度下限")
 
 	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
@@ -104,6 +108,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	}
 	utils.InputMaxDelay = time.Duration(maxDelay) * time.Millisecond
 	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
+	utils.InputMaxLossRate = float32(maxLossRate)
 	task.Timeout = time.Duration(downloadTime) * time.Second
 	task.HttpingCFColomap = task.MapColoMap()
 
@@ -125,8 +130,8 @@ func main() {
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
-	// 开始延迟测速
-	pingData := task.NewPing().Run().FilterDelay()
+	// 开始延迟测速 + 过滤延迟/丢包
+	pingData := task.NewPing().Run().FilterDelay().FilterLossRate()
 	// 开始下载测速
 	speedData := task.TestDownloadSpeed(pingData)
 	utils.ExportCsv(speedData) // 输出文件
