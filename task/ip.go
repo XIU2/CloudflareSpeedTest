@@ -13,9 +13,14 @@ import (
 )
 
 func getDefaultInputFile() string {
-	exe, _ := os.Executable()
-	sym, _ := filepath.EvalSymlinks(exe)
-	log.Print(sym)
+	exe, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+	sym, err := filepath.EvalSymlinks(exe)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return filepath.Dir(sym) + "/ip.txt"
 }
 
