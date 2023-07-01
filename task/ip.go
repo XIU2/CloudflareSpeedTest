@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 )
 
+const defaultInputFile = "ip.txt"
+
 func getDefaultInputFile() string {
 	exe, err := os.Executable()
 	if err != nil {
@@ -21,7 +23,7 @@ func getDefaultInputFile() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return filepath.Dir(sym) + "/ip.txt"
+	return filepath.Join(filepath.Dir(sym), defaultInputFile)
 }
 
 var (
@@ -176,7 +178,11 @@ func loadIPRanges() []*net.IPAddr {
 		}
 	} else { // 从文件中获取 IP 段数据
 		if IPFile == "" {
-			IPFile = getDefaultInputFile()
+			if _, err := os.Stat(defaultInputFile); err != nil {
+				IPFile = getDefaultInputFile()
+			} else {
+				IPFile = defaultInputFile
+			}
 		}
 		file, err := os.Open(IPFile)
 		if err != nil {
