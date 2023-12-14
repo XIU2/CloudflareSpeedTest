@@ -78,7 +78,8 @@ func ExportCsv(data []CloudflareIPData) {
 		return
 	}
 	defer fp.Close()
-	w := csv.NewWriter(fp) //创建一个新的写入文件流
+	w := csv.NewWriter(fp)            //创建一个新的写入文件流
+	w.Write([]string{"\xEF\xBB\xBF"}) //增加修改boom头.中文正常显示
 	_ = w.Write([]string{"IP 地址", "已发送", "已接收", "丢包率", "平均延迟", "下载速度 (MB/s)"})
 	_ = w.WriteAll(convertToString(data))
 	w.Flush()
