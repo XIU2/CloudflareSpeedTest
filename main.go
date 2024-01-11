@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"os/exec"
+
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -74,6 +77,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         打印帮助说明
 `
 	var minDelay, maxDelay, downloadTime int
+	var stopOpenClashBeforeStart bool
+
 	var maxLossRate float64
 	flag.IntVar(&task.Routines, "n", 200, "延迟测速线程")
 	flag.IntVar(&task.PingTimes, "t", 4, "延迟测速次数")
@@ -100,6 +105,9 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
+
+	flag.BoolVar(&stopOpenClashBeforeStart, "stop-openclash", false, "在启动前关闭openclash, 默认为false. 只在openwrt下有效")
+
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
 
@@ -126,6 +134,16 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
+	if runtime.GOOS == "linux" && isOpenClashRunning() {
+		defer startOpenClash()
+
+		// 在程序开始时停止 OpenClash
+		if err := stopOpenClash(); err != nil {
+				fmt.Println("停止 OpenClash 时出错:", err)
+				// 处理错误或退出
+		}
+	}
+
 	task.InitRandSeed() // 置随机数种子
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
@@ -141,6 +159,41 @@ func main() {
 		fmt.Printf("\n*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***\n", versionNew)
 	}
 	endPrint()
+}
+
+
+// isOpenClashRunning 检查 OpenClash 是否正在运行
+func isOpenClashRunning() bool {
+		cmd := "ps -ef | grep '/openclash/openclash_watchdog.sh' | grep -v grep | awk '{print $1}'"
+		out, err := exec.Command("sh", "-c", cmd).Output()
+		if err != nil {
+				return false
+		}
+		return bytes.TrimSpace(out) != nil
+}
+
+func stopOpenClash() error {
+		// 执行停止 OpenClash 的命令
+		err := exec.Command("/etc/init.d/openclash", "stop").Run()
+		if err != nil {
+				return err
+		}
+
+		// 打印信息表明 OpenClash 已被停止
+		fmt.Println("发现 OpenClash 进程，已停止")
+		return nil
+}
+
+func startOpenClash() {
+		// 执行启动 OpenClash 的命令
+		err := exec.Command("/etc/init.d/openclash", "start").Run()
+		if err != nil {
+				fmt.Println("启动 OpenClash 时出错:", err)
+				return
+		}
+
+		// 打印信息
+		fmt.Println("已启动 OpenClash")
 }
 
 func endPrint() {
