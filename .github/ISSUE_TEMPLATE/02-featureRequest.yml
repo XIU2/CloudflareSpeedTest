@@ -7,9 +7,11 @@ body:
       value: |
         发之前，请先搜下有没有类似的 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues)、[**Discussions**](https://github.com/XIU2/CloudflareSpeedTest/discussions) 问题（包括[**已关闭**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed)的），请勿重复发起！
 
-        注意！如果你提的功能建议和 CloudflareST **软件本身功能无关**，请**前往讨论区** (💬 [**Discussions**](https://github.com/XIU2/CloudflareSpeedTest/discussions)) 发帖交流！
+        > [!NOTE]
+        > 注意！如果你提的功能建议和 CloudflareST **软件本身功能无关**，请**前往讨论区** (💬 [**Discussions**](https://github.com/XIU2/CloudflareSpeedTest/discussions)) 发帖交流！
 
-        > 另外，不接受**个性化**的功能请求（即 **很少人** 或 **只有你自己** 才会用到的功能）
+        > [!TIP]
+        > 另外，不接受**个性化**的小众功能请求（即 **很少人** 或 **只有你自己** 才会用到的功能）
         ****
   - type: textarea
     id: description
