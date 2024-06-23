@@ -9,15 +9,28 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"path/filepath"
 )
 
 const defaultInputFile = "ip.txt"
+
+func getDefaultInputFile() string {
+	exe, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+	sym, err := filepath.EvalSymlinks(exe)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return filepath.Join(filepath.Dir(sym), defaultInputFile)
+}
 
 var (
 	// TestAll test all ip
 	TestAll = false
 	// IPFile is the filename of IP Rangs
-	IPFile = defaultInputFile
+	IPFile = getDefaultInputFile()
 	IPText string
 )
 
@@ -165,7 +178,11 @@ func loadIPRanges() []*net.IPAddr {
 		}
 	} else { // 从文件中获取 IP 段数据
 		if IPFile == "" {
-			IPFile = defaultInputFile
+			if _, err := os.Stat(defaultInputFile); err != nil {
+				IPFile = getDefaultInputFile()
+			} else {
+				IPFile = defaultInputFile
+			}
 		}
 		file, err := os.Open(IPFile)
 		if err != nil {
