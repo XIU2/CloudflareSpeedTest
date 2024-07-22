@@ -83,7 +83,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "指定测速地址")
 
 	flag.BoolVar(&task.Httping, "httping", false, "切换测速模式")
-	flag.IntVar(&task.HttpingStatusCode, "httping-code", 0, "有效状态代码")
+	flag.IntVar(&task.HttpingStatusCode, "httping-code", HKG, "有效状态代码")
 	flag.StringVar(&task.HttpingCFColo, "cfcolo", "", "匹配指定地区")
 
 	flag.IntVar(&maxDelay, "tl", 9999, "平均延迟上限")
