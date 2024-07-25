@@ -129,7 +129,7 @@ IP 地址, 已发送, 已接收, 丢包率, 平均延迟, 下载速度 (MB/s)
 
 直接运行使用的是默认参数，如果想要测速结果更全面、更符合自己的要求，可以自定义参数。
 
-```css
+```Dart
 C:\>CloudflareST.exe -h
 
 CloudflareSpeedTest vX.X.X
