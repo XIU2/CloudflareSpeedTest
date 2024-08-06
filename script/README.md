@@ -21,7 +21,7 @@
 
 脚本会运行 CloudflareST 获得最快 IP，并替换掉 Hosts 文件中的旧 CDN IP。
 
-> **作者：**@XIU2  
+> **作者：**[@XIU2](https://github.com/xiu2)  
 > **使用说明/问题反馈：https://github.com/XIU2/CloudflareSpeedTest/discussions/312**
 
 <details>
@@ -54,7 +54,7 @@
 脚本会运行 CloudflareST 测速后获取最快 IP 并替换 3Proxy 配置文件中的旧 Cloudflare CDN IP。  
 可以把所有 Cloudflare CDN IP 都重定向至最快 IP，实现一劳永逸的加速所有使用 Cloudflare CDN 的网站（不需要一个个添加域名到 Hosts 了）。
 
-> **作者：**@XIU2  
+> **作者：**[@XIU2](https://github.com/xiu2)  
 > **使用说明/问题反馈：https://github.com/XIU2/CloudflareSpeedTest/discussions/71**
 
 <details>
@@ -90,7 +90,7 @@
 如果你的域名托管在 **dnspod**，则可以通过 dnspod 官方提供的 API 来自动更新域名解析记录！  
 脚本会运行 CloudflareST 测速获得最快 IP，并通过 Cloudflare API 来更新域名解析记录为这个最快 IP。
 
-> **作者：**@imashen  
+> **作者：**[@imashen](https://github.com/imashen)  
 > **使用说明/问题反馈：...**
 
 <details>
@@ -110,7 +110,7 @@
 如果你的域名托管在 **Cloudflare**，则可以通过 Cloudflare 官方提供的 API 来自动更新域名解析记录！  
 脚本会运行 CloudflareST 测速获得最快 IP，并通过 Cloudflare API 来更新域名解析记录为这个最快 IP。
 
-> **作者：**@XIU2  
+> **作者：**[@XIU2](https://github.com/xiu2)  
 > **使用说明/问题反馈：https://github.com/XIU2/CloudflareSpeedTest/discussions/481**
 
 <details>
