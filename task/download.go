@@ -102,7 +102,7 @@ func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address s
 		fakeSourceAddr = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
-		return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)
+		return newDialer().DialContext(ctx, network, fakeSourceAddr)
 	}
 }
 
