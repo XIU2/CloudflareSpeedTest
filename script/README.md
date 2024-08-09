@@ -91,7 +91,7 @@
 脚本会运行 CloudflareST 测速获得最快 IP，并通过 Cloudflare API 来更新域名解析记录为这个最快 IP。
 
 > **作者：**[@imashen](https://github.com/imashen)  
-> **使用说明/问题反馈：...**
+> **使用说明/问题反馈：https://github.com/XIU2/CloudflareSpeedTest/pull/533**
 
 <details>
 <summary><code><strong>「 更新日志」</strong></code></summary>
@@ -140,5 +140,5 @@
 
 ## 功能建议/问题反馈
 
-如果这些脚本使用过程中你遇到了什么问题，可以先去脚本对应的 **`使用说明`** 帖子里看看是否有别人问过了。
+如果这些脚本使用过程中你遇到了什么问题，可以先去脚本对应的 **`使用说明`** 帖子里看看是否有别人问过了。  
 如果没找到类似问题，那么就在脚本对应的 **`使用说明`** 帖子里直接评论问作者吧。
