@@ -74,7 +74,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	}
 	bar := utils.NewBar(TestCount, bar_b, "")
 	for i := 0; i < testNum; i++ {
-		speed := downloadHandler(ipSet[i].IP)
+		speed := downloadHandler(ipSet[i].IP, ipSet[i].Port)
 		ipSet[i].DownloadSpeed = speed
 		// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
 		if speed >= MinSpeed*1024*1024 {
@@ -94,12 +94,12 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	return
 }
 
-func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address string) (net.Conn, error) {
+func getDialContext(ip *net.IPAddr, port int) func(ctx context.Context, network, address string) (net.Conn, error) {
 	var fakeSourceAddr string
 	if isIPv4(ip.String()) {
-		fakeSourceAddr = fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+		fakeSourceAddr = fmt.Sprintf("%s:%d", ip.String(), port)
 	} else {
-		fakeSourceAddr = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
+		fakeSourceAddr = fmt.Sprintf("[%s]:%d", ip.String(), port)
 	}
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)
@@ -107,9 +107,9 @@ func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address s
 }
 
 // return download Speed
-func downloadHandler(ip *net.IPAddr) float64 {
+func downloadHandler(ip *net.IPAddr, port int) float64 {
 	client := &http.Client{
-		Transport: &http.Transport{DialContext: getDialContext(ip)},
+		Transport: &http.Transport{DialContext: getDialContext(ip, port)},
 		Timeout:   Timeout,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) > 10 { // 限制最多重定向 10 次

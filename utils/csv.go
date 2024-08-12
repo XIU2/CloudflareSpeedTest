@@ -37,6 +37,7 @@ func noOutput() bool {
 
 type PingData struct {
 	IP       *net.IPAddr
+	Port     int
 	Sended   int
 	Received int
 	Delay    time.Duration
