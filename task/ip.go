@@ -86,7 +86,7 @@ func (r *IPRanges) parseCIDRcustom(ip string) {
 		port int64
 	)
 
-	arr := strings.Split(ip, ",")
+	arr := strings.Split(ip, ";")
 	if len(arr) > 1 {
 		ip = arr[0]
 		if port, err = strconv.ParseInt(arr[1], 10, 0); err != nil {

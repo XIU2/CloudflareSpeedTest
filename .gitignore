@@ -2,3 +2,4 @@ dist
 Releases
 *.exe
 *.csv
+.vscode/
