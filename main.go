@@ -116,8 +116,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	if printVersion {
 		println(version)
 		fmt.Println("检查版本更新中...")
-		//checkUpdate()
-		versionNew = ""
+		checkUpdate()
 		if versionNew != "" {
 			fmt.Printf("*** 发现新版本 [%s]！请前往 [https://github.com/XIU2/CloudflareSpeedTest] 更新！ ***", versionNew)
 		} else {
