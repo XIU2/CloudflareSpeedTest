@@ -68,6 +68,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 /24 段随机测速一个 IP)
+	-onlyip
+		命令行输出和结果文件仅输出 IP，不附带端口信息
 
     -v
         打印程序版本 + 检查版本更新
@@ -99,6 +101,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
+	flag.BoolVar(&utils.OnlyIP, "onlyip", false, "结果仅输出 IP")
 
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 	flag.Usage = func() { fmt.Print(help) }
