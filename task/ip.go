@@ -18,12 +18,9 @@ var (
 	TestAll = false
 	// IPFile is the filename of IP Rangs
 	IPFile = defaultInputFile
+	seed   = rand.Source(rand.NewSource(time.Now().UnixNano()))
 	IPText string
 )
-
-func InitRandSeed() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 func isIPv4(ip string) bool {
 	return strings.Contains(ip, ".")
@@ -33,7 +30,7 @@ func randIPEndWith(num byte) byte {
 	if num == 0 { // 对于 /32 这种单独的 IP
 		return byte(0)
 	}
-	return byte(rand.Intn(int(num)))
+	return byte(seed.Intn(int(num)))
 }
 
 type IPRanges struct {
@@ -80,29 +77,41 @@ func (r *IPRanges) parseCIDR(ip string) {
 }
 
 // 解析自定义的 IP 段，获得 IP、端口、IP 范围、子网掩码
-func (r *IPRanges) parseCIDRcustom(ip string) {
+func (r *IPRanges) parseCIDRwithport(ip string) {
 	var (
-		err  error
-		port int64
+		err        error
+		port       int64
+		isIPv4bool bool
+		sep        string
 	)
 
-	arr := strings.Split(ip, ";")
-	if len(arr) > 1 {
-		ip = arr[0]
-		if port, err = strconv.ParseInt(arr[1], 10, 0); err != nil {
-			r.port = TCPPort
-		} else {
-			if port <= 0 || port >= 65535 {
-				r.port = TCPPort
-			} else {
-				r.port = int(port)
-			}
-		}
+	if isIPv4(ip) {
+		isIPv4bool = true
+		sep = ":"
 	} else {
+		isIPv4bool = false
+		sep = "]:"
+	}
+
+	arr := strings.Split(ip, sep)
+	if len(arr) > 1 {
+		if isIPv4bool {
+			ip = arr[0]
+		} else {
+			ip = arr[0][1:]
+		}
+		port, err = strconv.ParseInt(arr[1], 10, 0)
+		if (err == nil) && (port > 0) && (port < 65535) {
+			r.port = int(port)
+		}
+	}
+
+	if err != nil || port == 0 {
 		r.port = TCPPort
 	}
+
 	if r.firstIP, r.ipNet, err = net.ParseCIDR(r.fixIP(ip)); err != nil {
-		log.Fatalln("ParseCIDRcustom err", err)
+		log.Fatalln("ParseCIDRwithport err", err)
 	}
 }
 
@@ -193,8 +202,8 @@ func loadIPRanges() []*dest {
 				continue
 			}
 			//ranges.parseCIDR(IP) // 解析 IP 段，获得 IP、IP 范围、子网掩码
-			ranges.parseCIDRcustom(IP) // 解析 IP 段，获得 IP、端口、IP 范围、子网掩码
-			if isIPv4(IP) {            // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
+			ranges.parseCIDRwithport(IP) // 解析 IP 段，获得 IP、端口、IP 范围、子网掩码
+			if isIPv4(IP) {              // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
 				ranges.chooseIPv4()
 			} else {
 				ranges.chooseIPv6()
@@ -216,8 +225,8 @@ func loadIPRanges() []*dest {
 				continue
 			}
 			//ranges.parseCIDR(IP) // 解析 IP 段，获得 IP、IP 范围、子网掩码
-			ranges.parseCIDRcustom(line) // 解析 IP 段，获得 IP、端口、IP 范围、子网掩码
-			if isIPv4(line) {            // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
+			ranges.parseCIDRwithport(line) // 解析 IP 段，获得 IP、端口、IP 范围、子网掩码
+			if isIPv4(line) {              // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
 				ranges.chooseIPv4()
 			} else {
 				ranges.chooseIPv6()

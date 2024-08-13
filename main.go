@@ -35,7 +35,7 @@ https://github.com/XIU2/CloudflareSpeedTest
         下载测速时间；单个 IP 下载测速最长时间，不能太短；(默认 10 秒)
     -tp 443
         指定所有测速端口；即延迟测速/下载测速时使用的端口；(默认 443 端口)
-		(也可以在IP段数据文件里指定,在每个IP段后加上 ;端口 即可)
+		(会被-ip参数或IP段文件中指定的 ip/mask:port 覆盖)
     -url https://cf.xiu2.xyz/url
         指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
 
@@ -128,8 +128,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	task.InitRandSeed() // 置随机数种子
-
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
 	// 开始延迟测速 + 过滤延迟/丢包
