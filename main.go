@@ -128,8 +128,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	task.InitRandSeed() // 置随机数种子
-
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
 	// 开始延迟测速 + 过滤延迟/丢包
