@@ -3,3 +3,5 @@ Releases
 *.exe
 *.csv
 .vscode/
+*.bat
+*.sh
