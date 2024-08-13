@@ -60,7 +60,7 @@ func (cf *CloudflareIPData) getLossRate() float32 {
 
 func (cf *CloudflareIPData) toString() []string {
 	result := make([]string, 6)
-	result[0] = cf.IP.String()
+	result[0] = fmt.Sprintf("%s:%d", cf.IP.String(), cf.Port)
 	result[1] = strconv.Itoa(cf.Sended)
 	result[2] = strconv.Itoa(cf.Received)
 	result[3] = strconv.FormatFloat(float64(cf.getLossRate()), 'f', 2, 32)
