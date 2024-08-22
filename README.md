@@ -31,6 +31,8 @@
 <details>
 <summary><code><strong>「 点击查看 Windows 系统下其他安装方式」</strong></code></summary>
 
+****
+
 通过scoop安装:
 ```sh
 # 开启自带的extras仓库
