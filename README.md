@@ -29,6 +29,21 @@
 2. 双击运行 `CloudflareST.exe` 文件（Windows 系统），等待测速完成...
 
 <details>
+<summary><code><strong>「 点击查看 Windows 系统下其他安装方式」</strong></code></summary>
+
+****
+
+通过scoop安装:
+```sh
+# 开启自带的extras仓库
+scoop bucket add extras
+# 安装cloudflare-speedtest
+scoop install cloudflare-speedtest
+```
+
+</details>
+
+<details>
 <summary><code><strong>「 点击查看 Linux 系统下的使用示例 」</strong></code></summary>
 
 ****
