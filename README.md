@@ -35,10 +35,10 @@
 
 通过scoop安装:
 ```sh
-# 开启自带的extras仓库
-scoop bucket add extras
+# 添加最多人使用的中文软件包仓库：dorado
+scoop bucket add dorado https://github.com/chawyehsu/dorado
 # 安装cloudflare-speedtest
-scoop install cloudflare-speedtest
+scoop install dorado/cloudflare-speedtest
 ```
 
 </details>
