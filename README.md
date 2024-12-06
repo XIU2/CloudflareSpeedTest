@@ -395,16 +395,25 @@ CloudflareST.exe -httping -tp 80 -url http://cdn.cloudflare.steamstatic.com/stea
 
 ****
 
-``` bash
-# 该功能支持 Cloudflare CDN、AWS CloudFront CDN，且这两个 CDN 的机场三字码是通用的
-# 注意：如果你要用于筛选 AWS CloudFront CDN 地区，那么要通过 -url 参数指定一个使用该 CDN 的地址（因为软件默认地址是 Cloudflare 的）
+Cloudflare CDN 的节点 IP 是 Anycast IP，即每个 IP 对应的服务器节点及地区不是固定的，而是动态变化的，**不同地区、不同运营商、不同时间段**访问**同一个 IP** 分配到的服务器节点地区和路线也都是不一样的（比如同一个 IP，美国人访问就是分配到就近的美国节点服务器，日本人访问则就又变成了就近的日本节点服务器了，国内大陆就比较特殊了，只能给你分配到其他国家，而且因为成本原因一般是分配为美国，当然不同的 IP 段路由变化/分配逻辑也是不同的）。
 
-# 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（也可以继续进行下载测速）
+> 注意！虽然 Cloudflare CDN 有很多亚洲节点，但**不代表你就能用上**，新加坡人测速可能随便一抓一大把的新加坡节点，但你全部扫一遍可能都遇不到一个，因为这是由 CDN 控制的。Anycast IP 的路由是经常变的，同一个 IP 今天可能是美国，明天你再访问可能就又分配到欧洲节点了（当然这只是个例子，一般没有那么频繁，这也和很多因素有关，比如线路拥塞程度，成本变动等），因此不要对该功能有过高期待~
+
+因此，对于这种 Anycast IP 的实际服务器位置，就不能靠那些在线 IP 地址位置查询网站来判断了。
+
+除了通过 HTTP 响应头获取机场三字码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 给你分配的实际节点的地区机场三字码。
+
+> 该功能支持 Cloudflare CDN 和 AWS CloudFront CDN，且这两个 CDN 的机场三字码是通用的（算是惯例）。  
+> **注意**：如果你要用于筛选 AWS CloudFront CDN 地区，那么要通过 `-url` 参数指定一个使用 AWS CloudFront CDN 的下载测速地址（因为软件默认下载测速地址是 Cloudflare CDN 的）
+
+``` bash
+# 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（如果没有指定 -dd 的话则会继续进行下载测速）
+# 如果延迟测速后结果为 0，则说明没有找到任何一个（未超时可用的）指定地区的 IP。
 # 节点地区名为当地 机场三字码，指定多个时用英文逗号分隔，v2.2.3 版本后支持小写
 
-CloudflareST.exe -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
+CloudflareST.exe -httping -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 
-# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为要访问网页来获得）
+# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为软件是通过 HTTP 链接中的响应头来获得该 IP 的实际地区机场三字码）
 ```
 
 > 两个 CDN 机场三字码通用，因此各地区名可见：https://www.cloudflarestatus.com/
