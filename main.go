@@ -68,6 +68,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 /24 段随机测速一个 IP)
 
+    -fwmark
+        给测速过程中的数据包设置 fwmark 以便过滤流量（默认 0 即不设置，仅 Linux 支持，需要 CAP_NET_ADMIN 或 CAP_NET_RAW 能力）
+
     -v
         打印程序版本 + 检查版本更新
     -h
@@ -99,9 +102,13 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 
+	flag.IntVar(&task.FWMark, "fwmark", 0, "设置 fwmark")
+
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
+
+	fmt.Println("fwmark", task.FWMark)
 
 	if task.MinSpeed > 0 && time.Duration(maxDelay)*time.Millisecond == utils.InputMaxDelay {
 		fmt.Println("[小提示] 在使用 [-sl] 参数时，建议搭配 [-tl] 参数，以避免因凑不够 [-dn] 数量而一直测速...")
