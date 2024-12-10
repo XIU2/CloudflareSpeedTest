@@ -196,7 +196,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 ****
 
-> 该示例把常用参数都给加上了，即为：`-ttl 40 -tl 150 -sl 1 -dn 5`，最后输出结果如下：
+> 该示例把常用参数都给加上了，即为：`-tll 40 -tl 150 -sl 1 -dn 5`，最后输出结果如下：
 
 ```python
 # XIU2/CloudflareSpeedTest vX.X.X
