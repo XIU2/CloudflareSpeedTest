@@ -29,6 +29,21 @@
 2. 双击运行 `CloudflareST.exe` 文件（Windows 系统），等待测速完成...
 
 <details>
+<summary><code><strong>「 点击查看 Windows 系统下其他安装方式」</strong></code></summary>
+
+****
+
+通过scoop安装:
+```sh
+# 添加最多人使用的中文软件包仓库：dorado
+scoop bucket add dorado https://github.com/chawyehsu/dorado
+# 安装cloudflare-speedtest
+scoop install dorado/cloudflare-speedtest
+```
+
+</details>
+
+<details>
 <summary><code><strong>「 点击查看 Linux 系统下的使用示例 」</strong></code></summary>
 
 ****
