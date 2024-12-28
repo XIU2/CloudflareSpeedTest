@@ -3,7 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 # --------------------------------------------------------------
 #	项目: CloudflareSpeedTest 自动更新 dnsmasq 配置文件
-#	版本: 1.0.4
+#	版本: 1.0.0
 #	作者: XIU2,Sving1024
 #	项目: https://github.com/XIU2/CloudflareSpeedTest
 # --------------------------------------------------------------
