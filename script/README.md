@@ -141,6 +141,25 @@
 
 ****
 
+## 📑 cfst_dnsmasq.sh
+
+脚本会运行 CloudflareST 测速后获取最快 IP 并替换 dnsmasq 配置文件中的旧 Cloudflare CDN IP。  
+
+> **作者：**[@Sving1024](https://github.com/Sving1024)  
+> **使用说明/问题反馈：https://github.com/XIU2/CloudflareSpeedTest/discussions/566**
+
+<details>
+<summary><code><strong>「 更新日志」</strong></code></summary>
+
+****
+
+#### 2024年12月28日，版本 v1.0.0
+ - **1. 发布** 第一个版本  
+
+</details>
+
+****
+
 ## 功能建议/问题反馈
 
 如果这些脚本使用过程中你遇到了什么问题，可以先去脚本对应的 **`使用说明`** 帖子里看看是否有别人问过了。  
