@@ -28,7 +28,7 @@ var (
 type Ping struct {
 	wg      *sync.WaitGroup
 	m       *sync.Mutex
-	ips     []*net.IPAddr
+	ips     []*dest
 	csv     utils.PingDelaySet
 	control chan bool
 	bar     *utils.Bar
@@ -64,9 +64,9 @@ func (p *Ping) Run() utils.PingDelaySet {
 		return p.csv
 	}
 	if Httping {
-		fmt.Printf("开始延迟测速（模式：HTTP, 端口：%d, 范围：%v ~ %v ms, 丢包：%.2f)\n", TCPPort, utils.InputMinDelay.Milliseconds(), utils.InputMaxDelay.Milliseconds(), utils.InputMaxLossRate)
+		fmt.Printf("开始延迟测速（模式：HTTP, 默认端口：%d, 范围：%v ~ %v ms, 丢包：%.2f)\n", TCPPort, utils.InputMinDelay.Milliseconds(), utils.InputMaxDelay.Milliseconds(), utils.InputMaxLossRate)
 	} else {
-		fmt.Printf("开始延迟测速（模式：TCP, 端口：%d, 范围：%v ~ %v ms, 丢包：%.2f)\n", TCPPort, utils.InputMinDelay.Milliseconds(), utils.InputMaxDelay.Milliseconds(), utils.InputMaxLossRate)
+		fmt.Printf("开始延迟测速（模式：TCP, 默认端口：%d, 范围：%v ~ %v ms, 丢包：%.2f)\n", TCPPort, utils.InputMinDelay.Milliseconds(), utils.InputMaxDelay.Milliseconds(), utils.InputMaxLossRate)
 	}
 	for _, ip := range p.ips {
 		p.wg.Add(1)
@@ -79,20 +79,20 @@ func (p *Ping) Run() utils.PingDelaySet {
 	return p.csv
 }
 
-func (p *Ping) start(ip *net.IPAddr) {
+func (p *Ping) start(ip *dest) {
 	defer p.wg.Done()
 	p.tcpingHandler(ip)
 	<-p.control
 }
 
 // bool connectionSucceed float32 time
-func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
+func (p *Ping) tcping(ip *dest) (bool, time.Duration) {
 	startTime := time.Now()
 	var fullAddress string
 	if isIPv4(ip.String()) {
-		fullAddress = fmt.Sprintf("%s:%d", ip.String(), TCPPort)
+		fullAddress = fmt.Sprintf("%s:%d", ip.IPAddr.String(), ip.Port)
 	} else {
-		fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
+		fullAddress = fmt.Sprintf("[%s]:%d", ip.IPAddr.String(), ip.Port)
 	}
 	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)
 	if err != nil {
@@ -104,7 +104,7 @@ func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 }
 
 // pingReceived pingTotalTime
-func (p *Ping) checkConnection(ip *net.IPAddr) (recv int, totalDelay time.Duration) {
+func (p *Ping) checkConnection(ip *dest) (recv int, totalDelay time.Duration) {
 	if Httping {
 		recv, totalDelay = p.httping(ip)
 		return
@@ -127,7 +127,7 @@ func (p *Ping) appendIPData(data *utils.PingData) {
 }
 
 // handle tcping
-func (p *Ping) tcpingHandler(ip *net.IPAddr) {
+func (p *Ping) tcpingHandler(ip *dest) {
 	recv, totalDlay := p.checkConnection(ip)
 	nowAble := len(p.csv)
 	if recv != 0 {
@@ -138,7 +138,8 @@ func (p *Ping) tcpingHandler(ip *net.IPAddr) {
 		return
 	}
 	data := &utils.PingData{
-		IP:       ip,
+		IP:       ip.IPAddr,
+		Port:     ip.Port,
 		Sended:   PingTimes,
 		Received: recv,
 		Delay:    totalDlay / time.Duration(recv),
