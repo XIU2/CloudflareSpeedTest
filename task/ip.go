@@ -168,7 +168,6 @@ func loadFromIPSegment(ranges *IPRanges, ipSegment string) {
 	}
 }
 
-// read file io or network ip
 func readIPRanges(ranges *IPRanges, reader io.Reader) {
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() { // 循环遍历文件每一行
