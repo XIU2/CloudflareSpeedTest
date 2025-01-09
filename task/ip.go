@@ -2,9 +2,11 @@ package task
 
 import (
 	"bufio"
+	"io"
 	"log"
 	"math/rand"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -12,13 +14,19 @@ import (
 )
 
 const defaultInputFile = "ip.txt"
+const defaultRemoteURL = "https://www.cloudflare.com/ips-v4" // ipv6: https://www.cloudflare.com/ips-v6
 
 var (
 	// TestAll test all ip
 	TestAll = false
-	// IPFile is the filename of IP Rangs
+	// UseRemoteURL use remote url rather than local file
+	UseRemoteURL = false
+
+	// IPFile is the filename of IP Ranges
 	IPFile = defaultInputFile
-	IPText string
+	// IPRemoteURL is the remote url of IP Ranges
+	IPRemoteURL = defaultRemoteURL
+	IPText      string
 )
 
 func InitRandSeed() {
@@ -147,22 +155,47 @@ func (r *IPRanges) chooseIPv6() {
 	}
 }
 
+func loadFromIPSegment(ranges *IPRanges, ipSegment string) {
+	ipSegment = strings.TrimSpace(ipSegment) // 去除首尾的空白字符（空格、制表符、换行符等）
+	if ipSegment == "" {                     // 跳过空行
+		return
+	}
+	ranges.parseCIDR(ipSegment) // 解析 IP 段，获得 IP、IP 范围、子网掩码
+	if isIPv4(ipSegment) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
+		ranges.chooseIPv4()
+	} else {
+		ranges.chooseIPv6()
+	}
+}
+
+// read file io or network ip
+func readIPRanges(ranges *IPRanges, reader io.Reader) {
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() { // 循环遍历文件每一行
+		loadFromIPSegment(ranges, scanner.Text())
+	}
+}
+
 func loadIPRanges() []*net.IPAddr {
 	ranges := newIPRanges()
 	if IPText != "" { // 从参数中获取 IP 段数据
 		IPs := strings.Split(IPText, ",") // 以逗号分隔为数组并循环遍历
 		for _, IP := range IPs {
-			IP = strings.TrimSpace(IP) // 去除首尾的空白字符（空格、制表符、换行符等）
-			if IP == "" {              // 跳过空的（即开头、结尾或连续多个 ,, 的情况）
-				continue
-			}
-			ranges.parseCIDR(IP) // 解析 IP 段，获得 IP、IP 范围、子网掩码
-			if isIPv4(IP) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
-				ranges.chooseIPv4()
-			} else {
-				ranges.chooseIPv6()
-			}
+			loadFromIPSegment(ranges, IP)
 		}
+	} else if UseRemoteURL { // 从远程 URL 获取 IP 段数据
+		if IPRemoteURL == "" {
+			IPRemoteURL = defaultRemoteURL
+		}
+		resp, err := http.Get(IPRemoteURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			log.Fatal("get remote ip ranges failed, status code: ", resp.StatusCode)
+		}
+		readIPRanges(ranges, resp.Body)
 	} else { // 从文件中获取 IP 段数据
 		if IPFile == "" {
 			IPFile = defaultInputFile
@@ -172,19 +205,7 @@ func loadIPRanges() []*net.IPAddr {
 			log.Fatal(err)
 		}
 		defer file.Close()
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() { // 循环遍历文件每一行
-			line := strings.TrimSpace(scanner.Text()) // 去除首尾的空白字符（空格、制表符、换行符等）
-			if line == "" {                           // 跳过空行
-				continue
-			}
-			ranges.parseCIDR(line) // 解析 IP 段，获得 IP、IP 范围、子网掩码
-			if isIPv4(line) {      // 生成要测速的所有 IPv4 / IPv6 地址（单个/随机/全部）
-				ranges.chooseIPv4()
-			} else {
-				ranges.chooseIPv6()
-			}
-		}
+		readIPRanges(ranges, file)
 	}
 	return ranges.ips
 }

@@ -60,6 +60,10 @@ https://github.com/XIU2/CloudflareSpeedTest
         IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
     -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
+    -r
+        启用远程IP段数据；使用远程URL替代本地文件；(默认 禁用)
+    -ru https://www.cloudflare.com/ips-v4
+        远程IP段数据URL；获取cloudflare提供的最新 IP 段数据；(默认v4: https://www.cloudflare.com/ips-v4, v6: https://www.cloudflare.com/ips-v6)
     -o result.csv
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
 
@@ -93,6 +97,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP段数据文件")
+	flag.BoolVar(&task.UseRemoteURL, "r", false, "启用远程IP段数据")
+	flag.StringVar(&task.IPRemoteURL, "ru", "https://www.cloudflare.com/ips-v4", "IP段数据URL")
 	flag.StringVar(&task.IPText, "ip", "", "指定IP段数据")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
 
