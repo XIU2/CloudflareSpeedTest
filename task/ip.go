@@ -1,10 +1,9 @@
 package task
 
 import (
-	"bufio"
 	"io"
 	"log"
-	"math/rand"
+	random "math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -27,10 +26,12 @@ var (
 	// IPRemoteURL is the remote url of IP Ranges
 	IPRemoteURL = defaultRemoteURL
 	IPText      string
+
+	rand *random.Rand
 )
 
 func InitRandSeed() {
-	rand.Seed(time.Now().UnixNano())
+	rand = random.New(random.NewSource(time.Now().UnixNano()))
 }
 
 func isIPv4(ip string) bool {
@@ -168,43 +169,47 @@ func loadFromIPSegment(ranges *IPRanges, ipSegment string) {
 	}
 }
 
-func readIPRanges(ranges *IPRanges, reader io.Reader) {
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() { // 循环遍历文件每一行
-		loadFromIPSegment(ranges, scanner.Text())
+func ipSegmentsFromFile(file string) []string {
+	bs, err := os.ReadFile(file)
+	if err != nil {
+		log.Fatal(err)
 	}
+	return strings.Split(string(bs), "\n")
+}
+
+func ipSegmentsFromURL(url string) []string {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	bs, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return strings.Split(string(bs), "\n")
 }
 
 func loadIPRanges() []*net.IPAddr {
 	ranges := newIPRanges()
+	ipSegments := []string{}
+
 	if IPText != "" { // 从参数中获取 IP 段数据
-		IPs := strings.Split(IPText, ",") // 以逗号分隔为数组并循环遍历
-		for _, IP := range IPs {
-			loadFromIPSegment(ranges, IP)
-		}
+		ipSegments = strings.Split(IPText, ",") // 以逗号分隔为数组并循环遍历
 	} else if UseRemoteURL { // 从远程 URL 获取 IP 段数据
 		if IPRemoteURL == "" {
 			IPRemoteURL = defaultRemoteURL
 		}
-		resp, err := http.Get(IPRemoteURL)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			log.Fatal("get remote ip ranges failed, status code: ", resp.StatusCode)
-		}
-		readIPRanges(ranges, resp.Body)
+		ipSegments = ipSegmentsFromURL(IPRemoteURL)
 	} else { // 从文件中获取 IP 段数据
 		if IPFile == "" {
 			IPFile = defaultInputFile
 		}
-		file, err := os.Open(IPFile)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-		readIPRanges(ranges, file)
+		ipSegments = ipSegmentsFromFile(IPFile)
+	}
+
+	for _, segment := range ipSegments {
+		loadFromIPSegment(ranges, segment)
 	}
 	return ranges.ips
 }

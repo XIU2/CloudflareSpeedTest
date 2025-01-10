@@ -116,7 +116,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	utils.InputMinDelay = time.Duration(minDelay) * time.Millisecond
 	utils.InputMaxLossRate = float32(maxLossRate)
 	task.Timeout = time.Duration(downloadTime) * time.Second
-	task.HttpingCFColomap = task.MapColoMap()
+	task.HttpingCFColoMap = task.MapColoMap()
 
 	if printVersion {
 		println(version)

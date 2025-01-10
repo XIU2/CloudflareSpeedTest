@@ -17,7 +17,7 @@ var (
 	Httping           bool
 	HttpingStatusCode int
 	HttpingCFColo     string
-	HttpingCFColomap  *sync.Map
+	HttpingCFColoMap  *sync.Map
 	OutRegexp         = regexp.MustCompile(`[A-Z]{3}`)
 )
 
@@ -128,11 +128,11 @@ func (p *Ping) getColo(b string) string {
 	// 正则匹配并返回 机场三字码
 	out := OutRegexp.FindString(b)
 
-	if HttpingCFColomap == nil {
+	if HttpingCFColoMap == nil {
 		return out
 	}
 	// 匹配 机场三字码 是否为指定的地区
-	_, ok := HttpingCFColomap.Load(out)
+	_, ok := HttpingCFColoMap.Load(out)
 	if ok {
 		return out
 	}
