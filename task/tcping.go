@@ -94,7 +94,9 @@ func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	} else {
 		fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
-	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)
+	dialer := newDialer()
+	dialer.Timeout = tcpConnectTimeout
+	conn, err := dialer.Dial("tcp", fullAddress)
 	if err != nil {
 		return false, 0
 	}
