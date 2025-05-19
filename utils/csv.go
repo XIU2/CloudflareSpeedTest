@@ -23,6 +23,7 @@ var (
 	InputMaxLossRate = maxLossRate
 	Output           = defaultOutput
 	PrintNum         = 10
+	OnlyIP           = false
 )
 
 // 是否打印测试结果
@@ -37,6 +38,7 @@ func noOutput() bool {
 
 type PingData struct {
 	IP       *net.IPAddr
+	Port     int
 	Sended   int
 	Received int
 	Delay    time.Duration
@@ -59,7 +61,11 @@ func (cf *CloudflareIPData) getLossRate() float32 {
 
 func (cf *CloudflareIPData) toString() []string {
 	result := make([]string, 6)
-	result[0] = cf.IP.String()
+	if OnlyIP {
+		result[0] = cf.IP.String()
+	} else {
+		result[0] = fmt.Sprintf("%s:%d", cf.IP.String(), cf.Port)
+	}
 	result[1] = strconv.Itoa(cf.Sended)
 	result[2] = strconv.Itoa(cf.Received)
 	result[3] = strconv.FormatFloat(float64(cf.getLossRate()), 'f', 2, 32)
