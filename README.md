@@ -58,12 +58,12 @@ mkdir CloudflareST
 cd CloudflareST
 
 # 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
 # 如果你是在国内网络环境中下载，那么请使用下面这几个镜像加速之一：
-# wget -N https://ghp.ci/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
-# wget -N https://ghproxy.cc/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
-# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
-# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.2.5/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghp.ci/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghproxy.cc/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
+# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm CloudflareST_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -93,20 +93,20 @@ chmod +x CloudflareST
 
 ### 结果示例
 
-测速完毕后，默认会显示**最快的 10 个 IP**，示例：
+测速完毕后，默认会显示**最快的 10 个 IP**，示例（仅为输出内容示例）：
 
 ``` bash
-IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 (MB/s)
-104.27.200.69     4       4       0.00    146.23    28.64
-172.67.60.78      4       4       0.00    139.82    15.02
-104.25.140.153    4       4       0.00    146.49    14.90
-104.27.192.65     4       4       0.00    140.28    14.07
-172.67.62.214     4       4       0.00    139.29    12.71
-104.27.207.5      4       4       0.00    145.92    11.95
-172.67.54.193     4       4       0.00    146.71    11.55
-104.22.66.8       4       4       0.00    147.42    11.11
-104.27.197.63     4       4       0.00    131.29    10.26
-172.67.58.91      4       4       0.00    140.19    9.14
+IP 地址           已发送  已接收  丢包率  平均延迟  下载速度(MB/s)  地区码
+104.27.200.69     4      4       0.00   146.23    28.64          LAX
+172.67.60.78      4      4       0.00   139.82    15.02          SEA
+104.25.140.153    4      4       0.00   146.49    14.90          SJC
+104.27.192.65     4      4       0.00   140.28    14.07          LAX
+172.67.62.214     4      4       0.00   139.29    12.71          LAX
+104.27.207.5      4      4       0.00   145.92    11.95          LAX
+172.67.54.193     4      4       0.00   146.71    11.55          LAX
+104.22.66.8       4      4       0.00   147.42    11.11          SEA
+104.27.197.63     4      4       0.00   131.29    10.26          FRA
+172.67.58.91      4      4       0.00   140.19    9.14           SJC
 ...
 
 # 如果平均延迟非常低（如 0.xx），则说明 CloudflareST 测速时走了代理，请先关闭代理软件后再测速。
@@ -132,8 +132,8 @@ IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 
 完整结果保存在当前目录下的 `result.csv` 文件中，用**记事本/表格软件**打开，格式如下：
 
 ```
-IP 地址,已发送,已接收,丢包率,平均延迟,下载速度 (MB/s)
-104.27.200.69,4,4,0.00,146.23,28.64
+IP 地址,已发送,已接收,丢包率,平均延迟,下载速度(MB/s),地区码
+104.27.200.69,4,4,0.00,146.23,28.64,LAX
 ```
 
 > _大家可以按自己需求，对完整结果**进一步筛选处理**，或者去看一看进阶使用**指定过滤条件**！_
@@ -163,15 +163,17 @@ https://github.com/XIU2/CloudflareSpeedTest
         指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
     -url https://cf.xiu2.xyz/url
         指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
+        当下载测速时，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来。
 
     -httping
         切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)
+        当使用 HTTP 测速模式时，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来。
         注意：HTTPing 本质上也算一种 网络扫描 行为，因此如果你在服务器上面运行，需要降低并发(-n)，否则可能会被一些严格的商家暂停服务。
         如果你遇到 HTTPing 首次测速可用 IP 数量正常，后续测速越来越少甚至直接为 0，但停一段时间后又恢复了的情况，那么也可能是被 运营商、Cloudflare CDN 认为你在网络扫描而 触发临时限制机制，因此才会过一会儿就恢复了，建议降低并发(-n)减少这种情况的发生。
     -httping-code 200
         有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 301 302)
     -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
-        匹配指定地区；地区名为当地机场三字码，英文逗号分隔，支持小写，支持 Cloudflare、AWS CloudFront，仅 HTTPing 模式可用；(默认 所有地区)
+        匹配指定地区；地区名为当地机场地区码，英文逗号分隔，支持小写，支持 Cloudflare、AWS CloudFront，仅 HTTPing 模式可用；(默认 所有地区)
 
     -tl 200
         平均延迟上限；只输出低于指定平均延迟的 IP，各上下限条件可搭配使用；(默认 9999 ms)
@@ -195,6 +197,9 @@ https://github.com/XIU2/CloudflareSpeedTest
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 /24 段随机测速一个 IP)
+
+    -debug
+        调试输出模式；会在一些非预期情况下输出更多日志以便判断原因；(默认 关闭)
 
     -v
         打印程序版本 + 检查版本更新
@@ -220,10 +225,10 @@ https://github.com/XIU2/CloudflareSpeedTest
 321 / 321 [-----------------------------------------------------------] 可用: 30
 开始下载测速（下限：1.00 MB/s, 数量：5, 队列：10）
 3 / 5 [-----------------------------------------↗--------------------]
-IP 地址           已发送  已接收  丢包率  平均延迟  下载速度 (MB/s)
-XXX.XXX.XXX.XXX   4       4      0.00    83.32    3.66
-XXX.XXX.XXX.XXX   4       4      0.00    107.81   2.49
-XXX.XXX.XXX.XXX   4       3      0.25    149.59   1.04
+IP 地址           已发送  已接收  丢包率  平均延迟  下载速度(MB/s)  地区码
+XXX.XXX.XXX.XXX   4      4       0.00   83.32     3.66           LAX
+XXX.XXX.XXX.XXX   4      4       0.00   107.81    2.49           LAX
+XXX.XXX.XXX.XXX   4      3       0.25   149.59    1.04           N/A
 
 完整测速结果已写入 result.csv 文件，可使用记事本/表格软件查看。
 按下 回车键 或 Ctrl+C 退出。
@@ -266,7 +271,7 @@ CloudflareST 会先延迟测速，在这过程中进度条右侧会实时显示�
 
 ****
 
-另外，如果全部队列 IP 都测速完了，但一个满足下载速度条件的 IP 都没有，那么就会**直接输出全部队列 IP 的下载测速结果**，这样你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
+另外，如果全部队列 IP 都测速完了，但一个满足下载速度条件的 IP 都没有，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速数据**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
 
 同样，延迟测速方面，`可用: 30`、`队列：10` 这两个数值也可以让你清楚，你设置的延迟条件对你来说是否过于苛刻。如果可用 IP 一大堆，但条件过滤后只剩下 2、3 个，那不用说就知道需要**调低预期的延迟/丢包条件**了。
 
@@ -383,6 +388,8 @@ HTTP 协议适用于快速测试某域名指向某 IP 时是否可以访问，�
 
 > 另外，本软件 HTTPing 仅获取**响应头(response headers)**，并不获取正文内容（即 URL 文件大小不影响 HTTPing 测试，但如果你还要下载测速的话，那么还是需要一个大文件的），类似于 curl -i 功能。
 
+> 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
+
 ``` bash
 # 只需加上 -httping 参数即可切换到 HTTP 协议延迟测速模式
 CloudflareST.exe -httping
@@ -403,7 +410,7 @@ CloudflareST.exe -httping -tp 80 -url http://cdn.cloudflare.steamstatic.com/stea
 
 ****
 
-#### \# 匹配指定地区(colo 机场三字码)
+#### \# 匹配指定地区(colo 机场地区码)
 
 <details>
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
@@ -420,22 +427,24 @@ Cloudflare CDN 的节点 IP 是 Anycast IP，即每个 IP 对应的服务器节�
 
 因此，对于这种 Anycast IP 的实际服务器位置，就不能靠那些在线 IP 地址位置查询网站来判断了。
 
-除了通过 **HTTP 响应头**获取机场三字码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区机场三字码。
+除了通过 **HTTP 响应头**获取机场地区码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区机场地区码。
 
-> 该功能支持 Cloudflare CDN 和 AWS CloudFront CDN，且这两个 CDN 的机场三字码是通用的（算是惯例）。  
+> 该功能支持 Cloudflare CDN 和 AWS CloudFront CDN，且这两个 CDN 的机场地区码是通用的（算是惯例）。  
 > **注意**：如果你要用于筛选 AWS CloudFront CDN 地区，那么要通过 `-url` 参数指定一个使用 AWS CloudFront CDN 的下载测速地址（因为软件默认下载测速地址是 Cloudflare CDN 的）
 
 ``` bash
 # 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（如果没有指定 -dd 的话则会继续进行下载测速）
 # 如果延迟测速后结果为 0，则说明没有找到任何一个（未超时可用的）指定地区的 IP。
-# 节点地区名为当地 机场三字码，指定多个时用英文逗号分隔，v2.2.3 版本后支持小写
+# 节点地区名为当地 机场地区码，指定多个时用英文逗号分隔，v2.2.3 版本后支持小写
 
 CloudflareST.exe -httping -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 
-# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为软件是通过 HTTP 链接中的响应头来获得该 IP 的实际地区机场三字码）
+# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为软件是通过 HTTP 链接中的响应头来获得该 IP 的实际地区机场地区码）
+
+# 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
 ```
 
-> 两个 CDN 机场三字码通用，因此各地区名可见：https://www.cloudflarestatus.com/
+> 两个 CDN 机场地区码通用，因此各地区名可见：https://www.cloudflarestatus.com/
 
 </details>
 
@@ -574,7 +583,7 @@ CloudflareST.exe -tlr 0.25
 CloudflareST.exe -sl 5 -dn 10
 ```
 
-> 如果**没有找到一个满足速度**条件的 IP，那么会**忽略条件输出所有 IP 测速结果**（方便你下次测速时调整条件）。
+> 如果**没有找到一个满足速度**条件的 IP，那么不会输出任何内容，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速数据**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
 
 > 没有指定平均延迟上限时，如果一直**凑不够**满足条件的 IP 数量，就会**一直测速**下去。  
 > 所以建议**同时指定 [下载速度下限] + [平均延迟上限]**，这样测速到指定延迟上限还没凑够数量，就会终止测速。
@@ -591,7 +600,7 @@ CloudflareST.exe -tl 200 -sl 5.6 -dn 10
 ```
 
 > 如果**没有找到一个满足延迟**条件的 IP，那么不会输出任何内容。  
-> 如果**没有找到一个满足速度**条件的 IP，那么会忽略条件输出所有 IP 测速结果（方便你下次测速时调整条件）。  
+> 如果**没有找到一个满足速度**条件的 IP，那么不会输出任何内容，但可以通过加上 `-debug` 参数开启调试模式，这时会忽略条件输出所有 IP 测速结果（方便你下次测速时调整条件）。  
 > 所以建议先不指定条件测速一遍，看看平均延迟和下载速度大概在什么范围，避免指定条件**过低/过高**！
 
 > 因为 Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
@@ -647,6 +656,64 @@ CloudflareST.exe -f 1.txt
 
 # 对于 1.0.0.1/24 这样的 IP 段只会随机最后一段（1.0.0.1~255），如果要测速该 IP 段中的所有 IP，请加上 -allip 参数。
 ```
+
+</details>
+
+****
+
+#### \# 下载测速都是 0.00 ？
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+首先要明白，本软件的下载测速过程，本质上和你将 `IP 下载测速地址的域名` 写入 hosts 文件，然后浏览器去访问下载测速地址是一样的，只不过软件将其自动化了（类似于 `curl -I --resolve 下载测速地址的域名:443:IP https://下载测速地址`）。
+
+因此如果下载测速结果全都是 0.00 MB/s，那么以为着下载测速失败，就只有这几种可能性。
+
+1. **下载测速地址有问题**
+2. **测速的 IP 地址有问题**
+3. **你的网络有问题**
+
+但在排查具体是哪个问题前，可以先在你原先的 CloudflareST 运行命令后追加一个 `-debug` 参数来开启调试模式，重新跑一边测速，这样下载过程中报错了就能直接看到下载测速失败的具体原因。
+
+常见的下载测速失败报错原因有（因为是原生报错信息，因此基本都是英文）：
+
+1. `... read: connection reset by peer ...  `  
+下载测速地址被阻断了，可能是蔷干的，也可能是运营商干的（比如移动或部分地区的白名单）
+2. `... HTTP 状态码: 403 ...`  
+像这种直接提示 HTTP 状态码的，比较好判断，如 403 就是测速地址禁止你访问，404 就是测速地址找不到文件，具体可以搜索 HTTP 状态码含义
+3. `... context deadline exceeded (Client.Timeout exceeded while awaiting headers) ...`  
+这种一般是超时引起的，可能是 IP 等网络问题，也可能是 -dt 下载测速时间设置的太短了，当然默认的 10 秒到不至于超时
+
+> 如果你遇到了其他报错原因，且翻译后还是不懂，可以发 Issues 或 Discussions 询问。
+
+根据上面的报错原因排查一遍后，如果还是无法解决，那么可以尝试下面这些：
+
+**一、下载测速地址有问题**：
+
+先去 [#490](https://github.com/XIU2/CloudflareSpeedTest/discussions/490) 找几个其他的下载测速地址都试试。
+
+如果其中有能下载测速出结果的，则就代表你之前使用的下载测速地址有问题（注意，目前默认下载测速地址仅为一个带负载均衡轮询的重定向链接，会自动重定向到上面帖子里大家分享的公益下载测速地址，而这些地址在**不同地区的可用性可能有差异**，因此可能出现之前不行现在又正常的情况，如果**想要稳定，建议自建**，上面帖子写了几种自建方法）。
+
+如果找了很多，都是一样 0.00，那么就要考虑其他可能性了。
+
+****
+
+**二、测速的 IP 地址有问题**：
+
+你用来测速的 IP 地址，可能一些 TCP 测试是通的，但实际上因为各种原因导致不能建立 HTTP 链接（比如是回源 IP，比如是企业用户专用 IP 等等），因此你可以多尝试一些其他的 IP 看是否可行。
+
+****
+
+**三、你的网络有问题**：
+
+这个就比较麻烦了，如果你现在是用电脑+宽带来使用 CloudflareST 测速的，那么可以尝试关闭手机 WIFI 并打开流量，然后数据线连接电脑，设置好 USB 网络共享（不同手机系统不太一样，具体自行搜索哈），并拔掉电脑的网线，这样你的电脑现在就是走的手机流量数据网络了（如果手机流量数据和宽带不是一个运营商会更好排查），然后再次运行 CloudflareST 测速看看结果是否改变（也可以同时尝试上面的排查方法来交叉验证）。
+
+如果测速结果正常了，那么显然就是宽带网络的问题，如果还是一样的 0.00，那么就麻烦了。。。
+
+****
 
 </details>
 

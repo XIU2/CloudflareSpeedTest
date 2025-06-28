@@ -54,7 +54,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		return utils.DownloadSpeedSet(ipSet)
 	}
 	if len(ipSet) <= 0 { // IP数组长度(IP数量) 大于 0 时才会继续下载测速
-		fmt.Println("\n[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。")
+		fmt.Println("\n\033[33m[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。\033[0m")
 		return
 	}
 	testNum := TestCount
@@ -65,7 +65,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		TestCount = testNum
 	}
 
-	fmt.Printf("开始下载测速（下限：%.2f MB/s, 数量：%d, 队列：%d）\n", MinSpeed, TestCount, testNum)
+	fmt.Printf("\033[34m开始下载测速（下限：%.2f MB/s, 数量：%d, 队列：%d）\033[0m\n", MinSpeed, TestCount, testNum)
 	// 控制 下载测速进度条 与 延迟测速进度条 长度一致（强迫症）
 	bar_a := len(strconv.Itoa(len(ipSet)))
 	bar_b := "     "
@@ -74,8 +74,11 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	}
 	bar := utils.NewBar(TestCount, bar_b, "")
 	for i := 0; i < testNum; i++ {
-		speed := downloadHandler(ipSet[i].IP)
+		speed, colo := downloadHandler(ipSet[i].IP)
 		ipSet[i].DownloadSpeed = speed
+		if ipSet[i].Colo == "" { // 只有当 Colo 是空的时候，才写入，否则代表之前是 httping 测速并获取过了
+			ipSet[i].Colo = colo
+		}
 		// 在每个 IP 下载测速后，以 [下载速度下限] 条件过滤结果
 		if speed >= MinSpeed*1024*1024 {
 			bar.Grow(1, "")
@@ -86,7 +89,8 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		}
 	}
 	bar.Done()
-	if len(speedSet) == 0 { // 没有符合速度限制的数据，返回所有测试数据
+	if utils.Debug && len(speedSet) == 0 { // 调试模式下，没有满足速度限制的数据，返回所有测速数据供用户查看当前的测速结果，以便适当调低预期测速条件
+		fmt.Println("\033[33m[调试] 没有满足 下载速度下限 条件的 IP，忽略条件返回所有测速数据（方便下次测速时调整条件）。\033[0m")
 		speedSet = utils.DownloadSpeedSet(ipSet)
 	}
 	// 按速度排序
@@ -107,12 +111,15 @@ func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address s
 }
 
 // return download Speed
-func downloadHandler(ip *net.IPAddr) float64 {
+func downloadHandler(ip *net.IPAddr) (float64, string) {
 	client := &http.Client{
 		Transport: &http.Transport{DialContext: getDialContext(ip)},
 		Timeout:   Timeout,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) > 10 { // 限制最多重定向 10 次
+				if utils.Debug { // 调试模式下，输出更多信息
+					fmt.Printf("\033[31m[调试] IP: %s, 下载测速地址重定向次数过多，终止测速，URL: %s\033[0m\n", ip.String(), req.URL.String())
+				}
 				return http.ErrUseLastResponse
 			}
 			if req.Header.Get("Referer") == defaultURL { // 当使用默认下载测速地址时，重定向不携带 Referer
@@ -123,19 +130,31 @@ func downloadHandler(ip *net.IPAddr) float64 {
 	}
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
-		return 0.0
+		if utils.Debug { // 调试模式下，输出更多信息
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速请求创建失败，错误信息: %v, URL: %s\033[0m\n", ip.String(), err, URL)
+		}
+		return 0.0, ""
 	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
 
 	response, err := client.Do(req)
 	if err != nil {
-		return 0.0
+		if utils.Debug { // 调试模式下，输出更多信息
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速失败，错误信息: %v, URL: , 最终URL: %s%s\033[0m\n", ip.String(), err, URL, response.Request.URL.String())
+		}
+		return 0.0, ""
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
-		return 0.0
+		if utils.Debug { // 调试模式下，输出更多信息
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, URL: %s, 最终URL: %s\033[0m\n", ip.String(), response.StatusCode, URL, response.Request.URL.String())
+		}
+		return 0.0, ""
 	}
+	// 通过头部 Server 值判断是 Cloudflare 还是 AWS CloudFront 并设置 cfRay 为各自的机场地区码完整内容
+	colo := getHeaderColo(response.Header)
+
 	timeStart := time.Now()           // 开始时间（当前）
 	timeEnd := timeStart.Add(Timeout) // 加上下载测速时间得到的结束时间
 
@@ -179,5 +198,5 @@ func downloadHandler(ip *net.IPAddr) float64 {
 		}
 		contentRead += int64(bufferRead)
 	}
-	return e.Value() / (Timeout.Seconds() / 120)
+	return e.Value() / (Timeout.Seconds() / 120), colo
 }
