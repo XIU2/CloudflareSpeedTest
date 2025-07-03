@@ -118,18 +118,38 @@ func MapColoMap() *sync.Map {
 
 // 从响应头中获取 地区码 值
 func getHeaderColo(header http.Header) (colo string) {
-	// 如果是 Cloudflare 的服务器，则获取 CF-RAY 头部
+	// 如果是 Cloudflare 的服务器，则获取 cf-ray 头部
 	if header.Get("Server") == "cloudflare" {
-		colo = header.Get("CF-RAY") // 示例 cf-ray: 7bd32409eda7b020-SJC
-	} else { // 如果是 AWS CloudFront 的服务器，则获取 X-Amz-Cf-Pop 头部
-		colo = header.Get("x-amz-cf-pop") // 示例 X-Amz-Cf-Pop: SIN52-P1
+		colo = header.Get("cf-ray") // 示例 cf-ray: 7bd32409eda7b020-SJC
+	} else { // 反之则默认当成 AWS CloudFront 的服务器获取（如果不是则会获取到空，下面会判断并处理的）
+		colo = header.Get("x-amz-cf-pop") // 示例 x-amz-cf-pop: SIN52-P1
 	}
+	// Fastly CDN 的头部信息，测试地址 https://fastly.jsdelivr.net/gh/XIU2/CloudflareSpeedTest@master/go.mod
+	// x-served-by: cache-qpg1275-QPG
+	// x-served-by: cache-fra-etou8220141-FRA, cache-hhr-khhr2060043-HHR（最后一个为实际位置）
+
+	// Gcore CDN 的头部信息，测试地址 https://assets.gcore.pro/assets/icons/shield-lock.svg
+	// x-id-fe: sg1-hw-edge-gc12
+	// x-shard: sg1-shard0-default
+	// x-id: sg1-hw-edge-gc2
+
+	// CDN77 的头部信息，测试地址 https://www.cdn77.com
+	// Server: CDN77-Turbo
+	// X-77-Pop: losangelesUSCA
+	// x-77-pop: frankfurtDE
+	// x-77-pop: amsterdamNL
+	// x-77-pop: singaporeSG
 
 	// 如果没有获取到头部信息，说明不是 Cloudflare 和 AWS CloudFront，则直接返回空字符串
 	if colo == "" {
 		return ""
 	}
 	// 正则匹配并返回 机场地区码
+	/*matches := ColoRegexp.FindAllString(colo, -1) // 适用于 Fastly 这种有多个地区码的
+	if len(matches) == 0 {
+		return ""
+	}
+	return matches[len(matches)-1]*/
 	return ColoRegexp.FindString(colo)
 }
 
