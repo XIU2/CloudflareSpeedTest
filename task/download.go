@@ -118,7 +118,7 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) > 10 { // 限制最多重定向 10 次
 				if utils.Debug { // 调试模式下，输出更多信息
-					fmt.Printf("\033[31m[调试] IP: %s, 下载测速地址重定向次数过多，终止测速，URL: %s\033[0m\n", ip.String(), req.URL.String())
+					fmt.Printf("\033[31m[调试] IP: %s, 下载测速地址重定向次数过多，终止测速，下载测速地址: %s\033[0m\n", ip.String(), req.URL.String())
 				}
 				return http.ErrUseLastResponse
 			}
@@ -131,7 +131,7 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		if utils.Debug { // 调试模式下，输出更多信息
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速请求创建失败，错误信息: %v, URL: %s\033[0m\n", ip.String(), err, URL)
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速请求创建失败，错误信息: %v, 下载测速地址: %s\033[0m\n", ip.String(), err, URL)
 		}
 		return 0.0, ""
 	}
@@ -141,14 +141,18 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 	response, err := client.Do(req)
 	if err != nil {
 		if utils.Debug { // 调试模式下，输出更多信息
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速失败，错误信息: %v, URL: , 最终URL: %s%s\033[0m\n", ip.String(), err, URL, response.Request.URL.String())
+			finalURL := URL                                                                // 默认的最终 URL，这样当 response 为空时也能输出
+			if response != nil && response.Request != nil && response.Request.URL != nil { // 如果 response 和 URL 存在，则获取最终 URL
+				finalURL = response.Request.URL.String()
+			}
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速失败，错误信息: %v, 下载测速地址: %s, 最终地址(如有重定向): %s\033[0m\n", ip.String(), err, URL, finalURL)
 		}
 		return 0.0, ""
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
 		if utils.Debug { // 调试模式下，输出更多信息
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, URL: %s, 最终URL: %s\033[0m\n", ip.String(), response.StatusCode, URL, response.Request.URL.String())
+			fmt.Printf("\033[31m[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, 下载测速地址: %s, 最终地址(如有重定向): %s\033[0m\n", ip.String(), response.StatusCode, URL, response.Request.URL.String())
 		}
 		return 0.0, ""
 	}
