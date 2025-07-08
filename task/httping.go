@@ -16,11 +16,13 @@ import (
 )
 
 var (
-	Httping           bool
-	HttpingStatusCode int
-	HttpingCFColo     string
-	HttpingCFColomap  *sync.Map
-	ColoRegexp        = regexp.MustCompile(`[A-Z]{3}`)
+	Httping               bool
+	HttpingStatusCode     int
+	HttpingCFColo         string
+	HttpingCFColomap      *sync.Map
+	RegexpColoIATACode    = regexp.MustCompile(`[A-Z]{3}`)  // 匹配 IATA 机场地区码（俗称 机场三字码）的正则表达式
+	RegexpColoCountryCode = regexp.MustCompile(`[A-Z]{2}`)  // 匹配国家地区码的正则表达式（如 US、CN、UK 等）
+	RegexpColoGcore       = regexp.MustCompile(`^[a-z]{2}`) // 匹配城市地区码的正则表达式（小写，如 us、cn、uk 等）
 )
 
 // pingReceived pingTotalTime
@@ -36,7 +38,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 		},
 	}
 
-	// 先访问一次获得 HTTP 状态码 及 Cloudflare Colo
+	// 先访问一次获得 HTTP 状态码 及 地区码
 	var colo string
 	{
 		request, err := http.NewRequest(http.MethodHead, URL, nil)
@@ -49,6 +51,9 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 		request.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
 		response, err := hc.Do(request)
 		if err != nil {
+			if utils.Debug { // 调试模式下，输出更多信息
+				fmt.Printf("\033[31m[调试] IP: %s, 延迟测速失败，错误信息: %v, 测速地址: %s\033[0m\n", ip.String(), err, URL)
+			}
 			return 0, 0, ""
 		}
 		defer response.Body.Close()
@@ -73,7 +78,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 
 		io.Copy(io.Discard, response.Body)
 
-		// 通过头部 Server 值判断是 Cloudflare 还是 AWS CloudFront 并设置 cfRay 为各自的机场地区码完整内容
+		// 通过头部参数获取地区码
 		colo = getHeaderColo(response.Header)
 
 		// 只有指定了地区才匹配机场地区码
@@ -132,39 +137,57 @@ func MapColoMap() *sync.Map {
 
 // 从响应头中获取 地区码 值
 func getHeaderColo(header http.Header) (colo string) {
-	// 如果是 Cloudflare 的服务器，则获取 cf-ray 头部
-	if header.Get("Server") == "cloudflare" {
-		colo = header.Get("cf-ray") // 示例 cf-ray: 7bd32409eda7b020-SJC
-	} else { // 反之则默认当成 AWS CloudFront 的服务器获取（如果不是则会获取到空，下面会判断并处理的）
-		colo = header.Get("x-amz-cf-pop") // 示例 x-amz-cf-pop: SIN52-P1
+	if header.Get("server") != "" {
+		// 如果是 Cloudflare CDN
+		// server: cloudflare
+		// cf-ray: 7bd32409eda7b020-SJC
+		if header.Get("server") == "cloudflare" {
+			if colo = header.Get("cf-ray"); colo != "" {
+				return RegexpColoIATACode.FindString(colo)
+			}
+		}
+		// 如果是 CDN77 CDN（测试地址 https://www.cdn77.com
+		// server: CDN77-Turbo
+		// x-77-pop: losangelesUSCA // 美国的会显示为 USCA 不知道什么情况，暂时没做兼容，只提取 US
+		// x-77-pop: frankfurtDE
+		// x-77-pop: amsterdamNL
+		// x-77-pop: singaporeSG
+		if header.Get("server") == "CDN77-Turbo" {
+			if colo = header.Get("x-77-pop"); colo != "" {
+				return RegexpColoCountryCode.FindString(colo)
+			}
+		}
+		// 如果是 Bunny CDN（测试地址 https://bunny.net
+		// server: BunnyCDN-TW1-1121
+		if colo = header.Get("server"); strings.Contains(colo, "BunnyCDN-") {
+			return RegexpColoCountryCode.FindString(strings.TrimPrefix(colo, "BunnyCDN-")) // 去掉 BunnyCDN- 前缀再去匹配
+		}
 	}
-	// Fastly CDN 的头部信息，测试地址 https://fastly.jsdelivr.net/gh/XIU2/CloudflareSpeedTest@master/go.mod
+	// 如果是 AWS CloudFront CDN（测试地址 https://d7uri8nf7uskq.cloudfront.net/tools/list-cloudfront-ips
+	// x-amz-cf-pop: SIN52-P1
+	if colo = header.Get("x-amz-cf-pop"); colo != "" {
+		return RegexpColoIATACode.FindString(colo)
+	}
+	// 如果是 Fastly CDN（测试地址 https://fastly.jsdelivr.net/gh/XIU2/CloudflareSpeedTest@master/go.mod
 	// x-served-by: cache-qpg1275-QPG
 	// x-served-by: cache-fra-etou8220141-FRA, cache-hhr-khhr2060043-HHR（最后一个为实际位置）
-
-	// Gcore CDN 的头部信息，测试地址 https://assets.gcore.pro/assets/icons/shield-lock.svg
-	// x-id-fe: sg1-hw-edge-gc12
-	// x-shard: sg1-shard0-default
-	// x-id: sg1-hw-edge-gc2
-
-	// CDN77 的头部信息，测试地址 https://www.cdn77.com
-	// Server: CDN77-Turbo
-	// X-77-Pop: losangelesUSCA
-	// x-77-pop: frankfurtDE
-	// x-77-pop: amsterdamNL
-	// x-77-pop: singaporeSG
-
-	// 如果没有获取到头部信息，说明不是 Cloudflare 和 AWS CloudFront，则直接返回空字符串
-	if colo == "" {
-		return ""
+	if colo = header.Get("x-served-by"); colo != "" {
+		if matches := RegexpColoIATACode.FindAllString(colo, -1); len(matches) > 0 {
+			return matches[len(matches)-1] // 因为 Fastly 的 x-served-by 可能包含多个地区码，所以只取最后一个
+		}
 	}
-	// 正则匹配并返回 机场地区码
-	/*matches := ColoRegexp.FindAllString(colo, -1) // 适用于 Fastly 这种有多个地区码的
-	if len(matches) == 0 {
-		return ""
+	// Gcore CDN 的头部信息（注意均为城市代码而非国家代码），测试地址 https://assets.gcore.pro/assets/icons/shield-lock.svg
+	// x-id-fe: fr5-hw-edge-gc17
+	// x-shard: fr5-shard0-default
+	// x-id: fr5-hw-edge-gc28
+	if colo = header.Get("x-id-fe"); colo != "" {
+		if colo = RegexpColoGcore.FindString(colo); colo != "" {
+			return strings.ToUpper(colo) // 将小写的地区码转换为大写
+		}
 	}
-	return matches[len(matches)-1]*/
-	return ColoRegexp.FindString(colo)
+
+	// 如果没有获取到头部信息，说明不是支持的 CDN，则直接返回空字符串
+	return ""
 }
 
 // 处理地区码

@@ -156,7 +156,7 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 		}
 		return 0.0, ""
 	}
-	// 通过头部 Server 值判断是 Cloudflare 还是 AWS CloudFront 并设置 cfRay 为各自的机场地区码完整内容
+	// 通过头部参数获取地区码
 	colo := getHeaderColo(response.Header)
 
 	timeStart := time.Now()           // 开始时间（当前）

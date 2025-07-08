@@ -58,13 +58,13 @@ mkdir CloudflareST
 cd CloudflareST
 
 # 下载 CloudflareST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_amd64.tar.gz
 # 如果你是在国内网络环境中下载，那么请使用下面这几个镜像加速之一：
-# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_arm64.tar.gz
-# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_arm64.tar.gz
-# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_arm64.tar.gz
-# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_arm64.tar.gz
-# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.0/CloudflareST_linux_arm64.tar.gz
+# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_arm64.tar.gz
+# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_arm64.tar.gz
+# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_arm64.tar.gz
+# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_arm64.tar.gz
+# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/CloudflareST_linux_arm64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm CloudflareST_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -164,17 +164,22 @@ https://github.com/XIU2/CloudflareSpeedTest
         指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
     -url https://cf.xiu2.xyz/url
         指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
-        当下载测速时，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来。
+        当下载测速时，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来。
 
     -httping
         切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)
-        当使用 HTTP 测速模式时，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来。
+        当使用 HTTP 测速模式时，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来。
         注意：HTTPing 本质上也算一种 网络扫描 行为，因此如果你在服务器上面运行，需要降低并发(-n)，否则可能会被一些严格的商家暂停服务。
         如果你遇到 HTTPing 首次测速可用 IP 数量正常，后续测速越来越少甚至直接为 0，但停一段时间后又恢复了的情况，那么也可能是被 运营商、Cloudflare CDN 认为你在网络扫描而 触发临时限制机制，因此才会过一会儿就恢复了，建议降低并发(-n)减少这种情况的发生。
     -httping-code 200
         有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 301 302)
     -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
-        匹配指定地区；地区名为当地机场地区码，英文逗号分隔，支持小写，支持 Cloudflare、AWS CloudFront，仅 HTTPing 模式可用；(默认 所有地区)
+        匹配指定地区；IATA 机场地区码或国家/城市码，英文逗号分隔，大小写均可，仅 HTTPing 模式可用；(默认 所有地区)
+        支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN
+        其中 Cloudflare、AWS CloudFront、Fastly 使用的是 IATA 三字机场地区码，如：HKG,LAX
+        其中 CDN77、Bunny 使用的是 二字国家/区域码，如：US,CN
+        其中 Gcore 使用的是 二字城市码，如：FR,AM
+        因此大家使用 -cfcolo 指定地区码时要根据不同的 CDN 来指定不同类型的地区码。
 
     -tl 200
         平均延迟上限；只输出低于指定平均延迟的 IP，各上下限条件可搭配使用；(默认 9999 ms)
@@ -389,7 +394,7 @@ HTTP 协议适用于快速测试某域名指向某 IP 时是否可以访问，�
 
 > 另外，本软件 HTTPing 仅获取**响应头(response headers)**，并不获取正文内容（即 URL 文件大小不影响 HTTPing 测试，但如果你还要下载测速的话，那么还是需要一个大文件的），类似于 curl -i 功能。
 
-> 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
+> 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
 
 ``` bash
 # 只需加上 -httping 参数即可切换到 HTTP 协议延迟测速模式
@@ -411,7 +416,7 @@ CloudflareST.exe -httping -tp 80 -url http://cdn.cloudflare.steamstatic.com/stea
 
 ****
 
-#### \# 匹配指定地区(colo 机场地区码)
+#### \# 匹配指定地区
 
 <details>
 <summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
@@ -428,24 +433,32 @@ Cloudflare CDN 的节点 IP 是 Anycast IP，即每个 IP 对应的服务器节�
 
 因此，对于这种 Anycast IP 的实际服务器位置，就不能靠那些在线 IP 地址位置查询网站来判断了。
 
-除了通过 **HTTP 响应头**获取机场地区码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区机场地区码。
+除了通过 **HTTP 响应头**获取地区码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区码。
 
-> 该功能支持 Cloudflare CDN 和 AWS CloudFront CDN，且这两个 CDN 的机场地区码是通用的（算是惯例）。  
-> **注意**：如果你要用于筛选 AWS CloudFront CDN 地区，那么要通过 `-url` 参数指定一个使用 AWS CloudFront CDN 的下载测速地址（因为软件默认下载测速地址是 Cloudflare CDN 的）
+> 该功能支持 **Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny** 等 CDN。  
+> 但注意，不是所有 CDN 都支持 Anycast 技术的，很多 CDN 会限制一个网站能使用的 IP 范围。
+
+> 其中 **Cloudflare、AWS CloudFront、Fastly** 都使用的是 **`IATA 三字机场地区码`**，如：HKG,LAX  
+> 而 **CDN77、Bunny** 使用的是 **`二字国家/区域码`**，如：US,CN  
+> **Gcore** 则使用的是 **`二字城市码`**，如：FR,AM  
+> 因此大家使用 `-cfcolo` 指定地区码时要根据不同的 CDN 来指定不同类型的地区码。
+
+> **注意**：如果你要用于筛选 AWS CloudFront CDN 地区，那么要通过 `-url` 参数指定一个使用 AWS CloudFront CDN 的下载测速地址（因为软件默认下载测速地址是 Cloudflare CDN 的），另外有时候 HTTPing 模式测速一些 AWS CloudFront 地址会返回 403 错误，这种情况下需要加上 `-httping-code 403` 才能正确获取地区码。
 
 ``` bash
 # 指定地区名后，延迟测速后得到的结果就都是指定地区的 IP 了（如果没有指定 -dd 的话则会继续进行下载测速）
 # 如果延迟测速后结果为 0，则说明没有找到任何一个（未超时可用的）指定地区的 IP。
-# 节点地区名为当地 机场地区码，指定多个时用英文逗号分隔，v2.2.3 版本后支持小写
+# 节点地区名为当地 IATA 机场地区码或国家/城市码，指定多个时用英文逗号分隔，v2.2.3 版本后支持小写
 
 CloudflareST.exe -httping -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 
-# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为软件是通过 HTTP 链接中的响应头来获得该 IP 的实际地区机场地区码）
+# 注意，该参数只有在 HTTPing 延迟测速模式下才可用（因为软件是通过 HTTP 链接中的响应头来获得该 IP 的实际地区码）
 
-# 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前的机场地区码（支持 Cloudflare、AWS CloudFront）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
+# 另外，HTTPing 过程中，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来，而 TCPing 过程中无法这样做（但 下载测速 时也会这样做来获取地区码，毕竟下载测速也是个 HTTP 链接）
 ```
 
-> 两个 CDN 机场地区码通用，因此各地区名可见：https://www.cloudflarestatus.com/
+> **`IATA 三字机场地区码`**，可见：https://www.cloudflarestatus.com/  
+> **`二字国家码`**，可见：[https://zh.wikipedia.org/wiki/ISO_3166-1二位字母代码#正式分配代码](https://zh.wikipedia.org/wiki/ISO_3166-1%E4%BA%8C%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81#%E6%AD%A3%E5%BC%8F%E5%88%86%E9%85%8D%E4%BB%A3%E7%A0%81)
 
 </details>
 
