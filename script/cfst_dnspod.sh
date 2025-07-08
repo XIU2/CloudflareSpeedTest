@@ -45,8 +45,8 @@ update_dns_record() {
     curl -s -X POST -d "login_token=$dnspod_token&format=json&domain=$dnspod_domain&record_id=$record_id&sub_domain=$dnspod_record&record_type=$record_type&record_line=默认&value=$ip_address" "$dnspod_api_url/Record.Modify"
 }
 
-# 运行 CloudflareST v4
-./CloudflareST -f ip.txt -n 500 -o result4.csv
+# 运行 CFST v4
+./cfst -f ip.txt -n 500 -o result4.csv
 
 # 读取 CSV 文件并提取优选 IPv4 地址
 preferred_ipv4=$(awk -F, 'NR==2 {print $1}' result4.csv)
@@ -75,8 +75,8 @@ else
   fi
 fi
 
-# 运行 CloudflareST v6
-./CloudflareST -f ipv6.txt -n 500 -o result6.csv
+# 运行 CFST v6
+./cfst -f ipv6.txt -n 500 -o result6.csv
 
 # 读取 CSV 文件并提取优选 IPv6 地址
 preferred_ipv6=$(awk -F, 'NR==2 {print $1}' result6.csv)

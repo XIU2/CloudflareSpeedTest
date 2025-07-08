@@ -32,15 +32,15 @@ _READ() {
 }
 
 _UPDATE() {
-	# 这里可以自己添加、修改 CloudflareST 的运行参数
-	./CloudflareST -o "result_ddns.txt"
+	# 这里可以自己添加、修改 CFST 的运行参数
+	./cfst -o "result_ddns.txt"
 
 	# 判断结果文件是否存在，如果不存在说明结果为 0
-	[[ ! -e "result_ddns.txt" ]] && echo "CloudflareST 测速结果 IP 数量为 0，跳过下面步骤..." && exit 0
+	[[ ! -e "result_ddns.txt" ]] && echo "CFST 测速结果 IP 数量为 0，跳过下面步骤..." && exit 0
 
 	CONTENT=$(sed -n "2,1p" result_ddns.txt | awk -F, '{print $1}')
 	if [[ -z "${CONTENT}" ]]; then
-		echo "CloudflareST 测速结果 IP 数量为 0，跳过下面步骤..."
+		echo "CFST 测速结果 IP 数量为 0，跳过下面步骤..."
 		exit 0
 	fi
 	# 如果 EMAIL 变量是空的，那么就代表要使用 API 令牌方式
