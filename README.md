@@ -58,13 +58,13 @@ mkdir cfst
 cd cfst
 
 # 下载 CFST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_amd64.tar.gz
 # 如果你是在国内网络环境中下载，那么请使用下面这几个镜像加速之一：
-# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_arm64.tar.gz
-# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_arm64.tar.gz
-# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_arm64.tar.gz
-# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_arm64.tar.gz
-# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.1/cfst_linux_arm64.tar.gz
+# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
+# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
+# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
+# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
+# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm cfst_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -703,6 +703,8 @@ cfst.exe -f 1.txt
 像这种直接提示 HTTP 状态码的，比较好判断，如 403 就是测速地址禁止你访问，404 就是测速地址找不到文件，具体可以搜索 HTTP 状态码含义
 3. `... context deadline exceeded (Client.Timeout exceeded while awaiting headers) ...`  
 这种一般是超时引起的，可能是 IP 等网络问题，也可能是 -dt 下载测速时间设置的太短了，当然默认的 10 秒到不至于超时
+4. `...tls: handshake failure...` 或 `...tls: failed to verify certificate...`  
+这种 TLS 握手失败/TLS 证书错误 代表下载测速地址和测速 IP 服务器不匹配，也就是 下载测速地址 与 测速 IP 其中一方有误（例如下载测速地址是托管在 Fastly CDN 的，但测速 IP 是 Cloudflare CDN 的，或者反过来，总之就是 IP 服务器告诉你这个网站域名它不认识并把你拒之门外）
 
 > 如果你遇到了其他报错原因，且翻译后还是不懂，可以发 Issues 或 Discussions 询问。
 
@@ -805,8 +807,8 @@ _**English language version of CFST (Text language differences only) [#64](https
 为了方便，我是在编译的时候将版本号写入代码中的 version 变量，因此你手动编译时，需要像下面这样在 `go build` 命令后面加上 `-ldflags` 参数来指定版本号：
 
 ```bash
-go build -ldflags "-s -w -X main.version=v2.3.3"
-# 在 CloudflareSpeedTest 目录中通过命令行（例如 CMD、Bat 脚本）运行该命令，即可编译一个可在和当前设备同样系统、位数、架构的环境下运行的二进制程序（Go 会自动检测你的系统位数、架构）且版本号为 v2.3.3
+go build -ldflags "-s -w -X main.version=v1.0.0"
+# 在 CloudflareSpeedTest 目录中通过命令行（例如 CMD、Bat 脚本）运行该命令，即可编译一个可在和当前设备同样系统、位数、架构的环境下运行的二进制程序（Go 会自动检测你的系统位数、架构）且版本号为 v1.0.0
 ```
 
 如果想要在 Windows 64位系统下编译**其他系统、架构、位数**，那么需要指定 **GOOS** 和 **GOARCH** 变量。
@@ -816,7 +818,7 @@ go build -ldflags "-s -w -X main.version=v2.3.3"
 ```bat
 SET GOOS=linux
 SET GOARCH=amd64
-go build -ldflags "-s -w -X main.version=v2.3.3"
+go build -ldflags "-s -w -X main.version=v1.0.0"
 ```
 
 例如在 Linux 系统下编译一个适用于 **Windows 系统 amd 架构 32 位**的二进制程序：
@@ -824,7 +826,7 @@ go build -ldflags "-s -w -X main.version=v2.3.3"
 ```bash
 GOOS=windows
 GOARCH=386
-go build -ldflags "-s -w -X main.version=v2.3.3"
+go build -ldflags "-s -w -X main.version=v1.0.0"
 ```
 
 > 可以运行 `go tool dist list` 来查看当前 Go 版本支持编译哪些组合。
@@ -836,7 +838,7 @@ go build -ldflags "-s -w -X main.version=v2.3.3"
 
 ```bat
 :: Windows 系统下是这样：
-SET version=v2.3.3
+SET version=v1.0.0
 SET GOOS=linux
 SET GOARCH=amd64
 go build -o Releases\cfst_linux_amd64\cfst -ldflags "-s -w -X main.version=%version%"
@@ -844,7 +846,7 @@ go build -o Releases\cfst_linux_amd64\cfst -ldflags "-s -w -X main.version=%vers
 
 ```bash
 # Linux 系统下是这样：
-version=v2.3.3
+version=v1.0.0
 GOOS=windows
 GOARCH=386
 go build -o Releases/cfst_windows_386/cfst.exe -ldflags "-s -w -X main.version=${version}"
