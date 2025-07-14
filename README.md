@@ -705,6 +705,8 @@ cfst.exe -f 1.txt
 这种一般是**请求超时**引起的，可能是 IP 或网络问题，也可能是 -dt 下载测速时间设置的太短了（当然默认的 10 秒肯定算不上短）
 4. `... tls: handshake failure ...` 或 `... tls: failed to verify certificate ...`  
 这种 **TLS 握手失败/TLS 证书错误** 代表下载测速地址和测速 IP 服务器不匹配，也就是下载测速地址与测速 IP 其中一方有误（例如下载测速地址是托管在 Fastly CDN 的，但测速 IP 是 Cloudflare CDN 的，或者反过来，总之就是你访问下载测速地址时该测速的 IP 服务器告诉你这个网站域名它不认识并把你拒之门外）
+5. `... tls: failed to verify certificate: x509: certificate signed by unknown authority.`  
+这种代表**系统证书配置有问题**，导致 TLS 握手时无法验证证书，一般是 Termux 内可能会遇到的，解决方法见：https://github.com/XIU2/CloudflareSpeedTest/discussions/61#discussioncomment-13745059
 
 > 如果你遇到了其他报错原因，且翻译后还是不懂，可以发 Issues 或 Discussions 询问，我也会更新到这里。
 
