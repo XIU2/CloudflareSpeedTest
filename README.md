@@ -58,13 +58,13 @@ mkdir cfst
 cd cfst
 
 # 下载 CFST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_amd64.tar.gz
+wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_amd64.tar.gz
 # 如果你是在国内网络环境中下载，那么请使用下面这几个镜像加速之一：
-# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
-# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
-# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
-# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
-# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.2/cfst_linux_arm64.tar.gz
+# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_arm64.tar.gz
+# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_arm64.tar.gz
+# wget -N https://ghproxy.net/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_arm64.tar.gz
+# wget -N https://gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_arm64.tar.gz
+# wget -N https://hk.gh-proxy.com/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.3/cfst_linux_arm64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm cfst_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -283,7 +283,9 @@ CFST 会先延迟测速，在这过程中进度条右侧会实时显示可用 IP
 
 ****
 
-另外，如果全部队列 IP 都测速完了，但一个满足下载速度条件的 IP 都没有，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速数据**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
+另外，如果全部队列 IP 都测速完了，但一个满足下载速度条件的 IP 都没有，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速结果**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
+
+> 注意，如果你**没有指定**下载测速下限 `-sl` 条件，那么无论什么情况下 CFST 都会**输出所有测速结果**。
 
 同样，延迟测速方面，`可用: 30`、`队列：10` 这两个数值也可以让你清楚，你设置的延迟条件对你来说是否过于苛刻。如果可用 IP 一大堆，但条件过滤后只剩下 2、3 个，那不用说就知道需要**调低预期的延迟/丢包条件**了。
 
@@ -603,10 +605,11 @@ cfst.exe -tlr 0.25
 cfst.exe -sl 5 -dn 10
 ```
 
-> 如果**没有找到一个满足速度**条件的 IP，那么不会输出任何内容，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速数据**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。
+> 如果**没有找到一个满足速度**条件的 IP，那么不会输出任何内容，你可能需要调低预期的下载测速下限条件，但你需要知道当前的大概测速速度都在什么范围，那么你就可以加上 `-debug` 参数开启调试模式，这样再遇到这种情况时，就会**忽略条件返回所有测速结果**，你就能看到这些 IP 的下载速度都有多少，心里也就有数了，然后**适当调低 `-sl` 再试试**。  
+> 注意，如果你**没有指定**下载测速下限 `-sl` 条件，那么无论什么情况下 CFST 都会**输出所有测速结果**。
 
 > 没有指定平均延迟上限时，如果一直**凑不够**满足条件的 IP 数量，就会**一直测速**下去。  
-> 所以建议**同时指定 [下载速度下限] + [平均延迟上限]**，这样测速到指定延迟上限还没凑够数量，就会终止测速。
+> 建议**同时指定 [下载速度下限] + [平均延迟上限]**，这样测速到指定延迟上限还没凑够数量，就会终止测速。
 
 ****
 
@@ -625,6 +628,33 @@ cfst.exe -tl 200 -sl 5.6 -dn 10
 
 > 因为 Cloudflare 公开的 IP 段是**回源 IP+任播 IP**，而**回源 IP**是无法使用的，所以下载测速是 0.00。  
 > 运行时可以加上 `-sl 0.01`（下载速度下限），过滤掉**回源 IP**（下载测速低于 0.01MB/s 的结果）。
+
+****
+
+为了避免大家迷糊，我列出了在各种条件组合下的预期输出结果都是什么样的。
+
+**没有指定任何 延迟/速度条件 (即都是默认值)：**
+- 无论如何，都直接输出 **所有测速结果**
+
+****
+
+**指定了任何 延迟条件（`-tl` `-tll`，且无论是否开启调试模式 `-debug` 都一样）：**
+- 如果找到最少 1 个满足条件的 IP，则只输出 **这几个满足条件的 IP**（如没有禁用下载测速，则会继续下载测速）  
+- 如果没找到任何满足条件的 IP，则会输出 **空**（如没有禁用下载测速，也会因为数量为 0 而跳过下载测速）
+
+****
+
+**指定了任何 下载速度条件 (`-sl`)：**
+
+且当 **关闭 调试模式** 时（即没加上 `-debug` 参数，这种情况下和延迟测速的逻辑完全一致）：
+
+- 如果找到最少 1 个满足条件的 IP，则只输出 **这几个满足条件的 IP**  
+- 如果没找到任何满足条件的 IP，则输出 **空**
+
+且当 **开启 调试模式** 时（即加上了 `-debug` 参数，延迟测速并没有加上下面第二条里的逻辑，所以依然输出 空）：
+
+- 如果找到最少 1 个满足条件的 IP，则只输出 **这几个满足条件的 IP**  
+- 如果没找到任何满足条件的 IP，则直接输出 **所有测速结果**
 
 </details>
 
