@@ -53,15 +53,15 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	if Disable {
 		return utils.DownloadSpeedSet(ipSet)
 	}
-	if len(ipSet) <= 0 { // IP数组长度(IP数量) 大于 0 时才会继续下载测速
+	if len(ipSet) <= 0 { // IP 数组长度(IP数量) 大于 0 时才会继续下载测速
 		fmt.Println("\n\033[33m[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。\033[0m")
 		return
 	}
-	testNum := TestCount
-	if len(ipSet) < TestCount || MinSpeed > 0 { // 如果IP数组长度(IP数量) 小于下载测速数量（-dn），则次数修正为IP数
+	testNum := TestCount                        // 等待下载测速的队列数量 先默认等于 下载测速数量(-dn）
+	if len(ipSet) < TestCount || MinSpeed > 0 { // 如果延迟测速并过滤后的 IP 数组长度(IP数量) 小于 下载测速数量(-dn），（即 -dn 预期数量是不够的），或者指定了 下载测速下限 (-sl) 条件（这就可能要全部下载测速一遍，直到找齐预期数量或测完为止），则 等待下载测速的队列数量 修正为 IP 数量
 		testNum = len(ipSet)
 	}
-	if testNum < TestCount {
+	if testNum < TestCount { // 如果 等待下载测速的队列数量 小于 下载测速数量(-dn），（显然 -dn 预期数量是不够的），所以 下载测速数量(-dn）修正为 等待下载测速的队列数量
 		TestCount = testNum
 	}
 
@@ -89,9 +89,9 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		}
 	}
 	bar.Done()
-	if MinSpeed == 0.00 { // 如果没有设置下载速度下限，则直接返回所有测速数据
+	if MinSpeed == 0.00 { // 如果没有指定下载速度下限，则直接返回所有测速数据
 		speedSet = utils.DownloadSpeedSet(ipSet)
-	} else if utils.Debug && len(speedSet) == 0 { // 如果设置了下载速度下限，且是调试模式下，且没有找到任何一个满足条件的 IP 时，返回所有测速数据，供用户查看当前的测速结果，以便适当调低预期测速条件
+	} else if utils.Debug && len(speedSet) == 0 { // 如果指定了下载速度下限，且是调试模式下，且没有找到任何一个满足条件的 IP 时，返回所有测速数据，供用户查看当前的测速结果，以便适当调低预期测速条件
 		fmt.Println("\033[33m[调试] 没有满足 下载速度下限 条件的 IP，忽略条件返回所有测速数据（方便下次测速时调整条件）。\033[0m")
 		speedSet = utils.DownloadSpeedSet(ipSet)
 	}
