@@ -736,15 +736,19 @@ cfst.exe -f 1.txt
 常见的下载测速失败报错原因有（因为是 Go 语言的原生报错信息，因此基本都是英文）：
 
 1. `... read: connection reset by peer ...  `  
-**链接被重置**，可能是下载测速地址被阻断了，可能是蔷干的，也可能是运营商干的（比如移动或部分地区的白名单）
+**链接被重置**，可能是下载测速地址被阻断了 或测速 IP 被针对性 HTTPS 阻断了，可能是蔷干的，也可能是运营商干的（比如移动或部分地区的白名单），当然也可能是测速 IP 服务器单纯的重置了你这个不合法的链接请求
 2. `... HTTP 状态码: 403 ...`  
-像这种直接提示 **HTTP 状态码**的，比较好判断，如 403 就是下载测速地址禁止你访问，404 就是下载测速地址路径对应的文件找不到，具体可以搜索 HTTP 状态码含义
+像这种直接提示 **HTTP 状态码**的，比较好判断，如 403 就是下载测速地址禁止你访问，404 就是下载测速地址路径对应的文件找不到（具体其他的可以搜索 HTTP 状态码含义）
 3. `... context deadline exceeded (Client.Timeout exceeded while awaiting headers) ...`  
-这种一般是**请求超时**引起的，可能是 IP 或网络问题，也可能是 -dt 下载测速时间设置的太短了（当然默认的 10 秒肯定算不上短）
+这种一般是**请求超时**引起的，可能是 IP 或网络问题，也可能是 `-dt` 下载测速时间设置的太短了（当然默认的 10 秒肯定算不上短）
 4. `... tls: handshake failure ...` 或 `... tls: failed to verify certificate ...`  
-这种 **TLS 握手失败/TLS 证书错误** 代表下载测速地址和测速 IP 服务器不匹配，也就是下载测速地址与测速 IP 其中一方有误（例如下载测速地址是托管在 Fastly CDN 的，但测速 IP 是 Cloudflare CDN 的，或者反过来，总之就是你访问下载测速地址时该测速的 IP 服务器告诉你这个网站域名它不认识并把你拒之门外）
-5. `... tls: failed to verify certificate: x509: certificate signed by unknown authority.`  
-这种代表**系统证书配置有问题**，导致 TLS 握手时无法验证证书，一般是 Termux 内可能会遇到的，解决方法见：https://github.com/XIU2/CloudflareSpeedTest/discussions/61#discussioncomment-13745059
+这种 **TLS 握手失败/SSL 证书错误** 代表下载测速地址和测速 IP 服务器不匹配，也就是下载测速地址与测速 IP 其中一方有误（例如下载测速地址是托管在 Fastly CDN 的，但测速 IP 是 Cloudflare CDN 的，或者反过来，总之就是你访问下载测速地址时该测速的 IP 服务器告诉你这个网站域名它不认识并把你拒之门外）
+5. `... tls: failed to verify certificate: x509: certificate is valid for XXX.XX, not YYY.YY ...`  
+这种是 **SSL 证书里没有包含你下载测速地址的域名**，要么是下载测速地址证书配置有问题，要么就是该测速服务器 IP 上并没有该下载测速地址域名对应的 SSL 证书，也就意味着这个服务器 IP 是不能用于该下载测速地址域名的（比如你用谷歌的服务器 IP 去下载测速百度的域名就会这样，或像上面 4 的原因一样）
+6. `... tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time ...`  
+这种是 **SSL 证书过期了或者尚未到有效时间**，除了这个原因外，也可能是和上面 4、5 的原因一样（这 4、5、6 三种报错可能会同时出现在同一个服务器 IP 上）
+7. `... tls: failed to verify certificate: x509: certificate signed by unknown authority.`  
+这种代表**系统证书配置有问题**，导致 TLS 握手时无法验证证书，目前只在 Termux 内遇到过（解决方法见：https://github.com/XIU2/CloudflareSpeedTest/discussions/61 帖子末尾）
 
 > 如果你遇到了其他报错原因，且翻译后还是不懂，可以发 Issues 或 Discussions 询问，我也会更新到这里。  
 > 但注意，发 Issues 或 Discussions 询问时，请记得带上**调试模式下 CFST 输出的完整内容（或者完整截图）**。
