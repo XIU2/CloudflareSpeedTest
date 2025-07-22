@@ -2,7 +2,7 @@ package task
 
 import (
 	//"crypto/tls"
-	"fmt"
+
 	"io"
 	"log"
 	"net"
@@ -44,7 +44,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 		request, err := http.NewRequest(http.MethodHead, URL, nil)
 		if err != nil {
 			if utils.Debug { // 调试模式下，输出更多信息
-				fmt.Printf("\033[31m[调试] IP: %s, 延迟测速请求创建失败，错误信息: %v, 测速地址: %s\033[0m\n", ip.String(), err, URL)
+				utils.Red.Printf("[调试] IP: %s, 延迟测速请求创建失败，错误信息: %v, 测速地址: %s\n", ip.String(), err, URL)
 			}
 			return 0, 0, ""
 		}
@@ -52,7 +52,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 		response, err := hc.Do(request)
 		if err != nil {
 			if utils.Debug { // 调试模式下，输出更多信息
-				fmt.Printf("\033[31m[调试] IP: %s, 延迟测速失败，错误信息: %v, 测速地址: %s\033[0m\n", ip.String(), err, URL)
+				utils.Red.Printf("[调试] IP: %s, 延迟测速失败，错误信息: %v, 测速地址: %s\n", ip.String(), err, URL)
 			}
 			return 0, 0, ""
 		}
@@ -63,14 +63,14 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 		if HttpingStatusCode == 0 || HttpingStatusCode < 100 && HttpingStatusCode > 599 {
 			if response.StatusCode != 200 && response.StatusCode != 301 && response.StatusCode != 302 {
 				if utils.Debug { // 调试模式下，输出更多信息
-					fmt.Printf("\033[31m[调试] IP: %s, 延迟测速终止，HTTP 状态码: %d, 测速地址: %s\033[0m\n", ip.String(), response.StatusCode, URL)
+					utils.Red.Printf("[调试] IP: %s, 延迟测速终止，HTTP 状态码: %d, 测速地址: %s\n", ip.String(), response.StatusCode, URL)
 				}
 				return 0, 0, ""
 			}
 		} else {
 			if response.StatusCode != HttpingStatusCode {
 				if utils.Debug { // 调试模式下，输出更多信息
-					fmt.Printf("\033[31m[调试] IP: %s, 延迟测速终止，HTTP 状态码: %d, 指定的 HTTP 状态码 %d, 测速地址: %s\033[0m\n", ip.String(), response.StatusCode, HttpingStatusCode, URL)
+					utils.Red.Printf("[调试] IP: %s, 延迟测速终止，HTTP 状态码: %d, 指定的 HTTP 状态码 %d, 测速地址: %s\n", ip.String(), response.StatusCode, HttpingStatusCode, URL)
 				}
 				return 0, 0, ""
 			}
@@ -87,7 +87,7 @@ func (p *Ping) httping(ip *net.IPAddr) (int, time.Duration, string) {
 			colo = p.filterColo(colo)
 			if colo == "" { // 没有匹配到地区码或不符合指定地区则直接结束该 IP 测试
 				if utils.Debug { // 调试模式下，输出更多信息
-					fmt.Printf("\033[31m[调试] IP: %s, 地区码不匹配: %s\033[0m\n", ip.String(), colo)
+					utils.Red.Printf("[调试] IP: %s, 地区码不匹配: %s\n", ip.String(), colo)
 				}
 				return 0, 0, ""
 			}

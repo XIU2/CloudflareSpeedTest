@@ -54,7 +54,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		return utils.DownloadSpeedSet(ipSet)
 	}
 	if len(ipSet) <= 0 { // IP 数组长度(IP数量) 大于 0 时才会继续下载测速
-		fmt.Println("\n\033[33m[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。\033[0m")
+		utils.Yellow.Println("[信息] 延迟测速结果 IP 数量为 0，跳过下载测速。")
 		return
 	}
 	testNum := TestCount                        // 等待下载测速的队列数量 先默认等于 下载测速数量(-dn）
@@ -65,7 +65,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 		TestCount = testNum
 	}
 
-	fmt.Printf("\033[34m开始下载测速（下限：%.2f MB/s, 数量：%d, 队列：%d）\033[0m\n", MinSpeed, TestCount, testNum)
+	utils.Cyan.Printf("开始下载测速（下限：%.2f MB/s, 数量：%d, 队列：%d）\n", MinSpeed, TestCount, testNum)
 	// 控制 下载测速进度条 与 延迟测速进度条 长度一致（强迫症）
 	bar_a := len(strconv.Itoa(len(ipSet)))
 	bar_b := "     "
@@ -92,7 +92,7 @@ func TestDownloadSpeed(ipSet utils.PingDelaySet) (speedSet utils.DownloadSpeedSe
 	if MinSpeed == 0.00 { // 如果没有指定下载速度下限，则直接返回所有测速数据
 		speedSet = utils.DownloadSpeedSet(ipSet)
 	} else if utils.Debug && len(speedSet) == 0 { // 如果指定了下载速度下限，且是调试模式下，且没有找到任何一个满足条件的 IP 时，返回所有测速数据，供用户查看当前的测速结果，以便适当调低预期测速条件
-		fmt.Println("\033[33m[调试] 没有满足 下载速度下限 条件的 IP，忽略条件返回所有测速数据（方便下次测速时调整条件）。\033[0m")
+		utils.Yellow.Println("[调试] 没有满足 下载速度下限 条件的 IP，忽略条件返回所有测速数据（方便下次测速时调整条件）。")
 		speedSet = utils.DownloadSpeedSet(ipSet)
 	}
 	// 按速度排序
@@ -122,15 +122,15 @@ func printDownloadDebugInfo(ip *net.IPAddr, err error, statusCode int, url, last
 	}
 	if url != finalURL { // 如果 URL 和最终地址不一致，说明有重定向，是该重定向后的地址引起的错误
 		if statusCode > 0 { // 如果状态码大于 0，说明是后续 HTTP 状态码引起的错误
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, 下载测速地址: %s, 出错的重定向后地址: %s\033[0m\n", ip.String(), statusCode, url, finalURL)
+			utils.Red.Printf("[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, 下载测速地址: %s, 出错的重定向后地址: %s\n", ip.String(), statusCode, url, finalURL)
 		} else {
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速失败，错误信息: %v, 下载测速地址: %s, 出错的重定向后地址: %s\033[0m\n", ip.String(), err, url, finalURL)
+			utils.Red.Printf("[调试] IP: %s, 下载测速失败，错误信息: %v, 下载测速地址: %s, 出错的重定向后地址: %s\n", ip.String(), err, url, finalURL)
 		}
 	} else { // 如果 URL 和最终地址一致，说明没有重定向
 		if statusCode > 0 { // 如果状态码大于 0，说明是后续 HTTP 状态码引起的错误
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, 下载测速地址: %s\033[0m\n", ip.String(), statusCode, url)
+			utils.Red.Printf("[调试] IP: %s, 下载测速终止，HTTP 状态码: %d, 下载测速地址: %s\n", ip.String(), statusCode, url)
 		} else {
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速失败，错误信息: %v, 下载测速地址: %s\033[0m\n", ip.String(), err, url)
+			utils.Red.Printf("[调试] IP: %s, 下载测速失败，错误信息: %v, 下载测速地址: %s\n", ip.String(), err, url)
 		}
 	}
 }
@@ -145,7 +145,7 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 			lastRedirectURL = req.URL.String() // 记录每次重定向的目标，以便在访问错误时输出
 			if len(via) > 10 {                 // 限制最多重定向 10 次
 				if utils.Debug { // 调试模式下，输出更多信息
-					fmt.Printf("\033[31m[调试] IP: %s, 下载测速地址重定向次数过多，终止测速，下载测速地址: %s\033[0m\n", ip.String(), req.URL.String())
+					utils.Red.Printf("[调试] IP: %s, 下载测速地址重定向次数过多，终止测速，下载测速地址: %s\n", ip.String(), req.URL.String())
 				}
 				return http.ErrUseLastResponse
 			}
@@ -158,7 +158,7 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		if utils.Debug { // 调试模式下，输出更多信息
-			fmt.Printf("\033[31m[调试] IP: %s, 下载测速请求创建失败，错误信息: %v, 下载测速地址: %s\033[0m\n", ip.String(), err, URL)
+			utils.Red.Printf("[调试] IP: %s, 下载测速请求创建失败，错误信息: %v, 下载测速地址: %s\n", ip.String(), err, URL)
 		}
 		return 0.0, ""
 	}
