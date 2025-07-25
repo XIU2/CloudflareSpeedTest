@@ -25,7 +25,7 @@
 
 ### 下载运行
 
-1. 下载编译好的可执行文件（ [Github Releases](https://github.com/XIU2/CloudflareSpeedTest/releases) / [蓝奏云](https://pan.lanpw.com/b0742hkxe) ）并解压。  
+1. 下载编译好的可执行文件（ [Github Releases](https://github.com/XIU2/CloudflareSpeedTest/releases) / [蓝奏云](https://xiu.lanzoub.com/b0742hkxe) ）并解压。  
 2. 双击运行 `cfst.exe` 文件（Windows 系统），等待测速完成...
 
 <details>
@@ -33,7 +33,8 @@
 
 ****
 
-通过scoop安装:
+如果你有 scoop(Windows 下的命令行安装程序)，则可以这样安装:
+
 ```sh
 # 添加最多人使用的中文软件包仓库：dorado
 scoop bucket add dorado https://github.com/chawyehsu/dorado
@@ -77,7 +78,7 @@ chmod +x cfst
 ./cfst
 
 # 运行（带参数示例）
-./cfst -dd -tll 90
+./cfst -tl 200 -dn 20
 ```
 
 > 如果平**均延迟非常低**（如 0.xx），则说明 CFST **测速时走了代理**，请先关闭代理软件后再测速。  
@@ -300,9 +301,9 @@ CFST 会先延迟测速，在这过程中进度条右侧会实时显示可用 IP
 Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷方式目标中。
 
 > [!TIP]
-> - 各参数均有**默认值**，使用默认值的参数是可以省略的（**按需选择**），参数**不分前后顺序**。  
+> - 各参数均有**默认值**，当使用默认值时参数可以省略（**按需选择**），参数**不分前后顺序**。  
 > - Windows **PowerShell** 只需把下面命令中的 `cfst.exe` 改为 `.\cfst.exe` 即可。  
-> - Linux 系统只需要把下面命令中的 `cfst.exe` 改为 `./cfst` 即可。
+> - Linux / macOS 系统只需要把下面命令中的 `cfst.exe` 改为 `./cfst` 即可。
 
 ****
 
@@ -315,18 +316,18 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 
 ****
 
-很多人打开 CMD 以**绝对路径**运行 CFST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CFST 程序目录下，以**相对路径**方式运行：
+很多人打开 CMD 直接就以**绝对路径**运行 CFST 会报错，这是因为默认的 `-f ip.txt` 参数是相对路径，需要指定绝对路径的 ip.txt 才行，但这样毕竟太麻烦了，因此还是建议进入 CFST 程序目录下，以**相对路径**方式运行：
 
 **方式 一**：
 1. 打开 CFST 程序所在目录  
 2. 空白处按下 <kbd>Shift + 鼠标右键</kbd> 显示右键菜单  
 3. 选择 **\[在此处打开命令窗口\]** 来打开 CMD 窗口，此时默认就位于当前目录下  
-4. 输入带参数的命令，如：`cfst.exe -tll 50 -tl 200`即可运行
+4. 输入带参数的命令，如：`cfst.exe -tl 200 -dn 20` 即可运行
 
 **方式 二**：
 1. 打开 CFST 程序所在目录  
-2. 直接在文件夹地址栏中全选并输入 `cmd` 回车来打开 CMD 窗口，此时默认就位于当前目录下  
-4. 输入带参数的命令，如：`cfst.exe -tll 50 -tl 200`即可运行
+2. 直接在文件夹地址栏中全选(或清空)并输入 `cmd` 回车就能打开 CMD 窗口，此时默认就位于当前目录下  
+4. 输入带参数的命令，如：`cfst.exe -tl 200 -dn 20` 即可运行
 
 > 当然你也可以随便打开一个 CMD 窗口，然后输入如 `cd /d "D:\Program Files\cfst"` 来进入程序目录
 
@@ -349,10 +350,10 @@ Windows 要指定参数需要在 CMD 中运行，或者把参数添加到快捷�
 
 ``` bash
 # 如果要不输出结果文件，那么请加上 -o " "，引号里的是空格（没有空格会导致该参数被省略）。
-D:\ABC\cfst\cfst.exe -n 500 -t 4 -dn 20 -dt 5 -o " "
+D:\ABC\cfst\cfst.exe -tl 200 -dn 20 -o " "
 
 # 如果文件路径包含引号，则需要把启动参数放在引号外面，记得引号和 - 之间有空格。
-"D:\Program Files\cfst\cfst.exe" -n 500 -t 4 -dn 20 -dt 5 -o " "
+"D:\Program Files\cfst\cfst.exe" -tl 200 -dn 20 -o " "
 
 # 注意！快捷方式 - 起始位置 不能是空的，否则就会因为绝对路径而找不到 ip.txt 文件
 ```
