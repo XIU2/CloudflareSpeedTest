@@ -829,6 +829,9 @@ _**CFST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/CloudflareSpee
 - _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
 _**CFST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
 
+- _https://github.com/GuangYu-yu/CloudflareST-Rust_  
+_**CFST Rust 版本**_
+
 - _https://github.com/hoseinnikkhah/CloudflareSpeedTest-English_  
 _**English language version of CFST (Text language differences only) [#64](https://github.com/XIU2/CloudflareSpeedTest/issues/68)**_
 
