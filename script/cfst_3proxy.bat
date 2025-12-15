@@ -1,6 +1,6 @@
 :: --------------------------------------------------------------
 ::	项目: CloudflareSpeedTest 自动更新 3Proxy
-::	版本: 1.0.5
+::	版本: 1.0.6
 ::	作者: XIU2
 ::	项目: https://github.com/XIU2/CloudflareSpeedTest
 :: --------------------------------------------------------------
@@ -67,13 +67,11 @@ if not exist result_3proxy.txt (
 )
 
 :: 获取第一行的最快 IP
-for /f "tokens=1 delims=," %%i in (result_3proxy.txt) do (
-    set /a n+=1 
-    If !n!==2 (
-        set bestip=%%i
-        goto :END
-    )
+for /f "skip=1 tokens=1 delims=," %%i in ('more result_3proxy.txt') do (
+    SET bestip=%%i
+    goto :END
 )
+
 :END
 
 :: 判断刚刚获取的最快 IP 是否为空，以及是否和旧 IP 一样

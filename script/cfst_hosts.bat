@@ -1,6 +1,6 @@
 :: --------------------------------------------------------------
 ::	项目: CloudflareSpeedTest 自动更新 Hosts
-::	版本: 1.0.4
+::	版本: 1.0.5
 ::	作者: XIU2
 ::	项目: https://github.com/XIU2/CloudflareSpeedTest
 :: --------------------------------------------------------------
@@ -67,13 +67,11 @@ if not exist result_hosts.txt (
 )
 
 :: 获取第一行的最快 IP
-for /f "tokens=1 delims=," %%i in (result_hosts.txt) do (
-    SET /a n+=1 
-    If !n!==2 (
-        SET bestip=%%i
-        goto :END
-    )
+for /f "skip=1 tokens=1 delims=," %%i in ('more result_hosts.txt') do (
+    SET bestip=%%i
+    goto :END
 )
+
 :END
 
 :: 判断刚刚获取的最快 IP 是否为空，以及是否和旧 IP 一样
