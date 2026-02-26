@@ -169,6 +169,8 @@ https://github.com/XIU2/CloudflareSpeedTest
     -url https://cf.xiu2.xyz/url
         指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
         当下载测速时，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来。
+    -ss 127.0.0.1:1080
+        指定 HTTPing、下载测速时使用的 SOCKS5 代理的地址；（默认不使用代理）
 
     -httping
         切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)

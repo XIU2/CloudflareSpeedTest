@@ -11,6 +11,7 @@ import (
 
 	"github.com/XIU2/CloudflareSpeedTest/task"
 	"github.com/XIU2/CloudflareSpeedTest/utils"
+	"golang.org/x/net/proxy"
 )
 
 var (
@@ -37,6 +38,8 @@ https://github.com/XIU2/CloudflareSpeedTest
         指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
     -url https://cf.xiu2.xyz/url
         指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
+    -ss 127.0.0.1:1080
+        指定延迟测速(HTTPing)、下载测速时使用的 SOCKS5 代理的地址；（默认不使用代理）
 
     -httping
         切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)
@@ -84,6 +87,7 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
 	flag.IntVar(&task.TCPPort, "tp", 443, "指定测速端口")
 	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "指定测速地址")
+	socks5Addr := flag.String("ss", "", "SOCKS5 代理地址")
 
 	flag.BoolVar(&task.Httping, "httping", false, "切换测速模式")
 	flag.IntVar(&task.HttpingStatusCode, "httping-code", 0, "有效状态代码")
@@ -116,6 +120,15 @@ https://github.com/XIU2/CloudflareSpeedTest
 	utils.InputMaxLossRate = float32(maxLossRate)
 	task.Timeout = time.Duration(downloadTime) * time.Second
 	task.HttpingCFColomap = task.MapColoMap()
+
+	if *socks5Addr != "" {
+		var err error
+		task.ProxiedDialer, err = proxy.SOCKS5("tcp", *socks5Addr, nil, proxy.Direct)
+		if err != nil {
+			utils.Red.Println("创建 SOCKS5 拨号器失败：", err)
+			os.Exit(1)
+		}
+	}
 
 	if printVersion {
 		println(version)
