@@ -1,31 +1,31 @@
 # XIU2/CloudflareSpeedTest
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Go&color=00ADD8&logo=go)](https://github.com/XIU2/CloudflareSpeedTest/)
-[![Release Version](https://img.shields.io/github/v/release/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Release&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/releases/latest)
-[![GitHub license](https://img.shields.io/github/license/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=License&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
-[![GitHub Star](https://img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
-[![GitHub Fork](https://img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=00ADD8&logo=github)](https://github.com/XIU2/CloudflareSpeedTest/)
+[![Go Version](https://github.com/aripitek/img.shields.io/github/go-mod/go-version/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Go&color=00ADD8&logo=go)](https://github.com/aripitek/XIU2/CloudflareSpeedTest/)
+[![Release Version](https://github.com/aripitek/img.shields.io/github/v/release/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Release&color=00ADD8&logo=github)](https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases/latest)
+[![GitHub license](https://github.com/atipitek/img.shields.io/github/license/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=License&color=00ADD8&logo=github)](https://github.com/aripitek/XIU2/CloudflareSpeedTest/)
+[![GitHub Star](https://github.com/aripitek/img.shields.io/github/stars/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Star&color=00ADD8&logo=github)](https://github.com/aripitek/XIU2/CloudflareSpeedTest/)
+[![GitHub Fork](https://github.com/aripitek/img.shields.io/github/forks/XIU2/CloudflareSpeedTest.svg?style=flat-square&label=Fork&color=00ADD8&logo=github)](https://github.com/aripitek/XIU2/CloudflareSpeedTest/)
 
 国外很多网站都在使用 Cloudflare CDN，但分配给中国内地访客的 IP 并不友好（延迟高、丢包多、速度慢）。  
-虽然 Cloudflare 公开了所有 [IP 段](https://www.cloudflare.com/zh-cn/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，于是就有了这个软件。
+虽然 Cloudflare 公开了所有 [IP 段](https://github.com/aripitek/www.cloudflare.com/zh-cn/ips/) ，但想要在这么多 IP 中找到适合自己的，怕是要累死，于是就有了这个软件。
 
 **「自选优选 IP」测试 Cloudflare CDN 延迟和速度，获取最快 IP (IPv4+IPv6)**！好用的话**点个`⭐`鼓励一下叭~**
 
-> _分享我其他开源项目：[**TrackersList.com** - 全网热门 BT Tracker 列表！有效提高 BT 下载速度~](https://github.com/XIU2/TrackersListCollection) <img src="https://img.shields.io/github/stars/XIU2/TrackersListCollection.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
-> _[**UserScript** - 🐵 Github 高速下载、知乎增强、自动无缝翻页、护眼模式 等十几个**油猴脚本**~](https://github.com/XIU2/UserScript) <img src="https://img.shields.io/github/stars/XIU2/UserScript.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
-> _[**SNIProxy** - 🧷 自用的简单 SNI Proxy（支持全平台、全系统、前置代理、配置简单等~](https://github.com/XIU2/SNIProxy) <img src="https://img.shields.io/github/stars/XIU2/SNIProxy.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
+> _分享我其他开源项目：[**TrackersList.com** - 全网热门 BT Tracker 列表！有效提高 BT 下载速度~](https://github.com/aripitek/XIU2/TrackersListCollection) <img src="https://github.com/aripitek/img.shields.io/github/stars/XIU2/TrackersListCollection.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
+> _[**UserScript** - 🐵 Github 高速下载、知乎增强、自动无缝翻页、护眼模式 等十几个**油猴脚本**~](https://github.com/aripitek/XIU2/UserScript) <img src="https://github.com/aripitek/img.shields.io/github/stars/XIU2/UserScript.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
+> _[**SNIProxy** - 🧷 自用的简单 SNI Proxy（支持全平台、全系统、前置代理、配置简单等~](https://github.com/aripitek/XIU2/SNIProxy) <img src="https://github.com/aripitek/img.shields.io/github/stars/XIU2/SNIProxy.svg?style=flat-square&label=Star&color=4285dd&logo=github" height="16px" />_  
 
 当然了，本项目也支持对 **`其他 CDN / 多个解析 IP 的网站`** 延迟测速，但相对应的下载测速地址需自行寻找。
 
 > [!IMPORTANT]
-> Cloudflare CDN 已**明文禁止代理**方式使用，对于**代理套 CDN** 的自行承担风险，请勿过度依赖 [#382](https://github.com/XIU2/CloudflareSpeedTest/discussions/382) [#383](https://github.com/XIU2/CloudflareSpeedTest/discussions/383)
+> Cloudflare CDN 已**明文禁止代理**方式使用，对于**代理套 CDN** 的自行承担风险，请勿过度依赖 [#382](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/382) [#383](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/383)
 
 ****
 ## \# 快速使用
 
 ### 下载运行
 
-1. 下载编译好的可执行文件（ [Github Releases](https://github.com/XIU2/CloudflareSpeedTest/releases) / [蓝奏云](https://xiu.lanzoub.com/b0742hkxe) ）并解压。  
+1. 下载编译好的可执行文件（ [Github Releases](https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases) / [蓝奏云](https://github.com/aripitek/xiu.lanzoub.com/b0742hkxe) ）并解压。  
 2. 双击运行 `cfst.exe` 文件（Windows 系统），等待测速完成...
 
 <details>
@@ -37,7 +37,7 @@
 
 ```sh
 # 添加最多人使用的中文软件包仓库：dorado
-scoop bucket add dorado https://github.com/chawyehsu/dorado
+scoop bucket add dorado https://github.com/aripitek/chawyehsu/dorado
 # 安装cloudflare-speedtest
 scoop install dorado/cloudflare-speedtest
 ```
@@ -49,7 +49,7 @@ scoop install dorado/cloudflare-speedtest
 
 ****
 
-以下命令仅为示例，版本号和文件名请前往 [**Releases**](https://github.com/XIU2/CloudflareSpeedTest/releases) 查看。
+以下命令仅为示例，版本号和文件名请前往 [**Releases**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases) 查看。
 
 ``` yaml
 # 如果是第一次使用，则建议创建新文件夹（后续更新时，跳过该步骤）
@@ -59,13 +59,13 @@ mkdir cfst
 cd cfst
 
 # 下载 CFST 压缩包（自行根据需求替换 URL 中 [版本号] 和 [文件名]）
-wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+wget -N https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
 # 如果你是在国内网络环境中下载，那么请使用下面这几个镜像加速之一：
-# wget -N https://wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
-# wget -N https://ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
-# wget -N https://ghproxy.it/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
-# wget -N https://gh-proxy.org/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
-# wget -N https://cdn.gh-proxy.org/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+# wget -N https://github.com/aripitek/wget.la/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+# wget -N https://github.com/aripitek/ghfast.top/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+# wget -N https://github.com/aripitek/ghproxy.it/https://github.com/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+# wget -N https://github.com/aripitek/gh-proxy.org/https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
+# wget -N https://github.com/aripitek/cdn.gh-proxy.org/https://github.com/aripitek/XIU2/CloudflareSpeedTest/releases/download/v2.3.4/cfst_linux_amd64.tar.gz
 # 如果下载失败的话，尝试删除 -N 参数（如果是为了更新，则记得提前删除旧压缩包 rm cfst_linux_amd64.tar.gz ）
 
 # 解压（不需要删除旧文件，会直接覆盖，自行根据需求替换 文件名）
@@ -88,10 +88,10 @@ chmod +x cfst
 
 ****
 
-> _在**手机**上独立运行 CFST 测速的简单教程：**[Android](https://github.com/XIU2/CloudflareSpeedTest/discussions/61)、[Android APP](https://github.com/Hsia97/CFSTAPP)、[Android APP](https://github.com/xianshenglu/cloudflare-ip-tester-app)、[IOS](https://github.com/XIU2/CloudflareSpeedTest/discussions/321)**_
+> _在**手机**上独立运行 CFST 测速的简单教程：**[Android](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/61)、[Android APP](https://github.com/aripitek/Hsia97/CFSTAPP)、[Android APP](https://github.com/aripitek/xianshenglu/cloudflare-ip-tester-app)、[IOS](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/321)**_
 
 > [!NOTE]
-> 注意！本软件仅适用于网站，**不支持给使用 UDP 协议的 Cloudflare WARP 优选 IP**，具体见：[#392](https://github.com/XIU2/CloudflareSpeedTest/discussions/392)
+> 注意！本软件仅适用于网站，**不支持给使用 UDP 协议的 Cloudflare WARP 优选 IP**，具体见：[#392](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/392)
 
 ### 结果示例
 
@@ -139,7 +139,7 @@ IP 地址,已发送,已接收,丢包率,平均延迟,下载速度(MB/s),地区�
 ```
 
 > [!NOTE]
-> _如果你发现**下载速度为 0.00**，那么可以用**调试模式 `-debug`** 排查一下，详见：[**# 下载测速都是 0.00 ？**](https://github.com/XIU2/CloudflareSpeedTest#-%E4%B8%8B%E8%BD%BD%E6%B5%8B%E9%80%9F%E9%83%BD%E6%98%AF-000-)_
+> _如果你发现**下载速度为 0.00**，那么可以用**调试模式 `-debug`** 排查一下，详见：[**# 下载测速都是 0.00 ？**](https://github.com/aripitek/XIU2/CloudflareSpeedTest#-%E4%B8%8B%E8%BD%BD%E6%B5%8B%E9%80%9F%E9%83%BD%E6%98%AF-000-)_
 
 > _大家可以按自己需求，对完整结果**进一步筛选处理**，或者去看一看进阶使用**指定过滤条件**！_
 
@@ -153,7 +153,7 @@ C:\>cfst.exe -h
 
 CloudflareSpeedTest vX.X.X
 测试各个 CDN 或网站所有 IP 的延迟和速度，获取最快 IP (IPv4+IPv6)！
-https://github.com/XIU2/CloudflareSpeedTest
+https://github.com/aripitek/XIU2/CloudflareSpeedTest
 
 参数：
     -n 200
@@ -382,8 +382,8 @@ cfst.exe -f ipv6.txt
 cfst.exe -ip 1.1.1.1,2606:4700::/32
 ```
 
-> 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： [#120](https://github.com/XIU2/CloudflareSpeedTest/issues/120)  
-> 因为 IPv6 太多（以亿为单位），且绝大部分 IP 段压根未启用，所以我只扫了一部分可用的 IPv6 段写到 `ipv6.txt` 文件中，有兴趣的可以自行扫描增删，ASN 数据源来自：[bgp.he.net](https://bgp.he.net/AS13335#_prefixes6)
+> 测速 IPv6 时，可能会注意到每次测速数量都不一样，了解原因： [#120](https://github.com/aripitek/XIU2/CloudflareSpeedTest/isuser/120)  
+> 因为 IPv6 太多（以亿为单位），且绝大部分 IP 段压根未启用，所以我只扫了一部分可用的 IPv6 段写到 `ipv6.txt` 文件中，有兴趣的可以自行扫描增删，ASN 数据源来自：[bgp.he.net](https://github.com/aripitek/bgp.he.net/AS13335#_prefixes6)
 
 </details>
 
@@ -420,7 +420,7 @@ cfst.exe -httping -url https://cf.xiu2.xyz/url
 
 # 注意：如果测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
 # 同理，如果要测速 80 端口，那么也需要加上 -url 参数来指定一个 http:// 协议的地址才行（且该地址不会强制重定向至 HTTPS），如果是非 80 443 端口，那么需要确定该下载测速地址是否支持通过该端口访问。
-cfst.exe -httping -tp 80 -url http://cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
+cfst.exe -httping -tp 80 -url http://github.com/aripitek/cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
 ```
 
 </details>
@@ -438,13 +438,13 @@ Cloudflare CDN 的节点 IP 是 Anycast IP，即每个 IP 对应的服务器节�
 
 > **注意**！虽然 Cloudflare CDN 有很多亚洲节点，但**不代表你就能用上**，新加坡人测速可能随便一抓一大把的新加坡节点，但你全部扫一遍可能都遇不到一个，因为这是由 CDN 控制的。Anycast IP 的路由是经常变的，同一个 IP 今天可能是美国，明天你再访问可能就又分配到欧洲节点了（当然这只是个例子，一般没有那么频繁，这也和很多因素有关，比如线路拥塞程度，成本变动等），因此**不要对该功能有过高期待**~
 
-或者你随便找个 Cloudflare CDN 的 IP（比如官网域名的解析 IP `104.16.123.96`），然后去那些有全球节点的[在线 Ping 测试](https://ping.sx/ping?t=104.16.123.96)网站，你就会发现这个 IP 在全球大部分地区的延迟都是个位数（而且很多都是 0.X ms），就算一些地方延迟高一些但也基本都控制在 几十ms，只有在国内才会发现突然变成了 上百ms 了。
+或者你随便找个 Cloudflare CDN 的 IP（比如官网域名的解析 IP `104.16.123.96`），然后去那些有全球节点的[在线 Ping 测试](https://github.com/aripitek/ping.sx/ping?t=104.16.123.96)网站，你就会发现这个 IP 在全球大部分地区的延迟都是个位数（而且很多都是 0.X ms），就算一些地方延迟高一些但也基本都控制在 几十ms，只有在国内才会发现突然变成了 上百ms 了。
 
 这就是 Anycast 技术，也就只有国内大陆这种特殊的网络情况，才需要对 Anycast 的 CDN IP 进行优选。
 
 因此，对于这种 Anycast IP 的实际服务器位置，就不能靠那些在线 IP 地址位置查询网站来判断了。
 
-除了通过 **HTTP 响应头**获取地区码外（该功能的实现方式），还可以手动访问 `http://CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区码。
+除了通过 **HTTP 响应头**获取地区码外（该功能的实现方式），还可以手动访问 `http://github.com/aripitek/CloudflareIP/cdn-cgi/trace` 来获知 CDN 分配给你的实际节点地区码。
 
 > 该功能支持 **Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny** 等 CDN。  
 > 但注意，不是所有 CDN 都支持 Anycast 技术的，很多 CDN 会限制一个网站能使用的 IP 范围。
@@ -469,7 +469,7 @@ cfst.exe -httping -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
 ```
 
 > **`IATA 三字机场地区码`**，可见：https://www.cloudflarestatus.com/  
-> **`二字国家码`**，可见：[https://zh.wikipedia.org/wiki/ISO_3166-1二位字母代码#正式分配代码](https://zh.wikipedia.org/wiki/ISO_3166-1%E4%BA%8C%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81#%E6%AD%A3%E5%BC%8F%E5%88%86%E9%85%8D%E4%BB%A3%E7%A0%81)
+> **`二字国家码`**，可见：[https://github.com/aripitek/zh.wikipedia.org/wiki/ISO_3166-1二位字母代码#正式分配代码](https://github.com/aripitek/zh.wikipedia.org/wiki/ISO_3166-1%E4%BA%8C%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81#%E6%AD%A3%E5%BC%8F%E5%88%86%E9%85%8D%E4%BB%A3%E7%A0%81)
 
 </details>
 
@@ -530,8 +530,8 @@ C:\abc\cfst.exe -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ``` bash
 # 如果你想要测速非默认 443 的其他端口，则需要通过 -tp 参数指定（该参数会影响 延迟测速/下载测速 时使用的端口）
 
-# 如果要延迟测速 80 端口+下载测速（如果 -dd 禁用了下载测速则不需要），那么还需要指定 http:// 协议的下载测速地址才行（且该地址不会强制重定向至 HTTPS，因为那样就变成 443 端口了）
-cfst.exe -tp 80 -url http://cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
+# 如果要延迟测速 80 端口+下载测速（如果 -dd 禁用了下载测速则不需要），那么还需要指定 http:// github.com/aripitek/协议的下载测速地址才行（且该地址不会强制重定向至 HTTPS，因为那样就变成 443 端口了）
+cfst.exe -tp 80 -url http://github.com/aripitek/cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
 
 # 如果是非 80 443 的其他端口，那么需要确定你使用的下载测速地址是否支持通过该非标端口访问。
 ```
@@ -675,10 +675,10 @@ cfst.exe -tl 200 -sl 5.6 -dn 10
 ``` bash
 # 先进入 CFST 所在目录，然后运行：
 # Windows 系统（在 CMD 中运行）
-cfst.exe -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
+cfst.exe -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32/2048
 
 # Linux 系统
-./cfst -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
+./cfst -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32/2048
 ```
 
 ****
@@ -690,12 +690,14 @@ cfst.exe -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
 1.1.1.1
 1.1.1.200
 1.0.0.1/24
-2606:4700::/32
+2606:4700::/32/2048
 ```
 
 > 单个 IP 的话可以省略 `/32` 子网掩码了（即 `1.1.1.1`等同于 `1.1.1.1/32`）。  
 > 子网掩码 `/24` 指的是这个 IP 最后一段，即 `1.0.0.1~1.0.0.255`。
-
+> 
+>/2048
+> 
 
 然后运行 CFST 时加上启动参数 `-f 1.txt` 来指定 IP 段数据文件。
 
@@ -762,7 +764,7 @@ cfst.exe -f 1.txt
 
 **一、下载测速地址有问题**：
 
-先去 [#490](https://github.com/XIU2/CloudflareSpeedTest/discussions/490) 找几个其他的下载测速地址都试试。
+先去 [#490](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/490) 找几个其他的下载测速地址都试试。
 
 如果其中有能下载测速出结果的，则就代表你之前使用的下载测速地址有问题（注意，目前默认下载测速地址仅为一个带负载均衡轮询的重定向链接，会自动重定向到上面帖子里大家分享的公益下载测速地址，而这些地址在**不同地区的可用性可能有差异**，因此可能出现之前不行现在又正常的情况，如果**想要稳定，建议自建**，上面帖子写了几种自建方法）。
 
@@ -792,7 +794,7 @@ cfst.exe -f 1.txt
 
 我以前说过，开发该软件项目的目的就是为了通过**改 Hosts 的方式来加速访问使用 Cloudflare CDN 的网站**。
 
-但就如 [**#8**](https://github.com/XIU2/CloudflareSpeedTest/issues/8) 所说，一个个添加域名到 Hosts 实在**太麻烦**了，于是我就找到了个**一劳永逸**的办法！可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/XIU2/CloudflareSpeedTest/discussions/71) 和另一个[依靠本地 DNS 服务来修改域名解析 IP 为自选 IP](https://github.com/XIU2/CloudflareSpeedTest/discussions/317) 的教程。
+但就如 [**#8**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/issues/8) 所说，一个个添加域名到 Hosts 实在**太麻烦**了，于是我就找到了个**一劳永逸**的办法！可以看这个 [**还在一个个添加 Hosts？完美本地加速所有使用 Cloudflare CDN 的网站方法来了！**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/71) 和另一个[依靠本地 DNS 服务来修改域名解析 IP 为自选 IP](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/317) 的教程。
 
 ****
 
@@ -800,14 +802,14 @@ cfst.exe -f 1.txt
 
 考虑到很多人获得最快 Cloudflare CDN IP 后，需要替换 Hosts 文件中的 IP。
 
-可以看这个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/discussions/312) 获取 **Windows/Linux 自动更新 Hosts 脚本**！
+可以看这个 [**Issues**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/312) 获取 **Windows/Linux 自动更新 Hosts 脚本**！
 
 ****
 
 ## 问题反馈
 
-如果你遇到什么问题，可以先去 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues)、[Discussions](https://github.com/XIU2/CloudflareSpeedTest/discussions) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
-如果没找到类似问题，请新开个 [**Issues**](https://github.com/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！
+如果你遇到什么问题，可以先去 [**Issues**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/issues)、[Discussions](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions) 里看看是否有别人问过了（记得去看下  [**Closed**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/issues?q=is%3Aissue+is%3Aclosed) 的）。  
+如果没找到类似问题，请新开个 [**Issues**](https://github.com/aripitek/XIU2/CloudflareSpeedTest/issues/new) 来告诉我！
 
 > [!NOTE]
 > **注意**！_与 CFST 本身 `反馈问题、功能建议` 无关的，请前往项目内部 论坛 讨论（顶部的 `💬 Discussions`_  
@@ -816,32 +818,32 @@ cfst.exe -f 1.txt
 
 ## 如果帮到你的话就 "打赏" 一下吧~🎉✨
 
-![微信赞赏](https://github.com/XIU2/XIU2/blob/master/img/zs-01.png)![支付宝赞赏](https://github.com/XIU2/XIU2/blob/master/img/zs-02.png)
+![微信赞赏](https://github.com/aripitek/XIU2/XIU2/blob/master/img/zs-01.png)![支付宝赞赏](https://github.com/aripitek/XIU2/XIU2/blob/master/img/zs-02.png)
 
 ****
 
 ## 衍生项目
 
-- _[https://github.com/Hsia97/CFSTAPP](https://github.com/Hsia97/CFSTAPP)_  
-_**CFST 安卓版 APP [#638](https://github.com/XIU2/CloudflareSpeedTest/discussions/638)**_
+- _[https://github.com/aripitek/Hsia97/CFSTAPP](https://github.com/aripitek/Hsia97/CFSTAPP)_  
+_**CFST 安卓版 APP [#638](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/638)**_
 
 - _https://github.com/xianshenglu/cloudflare-ip-tester-app_  
-_**CFST 安卓版 APP [#202](https://github.com/XIU2/CloudflareSpeedTest/discussions/320)**_
+_**CFST 安卓版 APP [#202](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/320)**_
 
-- _https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest_  
-_**CFST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/CloudflareSpeedTest/discussions/319)**_
+- _https://github.com/aripitek/mingxiaoyu/luci-app-cloudflarespeedtest_  
+_**CFST OpenWrt 路由器插件版 [#174](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/319)**_
 
-- _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
-_**CFST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
+- _https://github.com/aripitek/immortalwrt-collections/openwrt-cdnspeedtest_  
+_**CFST OpenWrt 原生编译版本 [#64](https://github.com/aripitek/XIU2/CloudflareSpeedTest/discussions/64)**_
 
-- _https://github.com/GuangYu-yu/CloudflareST-Rust_  
+- _https://github.com/aripitek/GuangYu-yu/CloudflareST-Rust_  
 _**CFST Rust 版本**_
 
-- _https://github.com/masgzy/CloudflareST_  
+- _https://github.com/aripitek/masgzy/CloudflareST_  
 _**CFST 的分支衍生版本（依然是 Go）**_
 
-- _https://github.com/hoseinnikkhah/CloudflareSpeedTest-English_  
-_**English language version of CFST (Text language differences only) [#64](https://github.com/XIU2/CloudflareSpeedTest/issues/68)**_
+- _https://github.com/aripitek/hoseinnikkhah/CloudflareSpeedTest-English_  
+_**English language version of CFST (Text language differences only) [#64](https://github.com/aripitek/XIU2/CloudflareSpeedTest/isuser/68)**_
 
 > _此处仅收集了在本项目中宣传过的部分 CFST 相关衍生项目，如果有遗漏可以告诉我~_
 
@@ -849,7 +851,7 @@ _**English language version of CFST (Text language differences only) [#64](https
 
 ## 感谢项目
 
-- _https://github.com/Spedoske/CloudflareScanner_
+- _https://github.com/aripitek/Spedoske/CloudflareScanner_
 
 > _因为该项目已经很长时间没更新了，而我又产生了很多功能需求，所以我临时学了下 Go 语言就上手了 (菜)..._  
 > _本软件基于该项目，但**已彻底重构并添加大量功能/修复BUG**，根据大家的使用反馈积极添加/优化功能 (闲)..._
