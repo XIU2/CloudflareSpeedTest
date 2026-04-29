@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/XIU2/CloudflareSpeedTest/utils"
+	"golang.org/x/net/proxy"
 
 	"github.com/VividCortex/ewma"
 )
@@ -31,6 +32,8 @@ var (
 
 	TestCount = defaultTestNum
 	MinSpeed  = defaultMinSpeed
+
+	ProxiedDialer proxy.Dialer
 )
 
 func checkDownloadDefault() {
@@ -107,8 +110,14 @@ func getDialContext(ip *net.IPAddr) func(ctx context.Context, network, address s
 	} else {
 		fakeSourceAddr = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
-	return func(ctx context.Context, network, address string) (net.Conn, error) {
-		return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)
+	if ProxiedDialer != nil {
+		return func(ctx context.Context, network string, address string) (net.Conn, error) {
+			return ProxiedDialer.Dial(network, fakeSourceAddr)
+		}
+	} else {
+		return func(ctx context.Context, network, address string) (net.Conn, error) {
+			return (&net.Dialer{}).DialContext(ctx, network, fakeSourceAddr)
+		}
 	}
 }
 
