@@ -848,8 +848,8 @@ _**CFST 安卓版 APP [#638](https://github.com/XIU2/CloudflareSpeedTest/discuss
 - _https://github.com/xianshenglu/cloudflare-ip-tester-app_  
 _**CFST 安卓版 APP [#202](https://github.com/XIU2/CloudflareSpeedTest/discussions/320)**_
 
-- _https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest_  
-_**CFST OpenWrt 路由器插件版 [#174](https://github.com/XIU2/CloudflareSpeedTest/discussions/319)**_
+- _https://github.com/kimmax603/luci-app-cloudflarespeedtest_  
+_**CFST OpenWrt 路由器插件版 [#651](https://github.com/XIU2/CloudflareSpeedTest/issues/651)**_
 
 - _https://github.com/immortalwrt-collections/openwrt-cdnspeedtest_  
 _**CFST OpenWrt 原生编译版本 [#64](https://github.com/XIU2/CloudflareSpeedTest/discussions/64)**_
