@@ -112,8 +112,8 @@ func (s PingDelaySet) FilterDelay() (data PingDelaySet) {
 		return s
 	}
 	for _, v := range s {
-		if v.Delay > InputMaxDelay { // 平均延迟上限，延迟大于条件最大值时，后面的数据都不满足条件，直接跳出循环
-			break
+		if v.Delay > InputMaxDelay { // 结果优先按丢包率排序，后续数据仍可能满足延迟条件
+			continue
 		}
 		if v.Delay < InputMinDelay { // 平均延迟下限，延迟小于条件最小值时，不满足条件，跳过
 			continue
