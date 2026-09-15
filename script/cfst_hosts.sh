@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 # --------------------------------------------------------------
 #	项目: CloudflareSpeedTest 自动更新 Hosts
 #	版本: 1.0.4
