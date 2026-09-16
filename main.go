@@ -57,7 +57,7 @@ https://github.com/XIU2/CloudflareSpeedTest
     -p 10
         显示结果数量；测速后直接显示指定数量的结果，为 0 时不显示结果直接退出；(默认 10 个)
     -f ip.txt
-        IP段数据文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
+        IP段数据文件；可重复指定以读取多个文件；如路径含有空格请加上引号；支持其他 CDN IP段；(默认 ip.txt)
     -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
     -o result.csv
@@ -95,7 +95,10 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.Float64Var(&task.MinSpeed, "sl", 0, "下载速度下限")
 
 	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
-	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP段数据文件")
+	flag.Func("f", "IP段数据文件", func(filename string) error {
+		task.IPFiles = append(task.IPFiles, filename)
+		return nil
+	})
 	flag.StringVar(&task.IPText, "ip", "", "指定IP段数据")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
 
