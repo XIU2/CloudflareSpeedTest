@@ -68,6 +68,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -allip
         测速全部的IP；对 IP 段中的每个 IP (仅支持 IPv4) 进行测速；(默认 每个 /24 段随机测速一个 IP)
 
+    -I en1
+        指定测速网卡；延迟/下载测速时绑定的网卡或本地 IP (如 en1、eth0)；(默认 自动选择)
+
     -debug
         调试输出模式；会在一些非预期情况下输出更多日志以便判断原因；(默认 关闭)
 
@@ -98,6 +101,10 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP段数据文件")
 	flag.StringVar(&task.IPText, "ip", "", "指定IP段数据")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
+
+	flag.StringVar(&task.NetworkInterface, "I", "", "指定测速网卡")
+	flag.StringVar(&task.NetworkInterface, "interface", "", "指定测速网卡")
+	flag.StringVar(&task.NetworkInterface, "iface", "", "指定测速网卡")
 
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
@@ -131,7 +138,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 }
 
 func main() {
-	task.InitRandSeed() // 置随机数种子
+	task.InitRandSeed()  // 置随机数种子
+	task.InitInterface() // 初始化测速网卡
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 
