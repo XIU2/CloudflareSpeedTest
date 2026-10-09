@@ -17,7 +17,8 @@ import (
 
 const (
 	bufferSize                     = 1024
-	defaultURL                     = "https://cf.xiu2.xyz/url"
+	defaultURL                     = "https://speed.cloudflare.com/__down?bytes=524288000"
+	defaultReferer                 = "https://speed.cloudflare.com"
 	defaultTimeout                 = 10 * time.Second
 	defaultDisableDownload         = false
 	defaultTestNum                 = 10
@@ -26,6 +27,7 @@ const (
 
 var (
 	URL     = defaultURL
+	Referer = defaultReferer
 	Timeout = defaultTimeout
 	Disable = defaultDisableDownload
 
@@ -37,6 +39,7 @@ func checkDownloadDefault() {
 	if URL == "" {
 		URL = defaultURL
 	}
+	// Referer 为空表示不发送（用户显式设空必须生效），因此不在此处兜底默认值
 	if Timeout <= 0 {
 		Timeout = defaultTimeout
 	}
@@ -165,6 +168,9 @@ func downloadHandler(ip *net.IPAddr) (float64, string) {
 	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
+	if Referer != "" { // speed.cloudflare.com 的下载接口超过 10MB 时要求 Referer，否则 403
+		req.Header.Set("Referer", Referer)
+	}
 
 	response, err := client.Do(req)
 	if err != nil {

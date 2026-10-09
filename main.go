@@ -15,6 +15,10 @@ import (
 
 var (
 	version, versionNew string
+
+	// 这几个参数需要被 config.go 在合并配置文件时改写，因此放在包级而不是 init() 局部
+	minDelay, maxDelay, downloadTime int
+	maxLossRate                      float64
 )
 
 func init() {
@@ -35,13 +39,17 @@ https://github.com/XIU2/CloudflareSpeedTest
         下载测速时间；单个 IP 下载测速最长时间，不能太短；(默认 10 秒)
     -tp 443
         指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
-    -url https://cf.xiu2.xyz/url
-        指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
+    -url https://speed.cloudflare.com/__down?bytes=524288000
+        下载测速地址；该地址超过 10MB 时必须带 Referer，默认地址不保证可用性，建议自建；
+    -referer https://speed.cloudflare.com
+        下载测速请求的 Referer；该地址超过 10MB 时必须带，空字符串=不发送；
 
     -httping
-        切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)
+        切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-httping-url] 参数；(默认 TCPing)
+    -httping-url https://cp.cloudflare.com/
+        HTTPing 延迟测速地址；为空时回退到 [-url] 参数；
     -httping-code 200
-        有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 301 302)
+        有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 204 301 302)
     -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
         匹配指定地区；IATA 机场地区码或国家/城市码，英文逗号分隔，仅 HTTPing 模式可用；(默认 所有地区)
 
@@ -63,6 +71,27 @@ https://github.com/XIU2/CloudflareSpeedTest
     -o result.csv
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
 
+    -dns 1.1.1.1
+        指定本工具自己解析域名用的 DNS 服务器；形如 1.1.1.1 或 1.1.1.1:53（也支持 [IPv6]:53）；为空=用系统解析器；
+        只影响本工具自身发起的域名解析（目前只有 Cloudflare API），测速阶段是直连 IP、不走 DNS；
+
+    -config cfst.json
+        JSON 配置文件路径；配置文件里没写的项走默认值，命令行显式给出的参数优先于配置文件；
+
+    -cf-zone example.com
+        Cloudflare Zone；可填根域名（会自动查 Zone ID）或直接填 32 位 Zone ID；
+    -cf-record cf.example.com
+        要更新的记录名；必须是完整域名（写 @ 或等于 zone 表示根记录）；
+    -cf-token xxxxxxxx
+        Cloudflare API Token（需要 Zone:Read + DNS:Edit 权限）；为空时读环境变量 CF_API_TOKEN；
+    -cf-count 1
+        写入 DNS 的最优 IP 条数；同名同类型最多保留这么多条记录；(默认 1)
+    -cf-ttl 60
+        DNS 记录 TTL 秒，1 表示 Cloudflare 的 auto；(默认 60)
+    -cf-proxied
+        是否给这些记录开启 Cloudflare 代理；优选 IP 场景必须保持关闭；(默认 关闭)
+        以上三项（zone/record/token）全部提供时才启用 DNS 自动更新；只给了一部分会报错退出。
+
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
@@ -76,16 +105,16 @@ https://github.com/XIU2/CloudflareSpeedTest
     -h
         打印帮助说明
 `
-	var minDelay, maxDelay, downloadTime int
-	var maxLossRate float64
 	flag.IntVar(&task.Routines, "n", 200, "延迟测速线程")
 	flag.IntVar(&task.PingTimes, "t", 4, "延迟测速次数")
 	flag.IntVar(&task.TestCount, "dn", 10, "下载测速数量")
 	flag.IntVar(&downloadTime, "dt", 10, "下载测速时间")
 	flag.IntVar(&task.TCPPort, "tp", 443, "指定测速端口")
-	flag.StringVar(&task.URL, "url", "https://cf.xiu2.xyz/url", "指定测速地址")
+	flag.StringVar(&task.URL, "url", "https://speed.cloudflare.com/__down?bytes=524288000", "下载测速地址")
+	flag.StringVar(&task.Referer, "referer", "https://speed.cloudflare.com", "下载测速请求的 Referer；该地址超过 10MB 时必须带，空字符串=不发送")
 
 	flag.BoolVar(&task.Httping, "httping", false, "切换测速模式")
+	flag.StringVar(&task.HttpingURL, "httping-url", "https://cp.cloudflare.com/", "HTTPing 延迟测速地址；为空时回退到 -url")
 	flag.IntVar(&task.HttpingStatusCode, "httping-code", 0, "有效状态代码")
 	flag.StringVar(&task.HttpingCFColo, "cfcolo", "", "匹配指定地区")
 
@@ -104,9 +133,22 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 	flag.BoolVar(&utils.Debug, "debug", false, "调试输出模式")
 
+	flag.StringVar(&dnsServer, "dns", "", "本工具自身解析域名用的 DNS 服务器；为空=系统解析器")
+	flag.StringVar(&configPath, "config", "", "JSON 配置文件路径；命令行显式给出的参数优先于配置文件")
+	flag.StringVar(&cfOpts.zone, "cf-zone", "", "Cloudflare Zone（根域名或 Zone ID）")
+	flag.StringVar(&cfOpts.record, "cf-record", "", "要更新的记录名（完整域名，如 cf.example.com）")
+	flag.StringVar(&cfOpts.token, "cf-token", "", "Cloudflare API Token；为空时读环境变量 CF_API_TOKEN")
+	flag.IntVar(&cfOpts.count, "cf-count", 1, "写入 DNS 的最优 IP 条数")
+	flag.IntVar(&cfOpts.ttl, "cf-ttl", 60, "DNS 记录 TTL 秒（1=自动）")
+	flag.BoolVar(&cfOpts.proxied, "cf-proxied", false, "DNS 记录是否开启 Cloudflare 代理（优选 IP 场景必须为 false）")
+
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()
+
+	// 先合并配置文件、再校验，然后才派生下面这些依赖最终值的变量
+	applyConfigFile(configPath)
+	validateOptions()
 
 	if task.MinSpeed > 0 && time.Duration(maxDelay)*time.Millisecond == utils.InputMaxDelay {
 		utils.Yellow.Println("[提示] 在使用 [-sl] 参数时，建议搭配 [-tl] 参数，以避免因凑不够 [-dn] 数量而一直测速...")
@@ -134,6 +176,7 @@ func main() {
 	task.InitRandSeed() // 置随机数种子
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
+	printEffectiveConfig()
 
 	// 开始延迟测速 + 过滤延迟/丢包
 	pingData := task.NewPing().Run().FilterDelay().FilterLossRate()
@@ -141,6 +184,7 @@ func main() {
 	speedData := task.TestDownloadSpeed(pingData)
 	utils.ExportCsv(speedData) // 输出文件
 	speedData.Print()          // 打印结果
+	updateDNS(speedData)       // 把最优 IP 同步到 Cloudflare DNS（未启用时直接返回）
 	endPrint()                 // 根据情况选择退出方式（针对 Windows）
 }
 

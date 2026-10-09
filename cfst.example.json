@@ -1,0 +1,33 @@
+{
+  "url": "https://speed.cloudflare.com/__down?bytes=524288000",
+  "referer": "https://speed.cloudflare.com",
+  "httping_url": "https://cp.cloudflare.com/",
+  "routines": 200,
+  "ping_times": 4,
+  "test_count": 10,
+  "download_time": 10,
+  "tcp_port": 443,
+  "httping": false,
+  "httping_code": 0,
+  "cfcolo": "",
+  "max_delay": 9999,
+  "min_delay": 0,
+  "max_loss_rate": 1,
+  "min_speed": 0,
+  "print_num": 10,
+  "ip_file": "ip.txt",
+  "ip_text": "",
+  "output": "result.csv",
+  "disable_download": false,
+  "test_all": false,
+  "debug": false,
+  "dns": "",
+  "cloudflare": {
+    "zone": "example.com",
+    "record": "cf.example.com",
+    "token": "",
+    "count": 1,
+    "ttl": 1,
+    "proxied": false
+  }
+}

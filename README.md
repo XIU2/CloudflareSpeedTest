@@ -169,24 +169,19 @@ https://github.com/XIU2/CloudflareSpeedTest
         下载测速时间；单个 IP 下载测速最长时间，不能太短；(默认 10 秒)
     -tp 443
         指定测速端口；延迟测速/下载测速时使用的端口；(默认 443 端口)
-    -url https://cf.xiu2.xyz/url
-        指定测速地址；延迟测速(HTTPing)/下载测速时使用的地址，默认地址不保证可用性，建议自建；
-        当下载测速时，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来。
+    -url https://speed.cloudflare.com/__down?bytes=524288000
+        下载测速地址；该地址超过 10MB 时必须带 Referer，默认地址不保证可用性，建议自建；
+    -referer https://speed.cloudflare.com
+        下载测速请求的 Referer；该地址超过 10MB 时必须带，空字符串=不发送；
 
     -httping
-        切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-url] 参数；(默认 TCPing)
-        当使用 HTTP 测速模式时，软件会从 HTTP 响应头中获取该 IP 当前地区码（支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN）并显示出来。
-        注意：HTTPing 本质上也算一种 网络扫描 行为，因此如果你在服务器上面运行，需要降低并发(-n)，否则可能会被一些严格的商家暂停服务。
-        如果你遇到 HTTPing 首次测速可用 IP 数量正常，后续测速越来越少甚至直接为 0，但停一段时间后又恢复了的情况，那么也可能是被 运营商、Cloudflare CDN 认为你在网络扫描而 触发临时限制机制，因此才会过一会儿就恢复了，建议降低并发(-n)减少这种情况的发生。
+        切换测速模式；延迟测速模式改为 HTTP 协议，所用测试地址为 [-httping-url] 参数；(默认 TCPing)
+    -httping-url https://cp.cloudflare.com/
+        HTTPing 延迟测速地址；为空时回退到 [-url] 参数；
     -httping-code 200
-        有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 301 302)
+        有效状态代码；HTTPing 延迟测速时网页返回的有效 HTTP 状态码，仅限一个；(默认 200 204 301 302)
     -cfcolo HKG,KHH,NRT,LAX,SEA,SJC,FRA,MAD
-        匹配指定地区；IATA 机场地区码或国家/城市码，英文逗号分隔，大小写均可，仅 HTTPing 模式可用；(默认 所有地区)
-        支持 Cloudflare、AWS CloudFront、Fastly、Gcore、CDN77、Bunny 等 CDN
-        其中 Cloudflare、AWS CloudFront、Fastly 使用的是 IATA 三字机场地区码，如：HKG,LAX
-        其中 CDN77、Bunny 使用的是 二字国家/区域码，如：US,CN
-        其中 Gcore 使用的是 二字城市码，如：FR,AM
-        因此大家使用 -cfcolo 指定地区码时要根据不同的 CDN 来指定不同类型的地区码。
+        匹配指定地区；IATA 机场地区码或国家/城市码，英文逗号分隔，仅 HTTPing 模式可用；(默认 所有地区)
 
     -tl 200
         平均延迟上限；只输出低于指定平均延迟的 IP，各上下限条件可搭配使用；(默认 9999 ms)
@@ -205,7 +200,27 @@ https://github.com/XIU2/CloudflareSpeedTest
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
     -o result.csv
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
-        注意：在一些环境下使用 -o "" 可能会被忽略掉这个空参数导致报错，可加个空格 -o " " 解决
+
+    -dns 1.1.1.1
+        指定本工具自己解析域名用的 DNS 服务器；形如 1.1.1.1 或 1.1.1.1:53（也支持 [IPv6]:53）；为空=用系统解析器；
+        只影响本工具自身发起的域名解析（目前只有 Cloudflare API），测速阶段是直连 IP、不走 DNS；
+
+    -config cfst.json
+        JSON 配置文件路径；配置文件里没写的项走默认值，命令行显式给出的参数优先于配置文件；
+
+    -cf-zone example.com
+        Cloudflare Zone；可填根域名（会自动查 Zone ID）或直接填 32 位 Zone ID；
+    -cf-record cf.example.com
+        要更新的记录名；必须是完整域名（写 @ 或等于 zone 表示根记录）；
+    -cf-token xxxxxxxx
+        Cloudflare API Token（需要 Zone:Read + DNS:Edit 权限）；为空时读环境变量 CF_API_TOKEN；
+    -cf-count 1
+        写入 DNS 的最优 IP 条数；同名同类型最多保留这么多条记录；(默认 1)
+    -cf-ttl 60
+        DNS 记录 TTL 秒，1 表示 Cloudflare 的 auto；(默认 60)
+    -cf-proxied
+        是否给这些记录开启 Cloudflare 代理；优选 IP 场景必须保持关闭；(默认 关闭)
+        以上三项（zone/record/token）全部提供时才启用 DNS 自动更新；只给了一部分会报错退出。
 
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
@@ -214,9 +229,6 @@ https://github.com/XIU2/CloudflareSpeedTest
 
     -debug
         调试输出模式；会在一些非预期情况下输出更多日志以便判断原因；(默认 关闭)
-        目前该功能仅针对 HTTPing 延迟测速过程 及 下载测速过程，当过程中因为各种原因导致当前 IP 测速中断都会输出错误原因
-        例如：HTTPing 延迟测速过程中，因为 HTTP 状态码不符合或测速地址有问题或超时等原因而终止测速
-        例如：下载测速过程中，因为下载测速地址有问题（被阻断、403状态码、超时）等原因而终止测速（导致显示 0.00）
 
     -v
         打印程序版本 + 检查版本更新
@@ -414,16 +426,18 @@ HTTP 协议适用于快速测试某域名指向某 IP 时是否可以访问，�
 # 只需加上 -httping 参数即可切换到 HTTP 协议延迟测速模式
 cfst -httping
 
-# 软件会根据访问时网页返回的有效 HTTP 状态码来判断可用性（当然超时也算），默认对返回 200 301 302 这三个 HTTP 状态码的视为有效，可以手动指定认为有效的 HTTP 状态码，但只能指定一个（你需要提前确定测试地址正常情况下会返回哪个状态码）
+# 软件会根据访问时网页返回的有效 HTTP 状态码来判断可用性（当然超时也算），默认对返回 200 204 301 302 这四个 HTTP 状态码的视为有效，可以手动指定认为有效的 HTTP 状态码，但只能指定一个（你需要提前确定测试地址正常情况下会返回哪个状态码）
 cfst -httping -httping-code 200
 
-# 通过 -url 参数来指定 HTTPing 测试地址（可以是任意网页 URL，不局限于具体文件地址）
-cfst -httping -url https://cf.xiu2.xyz/url
+# 通过 -httping-url 参数来指定 HTTPing 测试地址（可以是任意网页 URL，不局限于具体文件地址）；
+# 该参数为空时会回退到 -url，默认值为 https://cp.cloudflare.com/
+cfst -httping -httping-url https://cp.cloudflare.com/
 # 如果你要 HTTPing 测试其他网站/CDN，那么指定一个该网站/使用该 CDN 的地址（因为软件默认地址是 Cloudflare 的，只能用于测试 Cloudflare 的 IP）
+cfst -httping -httping-url https://cf.xiu2.xyz/url
 
 # 注意：如果测速地址为 HTTP 协议，记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口）
-# 同理，如果要测速 80 端口，那么也需要加上 -url 参数来指定一个 http:// 协议的地址才行（且该地址不会强制重定向至 HTTPS），如果是非 80 443 端口，那么需要确定该下载测速地址是否支持通过该端口访问。
-cfst -httping -tp 80 -url http://cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
+# 同理，如果要测速 80 端口，那么也需要用 -httping-url 指定一个 http:// 协议的地址才行（且该地址不会强制重定向至 HTTPS），如果是非 80 443 端口，那么需要确定该下载测速地址是否支持通过该端口访问。
+cfst -httping -tp 80 -httping-url http://cdn.cloudflare.steamstatic.com/steam/apps/5952/movie_max.webm
 ```
 
 </details>
@@ -551,9 +565,10 @@ cfst -tp 80 -url http://speed.cloudflare.com/__down?bytes=99999999
 ****
 
 ``` bash
-# 该参数适用于下载测速 及 HTTP 协议的延迟测速，对于后者该地址可以是任意网页 URL（不局限于具体文件地址）
+# -url 是下载测速地址；HTTP 协议的延迟测速地址请用 -httping-url（该地址可以是任意网页 URL，不局限于具体文件地址）
 
 # 地址要求：可以直接下载、文件大小超过 200MB、用的是 Cloudflare CDN
+# 下面这个地址只是示例，已不是默认值；当前默认地址为 https://speed.cloudflare.com/__down?bytes=524288000（500MiB）
 cfst -url https://cf.xiu2.xyz/url
 
 # 注意：如果测速地址为 HTTP 协议（该地址不能强制重定向至 HTTPS），记得加上 -tp 80（这个参数会影响 延迟测速/下载测速 时使用的端口），如果是非 80 443 端口，那么需要确定下载测速地址是否支持通过该端口访问。
@@ -561,6 +576,171 @@ cfst -tp 80 -url http://speed.cloudflare.com/__down?bytes=99999999
 ```
 
 </details>
+
+****
+
+#### \# 使用配置文件（-config）
+
+除了在命令行里堆一长串参数，也可以把参数写进一个 JSON 配置文件，然后用 `-config` 指定它：
+
+``` bash
+cfst -config cfst.json
+```
+
+仓库里提供了完整示例文件 [`cfst.example.json`](cfst.example.json)，复制修改后即可使用：
+
+``` json
+{
+  "url": "https://speed.cloudflare.com/__down?bytes=524288000",
+  "referer": "https://speed.cloudflare.com",
+  "httping_url": "https://cp.cloudflare.com/",
+  "routines": 200,
+  "ping_times": 4,
+  "test_count": 10,
+  "download_time": 10,
+  "tcp_port": 443,
+  "httping": false,
+  "httping_code": 0,
+  "cfcolo": "",
+  "max_delay": 9999,
+  "min_delay": 0,
+  "max_loss_rate": 1,
+  "min_speed": 0,
+  "print_num": 10,
+  "ip_file": "ip.txt",
+  "ip_text": "",
+  "output": "result.csv",
+  "disable_download": false,
+  "test_all": false,
+  "debug": false,
+  "dns": "",
+  "cloudflare": {
+    "zone": "example.com",
+    "record": "cf.example.com",
+    "token": "",
+    "count": 1,
+    "ttl": 1,
+    "proxied": false
+  }
+}
+```
+
+所有字段都是可选的，字段名、类型、默认值及对应的命令行参数如下：
+
+| 字段名 | 类型 | 默认值 | 对应命令行参数 |
+| --- | --- | --- | --- |
+| `url` | string | `https://speed.cloudflare.com/__down?bytes=524288000` | `-url` |
+| `referer` | string | `https://speed.cloudflare.com` | `-referer` |
+| `httping_url` | string | `https://cp.cloudflare.com/` | `-httping-url` |
+| `routines` | int | 200 | `-n` |
+| `ping_times` | int | 4 | `-t` |
+| `test_count` | int | 10 | `-dn` |
+| `download_time` | int | 10 | `-dt` |
+| `tcp_port` | int | 443 | `-tp` |
+| `httping` | bool | false | `-httping` |
+| `httping_code` | int | 0（0 表示按内置的 200/204/301/302 判定） | `-httping-code` |
+| `cfcolo` | string | 空 | `-cfcolo` |
+| `max_delay` | int | 9999 | `-tl` |
+| `min_delay` | int | 0 | `-tll` |
+| `max_loss_rate` | float | 1 | `-tlr` |
+| `min_speed` | float | 0 | `-sl` |
+| `print_num` | int | 10 | `-p` |
+| `ip_file` | string | `ip.txt` | `-f` |
+| `ip_text` | string | 空 | `-ip` |
+| `output` | string | `result.csv` | `-o` |
+| `disable_download` | bool | false | `-dd` |
+| `test_all` | bool | false | `-allip` |
+| `debug` | bool | false | `-debug` |
+| `dns` | string | 空 | `-dns` |
+| `cloudflare.zone` | string | 空 | `-cf-zone` |
+| `cloudflare.record` | string | 空 | `-cf-record` |
+| `cloudflare.token` | string | 空 | `-cf-token`（或环境变量 `CF_API_TOKEN`） |
+| `cloudflare.count` | int | 1 | `-cf-count` |
+| `cloudflare.ttl` | int | 60 | `-cf-ttl` |
+| `cloudflare.proxied` | bool | false | `-cf-proxied` |
+
+配置文件有两条规则：
+
+1. 配置文件里没写的字段走程序默认值；
+2. 命令行上显式给出的参数优先于配置文件。程序用 `flag.Visit` 区分「没写」和「显式写了零值」，因此即使显式写 `-dns ""`、`-referer ""` 这样的零值，也会压过配置文件里的对应项。
+
+> 注意：`cloudflare` 块里的 `zone`、`record`、`token` 三项全部提供时才会启用 DNS 自动更新，只给其中一部分会报错退出。`cfst.example.json` 里的 `zone`/`record` 是占位符、`token` 为空，直接原样运行会因为缺少 token 而报错退出（这是有意的校验行为，避免拿错误配置去请求 API）。
+
+****
+
+#### \# 自动更新 Cloudflare DNS（-cf-*）
+
+测速完成后，可以把最快的 N 个 IP 自动写入 Cloudflare 托管的 DNS 记录（A / AAAA），适合配合定时任务定期刷新「优选 IP」。
+
+相关参数：
+
+- `-cf-zone`：Cloudflare Zone，可填根域名（程序会自动查 Zone ID），也可直接填 32 位 Zone ID；
+- `-cf-record`：要更新的记录名，必须是完整域名，如 `cf.example.com`；写 `@` 或与 zone 相同表示根记录；
+- `-cf-token`：Cloudflare API Token，需要 `Zone:Read` + `DNS:Edit` 权限；也可以改用环境变量 `CF_API_TOKEN`；
+- `-cf-count`：写入几条最优 IP，同名同类型最多保留这么多条，默认 1；
+- `-cf-ttl`：DNS 记录 TTL 秒数，默认 60，1 表示 Cloudflare 的 auto；
+- `-cf-proxied`：是否给这些记录开启 Cloudflare 代理，**优选 IP 场景必须保持 false**，否则记录会走 Cloudflare 代理而不是你选出来的 IP。
+
+行为说明：
+
+- IPv4 写入 A 记录，IPv6 写入 AAAA 记录，两者各自独立处理；只提供了其中一种家族的 IP 时，另一种类型的既有记录不会被改动；
+- 当既有记录的 IP 集合与目标集合一致时，**不做任何改动**（幂等），定时任务反复跑不会产生多余的 API 调用；
+- 测速结果为空时**不会碰 DNS**；
+- Cloudflare API 出错时，会打印 Cloudflare 返回的原因并以非 0 退出，便于定时任务告警。
+
+命令行写法：
+
+``` bash
+cfst -cf-zone example.com -cf-record cf.example.com -cf-token "你的 API Token" -cf-count 1 -cf-ttl 60
+```
+
+配合配置文件写法（`cfst.json`）：
+
+``` json
+{
+  "cloudflare": {
+    "zone": "example.com",
+    "record": "cf.example.com",
+    "token": "你的 API Token",
+    "count": 1,
+    "ttl": 60,
+    "proxied": false
+  }
+}
+```
+
+``` bash
+cfst -config cfst.json
+```
+
+定时任务示例（每小时刷新一次）：
+
+``` cron
+# CRON_TZ 需要单独占一行，作用于它之后的所有条目；只有需要按指定时区计算触发时间时才要写
+CRON_TZ=Asia/Shanghai
+0 * * * * /path/to/cfst -config /path/to/cfst.json
+```
+
+****
+
+#### \# 指定 DNS 解析器（-dns）
+
+可以用 `-dns` 指定本工具自己发起域名解析时所使用的 DNS 服务器，支持这几种写法：
+
+``` bash
+# 裸 IPv4（默认 53 端口）
+cfst -dns 1.1.1.1
+
+# IPv4 + 端口
+cfst -dns 1.1.1.1:53
+
+# 带方括号的 IPv6 + 端口（裸 IPv6 也支持）
+cfst -dns "[2606:4700:4700::1111]:53"
+```
+
+需要说明的是：**测速阶段是按 `ip.txt` 里的 IP 直连的，不依赖域名解析**，所以 `-dns` 只影响本工具自身发起的域名解析，目前即访问 Cloudflare API（`api.cloudflare.com`）时使用的解析器；它不会改变测速时选择的 IP，也不会影响下载测速。
+
+适用场景：系统解析器不可用、被污染或响应过慢时，会导致 DNS 更新那一步失败，而测速本身仍然正常，这时就可以用 `-dns` 换一个可用的解析器。
 
 ****
 
@@ -784,7 +964,7 @@ cfst -f 1.txt
 
 先去 [#490](https://github.com/XIU2/CloudflareSpeedTest/discussions/490) 找几个其他的下载测速地址都试试。
 
-如果其中有能下载测速出结果的，则就代表你之前使用的下载测速地址有问题（注意，目前默认下载测速地址仅为一个带负载均衡轮询的重定向链接，会自动重定向到上面帖子里大家分享的公益下载测速地址，而这些地址在**不同地区的可用性可能有差异**，因此可能出现之前不行现在又正常的情况，如果**想要稳定，建议自建**，上面帖子写了几种自建方法）。
+如果其中有能下载测速出结果的，则就代表你之前使用的下载测速地址有问题（注意，目前默认下载测速地址为 `https://speed.cloudflare.com/__down?bytes=524288000`，即 Cloudflare 官方测速接口、文件大小 500MiB；该地址超过 10MB 的请求必须带 Referer（默认已带 `https://speed.cloudflare.com`），不带会返回 403，从而导致下载测速全为 0.00。另外该默认地址不保证可用性，如果**想要稳定，建议自建**，上面帖子写了几种自建方法）。
 
 如果找了很多，都是一样 0.00，那么就要考虑其他可能性了。
 
