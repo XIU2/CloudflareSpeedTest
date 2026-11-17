@@ -883,6 +883,17 @@ _**English language version of CFST (Text language differences only) [#64](https
 
 ****
 
+因为 `go.mod` 中的模块路径不带 `/v2` 后缀，而 Go 的语义化导入版本规范要求 `v2.0.0` 及以上版本的模块路径必须带上该后缀，所以无法通过 `go install github.com/XIU2/CloudflareSpeedTest@v2.3.5` 来安装（会报 `module path must match major version` 错误），`@latest` 也不行（v2.x.x 版本对 Go 来说是不可见的，只会解析到旧的 `v1.5.1` 版本，而它的 `go.mod` 中声明的模块路径也不规范，因此同样会失败）。  
+因此建议先克隆源码，再按下面的方法手动编译：
+
+```bash
+git clone --depth 1 https://github.com/XIU2/CloudflareSpeedTest.git
+# 如果要编译特定版本，可以加上 --branch 参数，例如：--branch v2.3.5
+cd CloudflareSpeedTest
+```
+
+****
+
 为了方便，我是在编译的时候将版本号写入代码中的 version 变量，因此你手动编译时，需要像下面这样在 `go build` 命令后面加上 `-ldflags` 参数来指定版本号：
 
 ```bash
