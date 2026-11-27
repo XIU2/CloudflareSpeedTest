@@ -204,8 +204,11 @@ https://github.com/XIU2/CloudflareSpeedTest
     -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
     -o result.csv
-        写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
+        写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 随 [-fmt] 变化：csv 为 result.csv，json 为 result.json，ip 为 result.txt)
         注意：在一些环境下使用 -o "" 可能会被忽略掉这个空参数导致报错，可加个空格 -o " " 解决
+    -fmt csv
+        输出结果文件格式；csv 为原有表格格式，json 为 JSON 数组，ip 为每行一个 IP 的纯文本；(默认 csv)
+        仅影响写入结果文件的内容，命令行输出不受影响；未指定 [-o] 时，文件名随格式自动变化
 
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
@@ -519,6 +522,50 @@ cfst -f C:\abc\4.txt -o C:\abc\result.csv -dd
 # Windows（注意是反斜杠）
 C:\abc\cfst -f C:\abc\4.txt -o C:\abc\result.csv -dd
 ```
+</details>
+
+****
+
+#### \# 输出结果文件格式
+
+<details>
+<summary><code><strong>「 点击展开 查看内容 」</strong></code></summary>
+
+****
+
+``` bash
+# 默认格式，与原来一致：表格形式，Excel 等软件可直接打开
+cfst -dd
+
+# JSON 数组，便于脚本、Bot 解析（未指定 -o 时写入 result.json）
+cfst -dd -fmt json
+
+# 每行一个 IP 的纯文本，便于直接填入代理配置（未指定 -o 时写入 result.txt）
+cfst -dd -fmt ip
+
+# 格式与文件名可以自由组合（-o 指定的文件名始终优先）
+cfst -dd -fmt json -o abc/ips.json
+```
+
+JSON 格式每条记录对应原来的 CSV 一行，字段为 `ip`、`sent`、`received`、`loss_rate`、
+`latency_ms`、`download_speed_mbps`、`colo`：
+
+```json
+[
+  {
+    "ip": "104.27.200.69",
+    "sent": 4,
+    "received": 4,
+    "loss_rate": 0,
+    "latency_ms": 146.23,
+    "download_speed_mbps": 28.64,
+    "colo": "LAX"
+  }
+]
+```
+
+> [!NOTE]
+> `-fmt` 只影响**写入结果文件的内容**，命令行输出的表格不受影响；留空 `-fmt` 或写错时会回退为 `csv`。
 </details>
 
 ****

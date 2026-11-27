@@ -61,7 +61,10 @@ https://github.com/XIU2/CloudflareSpeedTest
     -ip 1.1.1.1,2.2.2.2/24,2606:4700::/32
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
     -o result.csv
-        写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
+        写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 随 [-fmt] 变化：csv 为 result.csv，json 为 result.json，ip 为 result.txt)
+    -fmt csv
+        输出结果文件格式；csv 为原有表格格式，json 为 JSON 数组，ip 为每行一个 IP 的纯文本；(默认 csv)
+        仅影响写入结果文件的内容，命令行输出不受影响；未指定 [-o] 时，文件名随格式自动变化
 
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
@@ -97,7 +100,8 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.IntVar(&utils.PrintNum, "p", 10, "显示结果数量")
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP段数据文件")
 	flag.StringVar(&task.IPText, "ip", "", "指定IP段数据")
-	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
+	flag.StringVar(&utils.Output, "o", "", "输出结果文件")
+	flag.StringVar(&utils.Format, "fmt", utils.FormatCsv, "输出结果文件格式")
 
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
@@ -116,6 +120,22 @@ https://github.com/XIU2/CloudflareSpeedTest
 	utils.InputMaxLossRate = float32(maxLossRate)
 	task.Timeout = time.Duration(downloadTime) * time.Second
 	task.HttpingCFColomap = task.MapColoMap()
+
+	// 未显式指定输出文件时，按 -fmt 选择对应的默认文件名；
+	// 显式指定为空的 [-o]（-o ""）仍然表示不写入文件
+	outputSet := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "o" {
+			outputSet = true
+		}
+	})
+	if !utils.ValidFormat() {
+		utils.Yellow.Println("[提示] [-fmt] 参数仅支持 csv、json、ip，已回退为 csv...")
+		utils.Format = utils.FormatCsv
+	}
+	if !outputSet {
+		utils.Output = utils.DefaultOutputName()
+	}
 
 	if printVersion {
 		println(version)
@@ -139,9 +159,9 @@ func main() {
 	pingData := task.NewPing().Run().FilterDelay().FilterLossRate()
 	// 开始下载测速
 	speedData := task.TestDownloadSpeed(pingData)
-	utils.ExportCsv(speedData) // 输出文件
-	speedData.Print()          // 打印结果
-	endPrint()                 // 根据情况选择退出方式（针对 Windows）
+	utils.Export(speedData) // 输出文件
+	speedData.Print()       // 打印结果
+	endPrint()              // 根据情况选择退出方式（针对 Windows）
 }
 
 // 根据情况选择退出方式（针对 Windows）
